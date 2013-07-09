@@ -2,7 +2,9 @@ OpenWeatherMap-PHP-Api
 ======================
 An php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeatherMap.org). This api tries to normalise and abstract the data and remove inconsistencies.
 
-If you are looking for a [Zikula](http://www.zikula.org) implementation, you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather)
+If you are looking for an implementation for the [CMS Zikula](http://www.zikula.org), you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather).
+
+**Notice:** This api is not made by OpenWeatherMap, nor their offical php api.
 
 License
 =======
@@ -15,5 +17,5 @@ MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-P
 
 Roadmap
 =======
-- Add forecast functionality
-- Tell the guys of [OpenWeatherMap.org](http://www.OpenWeatherMap.org) that you made such an api.
+- [ ] Add forecast functionality
+- [x] Tell the guys of [OpenWeatherMap.org](http://www.OpenWeatherMap.org) that you made such an api.
