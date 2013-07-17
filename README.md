@@ -20,9 +20,9 @@ MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-P
 
 Contribute || Support me
 ========================
-I'm very happy if you open PRs or issues to help making this API more awesome. 
+I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**. 
 
-However if you like this and want to support me, you may want to flattr a few coins?
+However if you like this and want to **support** _me_, you may want to **flattr** a few coins?
 
 [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software) 
 
