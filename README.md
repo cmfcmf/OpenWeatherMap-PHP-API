@@ -18,6 +18,14 @@ MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-P
 - [OpenWeatherMap.org/copyright](http://www.OpenWeatherMap.org/copyright)
 - [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
 
+Contribute || Support me
+========================
+I'm very happy if you open PRs or issues to help making this API more awesome. 
+
+However if you like this and want to support me, you may want to flattr a few coins?
+
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software) 
+
 Roadmap
 =======
 - [ ] Add forecast functionality
