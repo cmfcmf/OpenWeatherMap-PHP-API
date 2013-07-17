@@ -16,6 +16,7 @@ MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-P
 - [OpenWeatherMap.org](http://www.OpenWeatherMap.org)
 - [OpenWeatherMap.org/about](http://www.OpenWeatherMap.org/about)
 - [OpenWeatherMap.org/copyright](http://www.OpenWeatherMap.org/copyright)
+- [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
 
 Roadmap
 =======
