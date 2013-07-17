@@ -69,9 +69,6 @@ class Weather
                 throw new OpenWeatherMap_Exception('Unknown fatal error: OpenWeatherMap returned the following json object: ' . print_r($error));
             }
         }
-        // Check for errors.
-        $errors = libxml_get_errors();
-        print_r($errors);
         
         $this->city = new _City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
         $this->temperature = new _Temperature(new _Unit($xml->temperature['value'], $xml->temperature['unit']), new _Unit($xml->temperature['min'], $xml->temperature['unit']), new _Unit($xml->temperature['max'], $xml->temperature['unit']));
