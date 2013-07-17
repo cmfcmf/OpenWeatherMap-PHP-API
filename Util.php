@@ -11,6 +11,7 @@
  * @see http://www.OpenWeatherMap.org
  * @see http://www.OpenWeatherMap.org/about
  * @see http://www.OpenWeatherMap.org/copyright
+ * @see http://openweathermap.org/appid
  */
 
 /**
@@ -46,7 +47,31 @@ class Weather
     
     public function __construct($query, $units = 'imperial', $lang = 'en', $appid = '')
     {
-        $xml = new SimpleXMLElement(OpenWeatherMap::getRawData($query, $units, $lang, $appid, 'xml'));
+        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
+        libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        
+        $answer = OpenWeatherMap::getRawData($query, $units, $lang, $appid, 'xml');
+        if ($answer === false) {
+            // $query has the wrong format, throw error.
+            throw new Exception('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
+        }
+        
+        try {
+            $xml = new SimpleXMLElement($answer);
+        } catch(Exception $e) {
+            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
+            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
+            $error = json_decode($answer, true);
+            if (isset($error['message'])) {
+                throw new OpenWeatherMap_Exception($error['message'], $error['cod']);
+            } else {
+                throw new OpenWeatherMap_Exception('Unknown fatal error: OpenWeatherMap returned the following json object: ' . print_r($error));
+            }
+        }
+        // Check for errors.
+        $errors = libxml_get_errors();
+        print_r($errors);
         
         $this->city = new _City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
         $this->temperature = new _Temperature(new _Unit($xml->temperature['value'], $xml->temperature['unit']), new _Unit($xml->temperature['min'], $xml->temperature['unit']), new _Unit($xml->temperature['max'], $xml->temperature['unit']));
@@ -241,4 +266,9 @@ class _Weather
     {
         return str_replace("%s", $this->icon, $this->iconUrl);
     }
+}
+
+class OpenWeatherMap_Exception extends Exception
+{
+
 }

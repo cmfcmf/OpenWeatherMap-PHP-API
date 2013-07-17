@@ -4,6 +4,8 @@ An php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeathe
 
 If you are looking for an implementation for the [CMS Zikula](http://www.zikula.org), you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather).
 
+For example code and how to use this api, please take a look into `Examples.php` or run it in your browser.
+
 **Notice:** This api is not made by OpenWeatherMap, nor their offical php api.
 
 License

@@ -11,6 +11,7 @@
  * @see http://www.OpenWeatherMap.org
  * @see http://www.OpenWeatherMap.org/about
  * @see http://www.OpenWeatherMap.org/copyright
+ * @see http://openweathermap.org/appid
  */
 
 // Include api class
@@ -188,7 +189,37 @@ echo "<br /><br />\n\n\nEXAMPLE 13<hr />\n\n\n";
 echo OpenWeatherMap::getRawData('Berlin', $units, $lang, null, 'html');
 echo "<br />\n";
 
-// Example 14: Using an api key:
+// Example 14: Error handling.
+echo "<br /><br />\n\n\nEXAMPLE 14<hr />\n\n\n";
+
+// Try wrong city name.
+try {
+    $weather = OpenWeatherMap::getWeather("ThisCityNameIsNotValidAndDoesNotExist", $units, $lang);
+} catch(OpenWeatherMap_Exception $e) {
+    echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+}
+
+// Try invalid $query.
+try {
+    $weather = OpenWeatherMap::getWeather(new DateTime('now'), $units, $lang);
+} catch(Exception $e) {
+    echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+}
+
+// Full error handling would look like this:
+try {
+    $weather = OpenWeatherMap::getWeather(-1, $units, $lang);
+} catch(OpenWeatherMap_Exception $e) {
+    echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+} catch(Exception $e) {
+    echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+}
+
+// Example 15: Using an api key:
 
 # OpenWeatherMap::getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');
 # OpenWeatherMap::getRawData('Berlin', $units, $lang, 'Your-Api-Key-Here', 'json');
