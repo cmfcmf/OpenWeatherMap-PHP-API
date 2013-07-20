@@ -14,7 +14,14 @@
  * @see http://openweathermap.org/appid
  */
 
-require_once('Util.php');
+namespace cmfcmf {
+
+use cmfcmf\OpenWeatherMap\Weather;
+
+# Install PSR-0-compatible class autoloader
+spl_autoload_register(function($class){
+    require preg_replace('{\\\\|_(?!.*\\\\)}', DIRECTORY_SEPARATOR, ltrim($class, '\\')).'.php';
+});
 
 /**
  * Main static class for the OpenWeatherMap-PHP-API.
@@ -22,10 +29,39 @@ require_once('Util.php');
 class OpenWeatherMap
 {
     /**
-     * @const $url The basic api url to fetch data from.
+     * @var $url The basic api url to fetch data from.
      */
-    const url = "http://api.openweathermap.org/data/2.5/weather?";
+    private $url = "http://api.openweathermap.org/data/2.5/weather?";
 
+    private $cacheClass = false;
+    
+    private $seconds;
+
+    /**
+     * Constructs the OpenWeatherMap object.
+     *
+     * @param bool|string $cache If set to false, caching is disabled. If this is a valid class
+     * extending cmfcmf\OpenWeatherMap\Util\Cache, caching will be enabled. Default false.
+     * @param int $seconds How long weather data shall be cached. Default 10 minutes.
+     *
+     * @throws Exception If $cache is neither false nor a valid callable extending cmfcmf\OpenWeatherMap\Util\Cache.
+     */
+    public function __construct($cacheClass = false, $seconds = 600)
+    {
+        if (!class_exists($cacheClass) && $cacheClass !== false) {
+            #throw new \Exception("Class $cacheClass does not exist.");
+        }
+        if (!is_numeric($seconds)) {
+            throw new \Exception("\$seconds must be numeric.");
+        }
+        if ($seconds == 0) {
+            $cacheClass = false;
+        }
+        
+        $this->cacheClass = $cacheClass;
+        $this->seconds = $seconds;
+    }
+    
     /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap.
      *
@@ -63,30 +99,45 @@ class OpenWeatherMap
      * - Chinese Simplified - zh_cn
      * - Turkish - tr
      */
-    static public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         switch($query) {
             case (is_array($query)):
                 if (!is_numeric($query['lat']) || !is_numeric($query['lon'])) {
                     return false;
                 }
-                $query = "lat={$query['lat']}&lon={$query['lon']}";
+                $queryUrl = "lat={$query['lat']}&lon={$query['lon']}";
                 break;
             case (is_numeric($query)):
-                $query = "id=$query";
+                $queryUrl = "id=$query";
                 break;
             case (is_string($query)):
-                $query = "q=" . urlencode($query);
+                $queryUrl = "q=" . urlencode($query);
                 break;
             default:
                 return false;
         }
-        $url = self::url . "$query&units=$units&lang=$lang&mode=$mode";
+
+        $url = $this->url . "$queryUrl&units=$units&lang=$lang&mode=$mode";
         if (!empty($appid)) {
             $url .= "&APPID=$appid";
         }
+
+        $result = "";
         
-        return file_get_contents($url);
+        if ($this->cacheClass !== false) {
+            $cache = new $this->cacheClass;
+            $cache->setSeconds($this->seconds);
+            if ($cache->isCached($query, $units, $lang, $mode)) {
+                return $cache->getCached();
+            }
+            $result = $this->fetch($url);
+            $cache->setCached($result, $query, $units, $lang, $mode);
+        } else {
+            $result = $this->fetch($url);
+        }
+
+        return $result;
     }
     
     /**
@@ -126,8 +177,15 @@ class OpenWeatherMap
      * - Chinese Simplified - zh_cn
      * - Turkish - tr
      */
-    static public function getWeather($query, $units = 'imperial', $lang = 'en', $appid = '')
+    public function getWeather($query, $units = 'imperial', $lang = 'en', $appid = '')
     {
-        return new Weather($query, $units, $lang, $appid);
+        return new Weather($query, $units, $lang, $appid, $this->cacheClass, $this->seconds);
     }
+    
+    private function fetch($url)
+    {
+        return file_get_contents($url);
+    }
+}
+
 }

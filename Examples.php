@@ -14,8 +14,10 @@
  * @see http://openweathermap.org/appid
  */
 
-// Include api class
-require_once('OpenWeatherMap.php');
+use cmfcmf\OpenWeatherMap;
+use cmfcmf\OpenWeatherMap\Exception as OWMException;
+
+require('cmfcmf/OpenWeatherMap.php');
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -23,8 +25,11 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
+// Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
+$owm = new OpenWeatherMap();
+
 // Example 1: Get current temperature in Berlin.
-$weather = OpenWeatherMap::getWeather('Berlin', $units, $lang);
+$weather = $owm->getWeather('Berlin', $units, $lang);
 echo "EXAMPLE 1<hr />\n\n\n";
 
 // $weather contains all available weather information for Berlin.
@@ -73,7 +78,7 @@ echo "Last update: " . $weather->lastUpdate->format('r');
 echo "<br />\n";
 
 // Example 2: Get current pressure and humidity in Hongkong.
-$weather = OpenWeatherMap::getWeather('Hongkong', $units, $lang);
+$weather = $owm->getWeather('Hongkong', $units, $lang);
 echo "<br /><br />\n\n\nEXAMPLE 2<hr />\n\n\n";
 
 /**
@@ -98,14 +103,14 @@ echo "Sunset: " . $weather->sun->set->format('r');
 echo "<br />\n";
 
 // Example 4: Get current temperature from coordinates (Greenland :-) ).
-$weather = OpenWeatherMap::getWeather(array('lat' => 77.73038, 'lon' => 41.89604), $units, $lang);
+$weather = $owm->getWeather(array('lat' => 77.73038, 'lon' => 41.89604), $units, $lang);
 echo "<br /><br />\n\n\nEXAMPLE 4<hr />\n\n\n";
 
 echo "Temperature: " . $weather->temperature;
 echo "<br />\n";
 
 // Example 5: Get current temperature from city id. The city is an internal id used by OpenWeatherMap. See example 6 too.
-$weather = OpenWeatherMap::getWeather(2172797, $units, $lang);
+$weather = $owm->getWeather(2172797, $units, $lang);
 echo "<br /><br />\n\n\nEXAMPLE 5<hr />\n\n\n";
 
 echo "City: " . $weather->city->name;
@@ -115,7 +120,7 @@ echo "Temperature: " . $weather->temperature;
 echo "<br />\n";
 
 // Example 6: Get information about a city.
-$weather = OpenWeatherMap::getWeather('Paris', $units, $lang);
+$weather = $owm->getWeather('Paris', $units, $lang);
 echo "<br /><br />\n\n\nEXAMPLE 6<hr />\n\n\n";
 
 echo "Id: " . $weather->city->id;
@@ -174,19 +179,19 @@ echo "<br />\n";
 // Example 11: Get raw xml data.
 echo "<br /><br />\n\n\nEXAMPLE 11<hr />\n\n\n";
 
-echo "<pre><code>" . htmlspecialchars(OpenWeatherMap::getRawData('Berlin', $units, $lang, null, 'xml')) . "</code></pre>";
+echo "<pre><code>" . htmlspecialchars($owm->getRawData('Berlin', $units, $lang, null, 'xml')) . "</code></pre>";
 echo "<br />\n";
 
 // Example 12: Get raw json data.
 echo "<br /><br />\n\n\nEXAMPLE 12<hr />\n\n\n";
 
-echo "<code>" . htmlspecialchars(OpenWeatherMap::getRawData('Berlin', $units, $lang, null, 'json')) . "</code>";
+echo "<code>" . htmlspecialchars($owm->getRawData('Berlin', $units, $lang, null, 'json')) . "</code>";
 echo "<br />\n";
 
 // Example 13: Get raw html data.
 echo "<br /><br />\n\n\nEXAMPLE 13<hr />\n\n\n";
 
-echo OpenWeatherMap::getRawData('Berlin', $units, $lang, null, 'html');
+echo $owm->getRawData('Berlin', $units, $lang, null, 'html');
 echo "<br />\n";
 
 // Example 14: Error handling.
@@ -194,32 +199,32 @@ echo "<br /><br />\n\n\nEXAMPLE 14<hr />\n\n\n";
 
 // Try wrong city name.
 try {
-    $weather = OpenWeatherMap::getWeather("ThisCityNameIsNotValidAndDoesNotExist", $units, $lang);
-} catch(OpenWeatherMap_Exception $e) {
+    $weather = $owm->getWeather("ThisCityNameIsNotValidAndDoesNotExist", $units, $lang);
+} catch(OWMException $e) {
     echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }
 
 // Try invalid $query.
 try {
-    $weather = OpenWeatherMap::getWeather(new DateTime('now'), $units, $lang);
-} catch(Exception $e) {
+    $weather = $owm->getWeather(new \DateTime('now'), $units, $lang);
+} catch(\Exception $e) {
     echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }
 
 // Full error handling would look like this:
 try {
-    $weather = OpenWeatherMap::getWeather(-1, $units, $lang);
-} catch(OpenWeatherMap_Exception $e) {
+    $weather = $owm->getWeather(-1, $units, $lang);
+} catch(OWMException $e) {
     echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
-} catch(Exception $e) {
+} catch(\Exception $e) {
     echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }
 
 // Example 15: Using an api key:
 
-# OpenWeatherMap::getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');
-# OpenWeatherMap::getRawData('Berlin', $units, $lang, 'Your-Api-Key-Here', 'json');
+# $owm->getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');
+# $owm->getRawData('Berlin', $units, $lang, 'Your-Api-Key-Here', 'json');
