@@ -8,6 +8,37 @@ For example code and how to use this api, please take a look into `Examples.php`
 
 **Notice:** This api is not made by OpenWeatherMap, nor their offical php api.
 
+Example call
+============
+```php
+<?php
+use cmfcmf\OpenWeatherMap;
+use cmfcmf\OpenWeatherMap\Exception as OWMException;
+
+require('cmfcmf/OpenWeatherMap.php');
+
+// Language of data (try your own language here!):
+$lang = 'de';
+
+// Units (can be 'metric' or 'imperial' [default]):
+$units = 'metric';
+
+// Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
+$owm = new OpenWeatherMap();
+
+try {
+    $weather = $owm->getWeather('Berlin', $units, $lang);
+} catch(OWMException $e) {
+    echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+} catch(\Exception $e) {
+    echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
+    echo "<br />\n";
+}
+
+echo $weather->temperature;
+```
+
 License
 =======
 MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE) distributed with this source code for further information regarding copyright and licensing.
