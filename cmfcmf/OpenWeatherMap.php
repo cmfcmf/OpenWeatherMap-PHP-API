@@ -14,9 +14,10 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf {
+namespace cmfcmf;
 
 use cmfcmf\OpenWeatherMap\Weather;
+use cmfcmf\OpenWeatherMap\Forecast;
 
 # Install PSR-0-compatible class autoloader
 spl_autoload_register(function($class){
@@ -29,9 +30,19 @@ spl_autoload_register(function($class){
 class OpenWeatherMap
 {
     /**
-     * @var $url The basic api url to fetch data from.
+     * @var string $weatherUrl The basic api url to fetch weather data from.
      */
-    private $url = "http://api.openweathermap.org/data/2.5/weather?";
+    private $weatherUrl = "http://api.openweathermap.org/data/2.5/weather?";
+    
+    /**
+     * @var string $url The basic api url to fetch data from.
+     */
+    private $weatherHourlyForecastUrl = "http://api.openweathermap.org/data/2.5/forecast?";
+
+    /**
+     * @var string $url The basic api url to fetch data from.
+     */
+    private $weatherDailyForecastUrl = "http://api.openweathermap.org/data/2.5/forecast/daily?";
 
     private $cacheClass = false;
     
@@ -60,84 +71,6 @@ class OpenWeatherMap
         
         $this->cacheClass = $cacheClass;
         $this->seconds = $seconds;
-    }
-    
-    /**
-     * Directly returns the xml/json/html string returned by OpenWeatherMap.
-     *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
-     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
-     *
-     * @return bool|string Returns false on failure and the fetched data in the format you specified on success.
-     *
-     * @warning If an error occured, OpenWeatherMap returns data in json format ALWAYS 
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
-     */
-    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
-    {
-        switch($query) {
-            case (is_array($query)):
-                if (!is_numeric($query['lat']) || !is_numeric($query['lon'])) {
-                    return false;
-                }
-                $queryUrl = "lat={$query['lat']}&lon={$query['lon']}";
-                break;
-            case (is_numeric($query)):
-                $queryUrl = "id=$query";
-                break;
-            case (is_string($query)):
-                $queryUrl = "q=" . urlencode($query);
-                break;
-            default:
-                return false;
-        }
-
-        $url = $this->url . "$queryUrl&units=$units&lang=$lang&mode=$mode";
-        if (!empty($appid)) {
-            $url .= "&APPID=$appid";
-        }
-
-        $result = "";
-        
-        if ($this->cacheClass !== false) {
-            $cache = new $this->cacheClass;
-            $cache->setSeconds($this->seconds);
-            if ($cache->isCached($query, $units, $lang, $mode)) {
-                return $cache->getCached();
-            }
-            $result = $this->fetch($url);
-            $cache->setCached($result, $query, $units, $lang, $mode);
-        } else {
-            $result = $this->fetch($url);
-        }
-
-        return $result;
     }
     
     /**
@@ -182,10 +115,137 @@ class OpenWeatherMap
         return new Weather($query, $units, $lang, $appid, $this->cacheClass, $this->seconds);
     }
     
+    public function getWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days)
+    {
+        return new Forecast($query, $units, $lang, $appid, $days, $this->cacheClass, $this->seconds);
+    }
+    
+    /**
+     * @deprecated Use getRawWeatherData() instead.
+     */
+    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode );
+    }
+    
+    /**
+     * Directly returns the xml/json/html string returned by OpenWeatherMap.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     *
+     * @return bool|string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * @warning If an error occured, OpenWeatherMap returns data in json format ALWAYS 
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the city name: $query must be a string containing the city name.
+     * - Use the city id: $query must be an integer containing the city id.
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * Available languages are (as of 17. July 2013):
+     * - English - en
+     * - Russian - ru
+     * - Italian - it
+     * - Spanish - sp
+     * - Ukrainian - ua
+     * - German - de
+     * - Portuguese - pt
+     * - Romanian - ro
+     * - Polish - pl
+     * - Finnish - fi
+     * - Dutch - nl
+     * - French - fr
+     * - Bulgarian - bg
+     * - Swedish - se
+     * - Chinese Traditional - zh_tw
+     * - Chinese Simplified - zh_cn
+     * - Turkish - tr
+     */
+    public function getRawWeatherData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherUrl);
+        
+        if ($url === false) {
+            return false;
+        }
+
+        return $this->cacheOrFetchResult('weather', $query, $units, $lang, $mode, $url);
+    }
+    
+    public function getRawHourlyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherHourlyForecastUrl);
+        
+        if ($url === false) {
+            return false;
+        }
+        
+        return $this->cacheOrFetchResult('hourlyForecast', $query, $units, $lang, $mode, $url);
+    }
+    
+    public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl);
+        
+        if ($url === false) {
+            return false;
+        }
+        
+        return $this->cacheOrFetchResult('dailyForecast', $query, $units, $lang, $mode, $url);
+    }
+    
+    private function cacheOrFetchResult($type, $query, $units, $lang, $mode, $url)
+    {
+        $result = "";
+        
+        if ($this->cacheClass !== false) {
+            $cache = new $this->cacheClass;
+            $cache->setSeconds($this->seconds);
+            if ($cache->isCached($type, $query, $units, $lang, $mode)) {
+                return $cache->getCached();
+            }
+            $result = $this->fetch($url);
+            $cache->setCached($type, $result, $query, $units, $lang, $mode);
+        } else {
+            $result = $this->fetch($url);
+        }
+
+        return $result;
+    }
+    
     private function fetch($url)
     {
         return file_get_contents($url);
     }
-}
+    
+    private function buildUrl($query, $units, $lang, $appid, $mode, $url)
+    {
+        switch($query) {
+            case (is_array($query)):
+                if (!is_numeric($query['lat']) || !is_numeric($query['lon'])) {
+                    return false;
+                }
+                $queryUrl = "lat={$query['lat']}&lon={$query['lon']}";
+                break;
+            case (is_numeric($query)):
+                $queryUrl = "id=$query";
+                break;
+            case (is_string($query)):
+                $queryUrl = "q=" . urlencode($query);
+                break;
+            default:
+                return false;
+        }
 
+        $url = $url . "$queryUrl&units=$units&lang=$lang&mode=$mode";
+        if (!empty($appid)) {
+            $url .= "&APPID=$appid";
+        }
+        
+        return $url;
+    }
 }

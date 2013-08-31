@@ -19,44 +19,28 @@ namespace cmfcmf\OpenWeatherMap;
 use cmfcmf\OpenWeatherMap,
     cmfcmf\OpenWeatherMap\Exception as OWMException,
     cmfcmf\OpenWeatherMap\Util\City,
-    cmfcmf\OpenWeatherMap\Util\Sun,
-    cmfcmf\OpenWeatherMap\Util\Temperature,
-    cmfcmf\OpenWeatherMap\Util\Unit,
-    cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj,
-    cmfcmf\OpenWeatherMap\Util\Wind;
+    cmfcmf\OpenWeatherMap\Util\WeatherForecast;
 
 /**
  * Weather class returned by OpenWeatherMap::getWeather().
  */
-class Weather
+class Forecast implements \Iterator
 {
-    public $city;
-    
-    public $temperature;
-    
-    public $humidity;
-    
-    public $pressure;
-    
-    public $wind;
-    
-    public $clouds;
-    
-    public $precipitation;
-    
-    public $sun;
-    
-    public $weather;
-    
-    public $lastUpdate;
-    
     /**
      * @var $copyright
      * @notice This is no offical text. This hint was made regarding to http://www.http://openweathermap.org/copyright .
      */
     public $copyright = "Weather data from <a href=\"http://www.openweathermap.org\">OpenWeatherMap.org</a>";
     
-    public function __construct($query, $units = 'imperial', $lang = 'en', $appid = '', $cacheClass = false, $seconds = 600)
+    public $city;
+    
+    public $lastUpdate;
+
+    private $forecasts = array();
+    
+    private $position = 0;
+    
+    public function __construct($query, $units = 'imperial', $lang = 'en', $appid = '', $days, $cacheClass = false, $seconds = 600)
     {
         // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
         libxml_use_internal_errors(true);
@@ -64,7 +48,16 @@ class Weather
         
         $owm = new OpenWeatherMap($cacheClass, $seconds);
         
-        $answer = $owm->getRawData($query, $units, $lang, $appid, 'xml');
+        if ($days <= 5) {
+            $type = 'hourlyForecast';
+            $answer = $owm->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
+        } else if ($days <= 14) {
+            $type = 'dailyForecast';
+            $answer = $owm->getRawDailyForecastData($query, $units, $lang, $appid, 'xml');
+        } else {
+            throw new \Exception('Error: forecasts are only available for the next 14 days.');
+        }
+
         if ($answer === false) {
             // $query has the wrong format, throw error.
             throw new \Exception('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
@@ -83,25 +76,33 @@ class Weather
             }
         }
         
-        $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
-        $this->temperature = new Temperature(new Unit($xml->temperature['value'], $xml->temperature['unit']), new Unit($xml->temperature['min'], $xml->temperature['unit']), new Unit($xml->temperature['max'], $xml->temperature['unit']));
-        $this->humidity = new Unit($xml->humidity['value'], $xml->humidity['unit']);
-        $this->pressure = new Unit($xml->pressure['value'], $xml->pressure['unit']);
+        $this->city = new City(-1, $xml->location->name, $xml->location->location['longitude'], $xml->location->location['latitude'], $xml->location->country);
+        $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
         
-        
-        // This is kind of a hack, because the units are missing in the xml document.
-        if ($units == 'metric') {
-            $windSpeedUnit = 'm/s';
-        } else {
-            $windSpeedUnit = 'mph';
+        foreach($xml->forecast->time as $time) {
+            $forecast = new WeatherForecast($time, $units, $lang);
+            $forecast->city = $this->city;
+            $this->forecasts[] = $forecast;
         }
-        $this->wind = new Wind(new Unit($xml->wind->speed['value'], $windSpeedUnit, $xml->wind->speed['name']), new Unit($xml->wind->direction['value'], $xml->wind->direction['code'], $xml->wind->direction['name']));
-        
-        
-        $this->clouds = new Unit($xml->clouds['value'], null, $xml->clouds['name']);
-        $this->precipitation = new Unit($xml->precipitation['value'], $xml->precipitation['unit'], $xml->precipitation['mode']);
-        $this->sun = new Sun(new \DateTime($xml->city->sun['rise']), new \DateTime($xml->city->sun['set']));
-        $this->weather = new WeatherObj($xml->weather['number'], $xml->weather['value'], $xml->weather['icon']);
-        $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
+    }
+    
+    public function rewind() {
+        $this->position = 0;
+    }
+
+    public function current() {
+        return $this->forecasts[$this->position];
+    }
+
+    public function key() {
+        return $this->position;
+    }
+
+    public function next() {
+        ++$this->position;
+    }
+
+    public function valid() {
+        return isset($this->forecasts[$this->position]);
     }
 }

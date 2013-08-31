@@ -29,6 +29,7 @@ abstract class AbstractCache
     /**
      * Checkes whether a cached weather data is available.
      *
+     * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
      * @param array|int|string $query
      * @param string $units
      * @param string $lang
@@ -40,11 +41,12 @@ abstract class AbstractCache
      * @note This is not the time when the weather was cached, but the {@link Weather::$lastUpdate} value of the cached weather.
      * @note You need to check here if a cached result is outdated. Return false in that case.
      */
-    abstract function isCached($query, $units, $lang, $mode);
+    abstract function isCached($type, $query, $units, $lang, $mode);
 
     /**
      * Returns cached weather data.
      *
+     * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
      * @param array|int|string $query
      * @param string $units
      * @param string $lang
@@ -52,11 +54,12 @@ abstract class AbstractCache
      *
      * @return string|bool The cached data if it exists, false otherwise.
      */
-    abstract function getCached($query, $units, $lang, $mode);
+    abstract function getCached($type, $query, $units, $lang, $mode);
 
     /**
      * Saves cached weather data.
      *
+     * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
      * @param string $content The weather data to cache.
      * @param array|int|string $query
      * @param string $units
@@ -65,7 +68,7 @@ abstract class AbstractCache
      *
      * @return bool True on success, false on failure.
      */
-    abstract function setCached($content, $query, $units, $lang, $mode);
+    abstract function setCached($type, $content, $query, $units, $lang, $mode);
     
     public function setSeconds($seconds)
     {

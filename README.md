@@ -4,7 +4,10 @@ An php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeathe
 
 If you are looking for an implementation for the [CMS Zikula](http://www.zikula.org), you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather).
 
-For example code and how to use this api, please take a look into `Examples.php` or run it in your browser.
+For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
+- `Examples_Current.php` Shows how to receive the current weather.
+- `Examples_Forecast.php` Shows how to receive weather forecasts.
+- `Examples_Cache.php` Shows how to implement a cache.
 
 **Notice:** This api is not made by OpenWeatherMap, nor their offical php api.
 
@@ -15,6 +18,7 @@ Example call
 use cmfcmf\OpenWeatherMap;
 use cmfcmf\OpenWeatherMap\Exception as OWMException;
 
+// Remove this line if you are using composer.
 require('cmfcmf/OpenWeatherMap.php');
 
 // Language of data (try your own language here!):
@@ -59,5 +63,5 @@ However if you like this and want to **support** _me_, you may want to **flattr*
 
 Roadmap
 =======
-- [ ] Add forecast functionality
+- [x] Add forecast functionality
 - [x] Tell the guys of [OpenWeatherMap.org](http://www.OpenWeatherMap.org) that you made such an api.
