@@ -25,7 +25,9 @@ spl_autoload_register(function($class){
 });
 
 /**
- * Main static class for the OpenWeatherMap-PHP-API.
+ * Main class for the OpenWeatherMap-PHP-API. Only use this class.
+ *
+ * @api
  */
 class OpenWeatherMap
 {
@@ -51,16 +53,17 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param bool|string $cache If set to false, caching is disabled. If this is a valid class
-     * extending cmfcmf\OpenWeatherMap\Util\Cache, caching will be enabled. Default false.
+     * @param bool|string $cacheClass If set to false, caching is disabled. If this is a valid class extending cmfcmf\OpenWeatherMap\Util\Cache, caching will be enabled. Default false.
      * @param int $seconds How long weather data shall be cached. Default 10 minutes.
      *
-     * @throws Exception If $cache is neither false nor a valid callable extending cmfcmf\OpenWeatherMap\Util\Cache.
+     * @throws \Exception If $cache is neither false nor a valid callable extending cmfcmf\OpenWeatherMap\Util\Cache.
+     *
+     * @api
      */
     public function __construct($cacheClass = false, $seconds = 600)
     {
         if (!class_exists($cacheClass) && $cacheClass !== false) {
-            #throw new \Exception("Class $cacheClass does not exist.");
+            throw new \Exception("Class $cacheClass does not exist.");
         }
         if (!is_numeric($seconds)) {
             throw new \Exception("\$seconds must be numeric.");
@@ -81,10 +84,7 @@ class OpenWeatherMap
      * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
-     * @throws Exception If $query has a wrong format. For valid formats see below.
-     * @throws OpenWeatherMap_Exception If OpenWeatherMap returns an error.
-     *
-     * @return object Returns a new Weather object.
+     * @return object Returns a new {@link Weather} object.
      *
      * There are three ways to specify the place to get weather information for:
      * - Use the city name: $query must be a string containing the city name.
@@ -109,19 +109,58 @@ class OpenWeatherMap
      * - Chinese Traditional - zh_tw
      * - Chinese Simplified - zh_cn
      * - Turkish - tr
+     *
+     * @api
      */
     public function getWeather($query, $units = 'imperial', $lang = 'en', $appid = '')
     {
         return new Weather($query, $units, $lang, $appid, $this->cacheClass, $this->seconds);
     }
-    
-    public function getWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days)
+
+    /**
+     * Returns the current weather at the place you specified as an object.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param int              $days For how much days you want to get a forecast. Default 1, maximum: 14.
+     *
+     * @return object Returns a new {@link Forecast} object.
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the city name: $query must be a string containing the city name.
+     * - Use the city id: $query must be an integer containing the city id.
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * Available languages are (as of 17. July 2013):
+     * - English - en
+     * - Russian - ru
+     * - Italian - it
+     * - Spanish - sp
+     * - Ukrainian - ua
+     * - German - de
+     * - Portuguese - pt
+     * - Romanian - ro
+     * - Polish - pl
+     * - Finnish - fi
+     * - Dutch - nl
+     * - French - fr
+     * - Bulgarian - bg
+     * - Swedish - se
+     * - Chinese Traditional - zh_tw
+     * - Chinese Simplified - zh_cn
+     * - Turkish - tr
+     *
+     * @api
+     */
+    public function getWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
     {
         return new Forecast($query, $units, $lang, $appid, $days, $this->cacheClass, $this->seconds);
     }
     
     /**
-     * @deprecated Use getRawWeatherData() instead.
+     * @deprecated Use {@link self::getRawWeatherData()} instead.
      */
     public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
@@ -129,7 +168,7 @@ class OpenWeatherMap
     }
     
     /**
-     * Directly returns the xml/json/html string returned by OpenWeatherMap.
+     * Directly returns the xml/json/html string returned by OpenWeatherMap for the current weather.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
@@ -164,6 +203,8 @@ class OpenWeatherMap
      * - Chinese Traditional - zh_tw
      * - Chinese Simplified - zh_cn
      * - Turkish - tr
+     *
+     * @api
      */
     public function getRawWeatherData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
@@ -175,7 +216,46 @@ class OpenWeatherMap
 
         return $this->cacheOrFetchResult('weather', $query, $units, $lang, $mode, $url);
     }
-    
+
+    /**
+     * Directly returns the xml/json/html string returned by OpenWeatherMap for the hourly forecast.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     *
+     * @return bool|string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * @warning If an error occured, OpenWeatherMap returns data in json format ALWAYS
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the city name: $query must be a string containing the city name.
+     * - Use the city id: $query must be an integer containing the city id.
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * Available languages are (as of 17. July 2013):
+     * - English - en
+     * - Russian - ru
+     * - Italian - it
+     * - Spanish - sp
+     * - Ukrainian - ua
+     * - German - de
+     * - Portuguese - pt
+     * - Romanian - ro
+     * - Polish - pl
+     * - Finnish - fi
+     * - Dutch - nl
+     * - French - fr
+     * - Bulgarian - bg
+     * - Swedish - se
+     * - Chinese Traditional - zh_tw
+     * - Chinese Simplified - zh_cn
+     * - Turkish - tr
+     *
+     * @api
+     */
     public function getRawHourlyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherHourlyForecastUrl);
@@ -186,7 +266,46 @@ class OpenWeatherMap
         
         return $this->cacheOrFetchResult('hourlyForecast', $query, $units, $lang, $mode, $url);
     }
-    
+
+    /**
+     * Directly returns the xml/json/html string returned by OpenWeatherMap for the daily forecast.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     *
+     * @return bool|string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * @warning If an error occured, OpenWeatherMap returns data in json format ALWAYS
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the city name: $query must be a string containing the city name.
+     * - Use the city id: $query must be an integer containing the city id.
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * Available languages are (as of 17. July 2013):
+     * - English - en
+     * - Russian - ru
+     * - Italian - it
+     * - Spanish - sp
+     * - Ukrainian - ua
+     * - German - de
+     * - Portuguese - pt
+     * - Romanian - ro
+     * - Polish - pl
+     * - Finnish - fi
+     * - Dutch - nl
+     * - French - fr
+     * - Bulgarian - bg
+     * - Swedish - se
+     * - Chinese Traditional - zh_tw
+     * - Chinese Simplified - zh_cn
+     * - Turkish - tr
+     *
+     * @api
+     */
     public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl);
@@ -197,7 +316,21 @@ class OpenWeatherMap
         
         return $this->cacheOrFetchResult('dailyForecast', $query, $units, $lang, $mode, $url);
     }
-    
+
+    /**
+     * Fetches the result or delivers a cached version of the result.
+     *
+     * @param $type
+     * @param $query
+     * @param $units
+     * @param $lang
+     * @param $mode
+     * @param $url
+     *
+     * @return string
+     *
+     * @internal
+     */
     private function cacheOrFetchResult($type, $query, $units, $lang, $mode, $url)
     {
         $result = "";
@@ -216,12 +349,37 @@ class OpenWeatherMap
 
         return $result;
     }
-    
+
+    /**
+     * Fetch data from an url.
+     *
+     * @param string $url The url to fetch.
+     *
+     * @return string The fetched content.
+     *
+     * @todo Replace with cURL.
+     *
+     * @internal
+     */
     private function fetch($url)
     {
         return file_get_contents($url);
     }
-    
+
+    /**
+     * Build the url to fetch weather data from.
+     *
+     * @param $query
+     * @param $units
+     * @param $lang
+     * @param $appid
+     * @param $mode
+     * @param string $url The url to prepend.
+     *
+     * @return bool|string The fetched url, false on failure.
+     *
+     * @internal
+     */
     private function buildUrl($query, $units, $lang, $appid, $mode, $url)
     {
         switch($query) {

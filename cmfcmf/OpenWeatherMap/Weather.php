@@ -26,36 +26,87 @@ use cmfcmf\OpenWeatherMap,
     cmfcmf\OpenWeatherMap\Util\Wind;
 
 /**
- * Weather class returned by OpenWeatherMap::getWeather().
+ * Weather class returned by {@link OpenWeatherMap::getWeather()}.
  */
 class Weather
 {
-    public $city;
-    
-    public $temperature;
-    
-    public $humidity;
-    
-    public $pressure;
-    
-    public $wind;
-    
-    public $clouds;
-    
-    public $precipitation;
-    
-    public $sun;
-    
-    public $weather;
-    
-    public $lastUpdate;
-    
     /**
+     * The city object.
+     *
+     * @var Util\City
+     */
+    public $city;
+
+    /**
+     * The temperature object.
+     *
+     * @var Util\Temperature
+     */
+    public $temperature;
+
+    /**
+     * @var Util\Unit
+     */
+    public $humidity;
+
+    /**
+     * @var Util\Unit
+     */
+    public $pressure;
+
+    /**
+     * @var Util\Wind
+     */
+    public $wind;
+
+    /**
+     * @var Util\Unit
+     */
+    public $clouds;
+
+    /**
+     * @var Util\Unit
+     */
+    public $precipitation;
+
+    /**
+     * @var Util\Sun
+     */
+    public $sun;
+
+    /**
+     * @var Util\Weather
+     */
+    public $weather;
+
+    /**
+     * @var \DateTime
+     */
+    public $lastUpdate;
+
+    /**
+     * The copyright notice. This is no offical text, this hint was made regarding to http://www.http://openweathermap.org/copyright.
+     *
      * @var $copyright
-     * @notice This is no offical text. This hint was made regarding to http://www.http://openweathermap.org/copyright .
+     *
+     * @see http://www.http://openweathermap.org/copyright http://www.http://openweathermap.org/copyright
      */
     public $copyright = "Weather data from <a href=\"http://www.openweathermap.org\">OpenWeatherMap.org</a>";
-    
+
+    /**
+     * Create a new weather object.
+     * @param        $query
+     * @param string $units
+     * @param string $lang
+     * @param string $appid
+     * @param bool   $cacheClass
+     * @param int    $seconds
+     *
+     * @throws OWMException If OpenWeatherMap returns an error.
+     * @throws \Exception If the parameters are invalid.
+     *
+     * @internal
+     */
     public function __construct($query, $units = 'imperial', $lang = 'en', $appid = '', $cacheClass = false, $seconds = 600)
     {
         // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
@@ -64,7 +115,7 @@ class Weather
         
         $owm = new OpenWeatherMap($cacheClass, $seconds);
         
-        $answer = $owm->getRawData($query, $units, $lang, $appid, 'xml');
+        $answer = $owm->getRawWeatherData($query, $units, $lang, $appid, 'xml');
         if ($answer === false) {
             // $query has the wrong format, throw error.
             throw new \Exception('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');

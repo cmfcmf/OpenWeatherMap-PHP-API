@@ -16,14 +16,34 @@
 
 namespace cmfcmf\OpenWeatherMap\Util;
 
+/**
+ * The time class representing a time object.
+ */
 class Time
 {
+    /**
+     * @var \DateTime The start time for the forecast.
+     */
     public $from;
-    
+
+    /**
+     * @var \DateTime The end time for the forecast.
+     */
     public $to;
-    
+
+    /**
+     * @var \DateTime The day of the forecast.
+     */
     public $day;
-    
+
+    /**
+     * Create a new time object.
+     *
+     * @param string $from The start time for the forecast.
+     * @param string     $to   The end time for the forecast.
+     *
+     * @internal
+     */
     public function __construct($from, $to = null)
     {
         if (isset($to)) {

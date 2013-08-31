@@ -17,7 +17,7 @@
 namespace cmfcmf\OpenWeatherMap;
 
 /**
- * Dummy class extending Exception to allow checking if it is an OpenWeatherMap error
+ * Dummy class extending \Exception to allow checking if it is an OpenWeatherMap error
  * or an argument error.
  */
 class Exception extends \Exception

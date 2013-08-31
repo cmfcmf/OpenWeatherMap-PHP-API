@@ -17,23 +17,23 @@
 namespace cmfcmf\OpenWeatherMap;
 
 /**
- * Abstract cache class to be overwritten.
+ * Abstract cache class to be overwritten by custom cache implementations.
  */
 abstract class AbstractCache
 {
     /**
-     * Cache time in seconds.
+     * @var int $seconds Cache time in seconds.
      */
     protected $seconds;
 
     /**
-     * Checkes whether a cached weather data is available.
+     * Checks whether a cached weather data is available.
      *
      * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
-     * @param array|int|string $query
-     * @param string $units
-     * @param string $lang
-     * @param string $mode
+     * @param array|int|string $query The query parameters used.
+     * @param string $units The units requested.
+     * @param string $lang  The language requested.
+     * @param string $mode The mode requested ('xml' or'json').
      *
      * @return \DateTime|bool A \DateTime object containing the time when the weather information was last updated, false if no
      * cached information is available.
@@ -47,10 +47,10 @@ abstract class AbstractCache
      * Returns cached weather data.
      *
      * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
-     * @param array|int|string $query
-     * @param string $units
-     * @param string $lang
-     * @param string $mode
+     * @param array|int|string $query The query parameters used.
+     * @param string $units The units requested.
+     * @param string $lang  The language requested.
+     * @param string $mode The mode requested ('xml' or'json').
      *
      * @return string|bool The cached data if it exists, false otherwise.
      */
@@ -61,15 +61,19 @@ abstract class AbstractCache
      *
      * @param string $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
      * @param string $content The weather data to cache.
-     * @param array|int|string $query
-     * @param string $units
-     * @param string $lang
-     * @param string $mode
+     * @param array|int|string $query The query parameters used.
+     * @param string $units The units requested.
+     * @param string $lang  The language requested.
+     * @param string $mode The mode requested ('xml' or'json').
      *
      * @return bool True on success, false on failure.
      */
     abstract function setCached($type, $content, $query, $units, $lang, $mode);
-    
+
+    /**
+     * Set after how much seconds the cache shall expire.
+     * @param int $seconds
+     */
     public function setSeconds($seconds)
     {
         $this->seconds = $seconds;

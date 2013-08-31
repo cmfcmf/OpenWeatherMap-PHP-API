@@ -16,18 +16,47 @@
 
 namespace cmfcmf\OpenWeatherMap\Util;
 
+/**
+ * The city class representing a city object.
+ */
 class City
 {
+    /**
+     * @var int The city id.
+     */
     public $id;
-    
+
+    /**
+     * @var string The name of the city.
+     */
     public $name;
-    
+
+    /**
+     * @var float The longitude of the city.
+     */
     public $lon;
-    
+
+    /**
+     * @var float The latitude of the city.
+     */
     public $lat;
-    
+
+    /**
+     * @var string The abbreviation of the country the city is located in.
+     */
     public $country;
-    
+
+    /**
+     * Create a new city object.
+     *
+     * @param int $id The city id.
+     * @param string $name The name of the city.
+     * @param float $lon The longitude of the city.
+     * @param float $lat The latitude of the city.
+     * @param string $country The abbreviation of the country the city is located in.
+     *
+     * @internal
+     */
     public function __construct($id, $name, $lon, $lat, $country)
     {
         $this->id = (int)$id;

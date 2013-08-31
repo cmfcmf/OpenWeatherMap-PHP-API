@@ -14,10 +14,9 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace cmfcmf\OpenWeatherMap;
 
 use cmfcmf\OpenWeatherMap,
-    cmfcmf\OpenWeatherMap\Exception as OWMException,
     cmfcmf\OpenWeatherMap\Util\City,
     cmfcmf\OpenWeatherMap\Util\Sun,
     cmfcmf\OpenWeatherMap\Util\Temperature,
@@ -26,10 +25,23 @@ use cmfcmf\OpenWeatherMap,
     cmfcmf\OpenWeatherMap\Util\Wind,
     cmfcmf\OpenWeatherMap\Util\Time;
 
-class WeatherForecast extends \cmfcmf\OpenWeatherMap\Weather
+class WeatherForecast extends OpenWeatherMap\Weather
 {
+    /**
+     * @var Time The time of the forecast.
+     *
+     * @see cmfcmf\OpenWeatherMap\Util\Time The time object.
+     */
     public $time;
 
+    /**
+     * Create a new weather object for forecasts.
+     * @param \SimpleXMLElement $xml   The forecasts xml.
+     * @param string $units Ths units used.
+     * @param string $lang The language used.
+     *
+     * @internal
+     */
     public function __construct($xml, $units = 'imperial', $lang = 'en')
     {
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);

@@ -16,12 +16,29 @@
 
 namespace cmfcmf\OpenWeatherMap\Util;
 
+/**
+ * The sun class representing a sun object.
+ */
 class Sun
 {
+    /**
+     * @var \DateTime The time of the sun rise.
+     */
     public $rise;
-    
+
+    /**
+     * @var \DateTime The time of the sun set.
+     */
     public $set;
-    
+
+    /**
+     * Create a new sun object.
+     *
+     * @param \DateTime $rise The time of the sun rise
+     * @param \DateTime $set The time of the sun set.
+     *
+     * @internal
+     */
     public function __construct(\DateTime $rise, \DateTime $set)
     {
         $this->rise = $rise;
