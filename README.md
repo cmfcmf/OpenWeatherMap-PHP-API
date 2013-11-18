@@ -65,3 +65,7 @@ Roadmap
 =======
 - [x] Add forecast functionality
 - [x] Tell the guys of [OpenWeatherMap.org](http://www.OpenWeatherMap.org) that you made such an api.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cmfcmf/openweathermap-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
