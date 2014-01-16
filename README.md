@@ -2,6 +2,9 @@ OpenWeatherMap-PHP-Api
 ======================
 A php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeatherMap.org). This api tries to normalise and abstract the data and remove inconsistencies.
 
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cmfcmf/openweathermap-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+-----------
+
 If you are looking for an implementation for the [CMS Zikula](http://www.zikula.org), you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather).
 
 For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
@@ -59,13 +62,4 @@ I'm very happy if you open **pull requests** or **issues** to help making this A
 
 However if you like this and want to **support** _me_, you may want to **flattr** a few coins?
 
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software) 
-
-Roadmap
-=======
-- [x] Add forecast functionality
-- [x] Tell the guys of [OpenWeatherMap.org](http://www.OpenWeatherMap.org) that you made such an api.
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cmfcmf/openweathermap-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software)
