@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
  * The sun class representing a sun object.

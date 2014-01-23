@@ -11,19 +11,43 @@ If you are looking for an implementation for the [CMS Zikula](http://www.zikula.
 For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
 - `Examples_Current.php` Shows how to receive the current weather.
 - `Examples_Forecast.php` Shows how to receive weather forecasts.
+- [*NEW*] `Examples_History.php` Shows how to receive weather history.
 - `Examples_Cache.php` Shows how to implement a cache.
 
-**Notice:** This api is not made by OpenWeatherMap, nor their offical php api.
+**Notice:** This api is not made by OpenWeatherMap, nor their official php api.
+
+Installation
+============
+This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
+The recommended way to install this is through [composer](http://getcomposer.org).
+
+Edit your `composer.json` and add:
+
+```json
+{
+    "require": {
+        "cmfcmf/openweathermap-php-api": "~2.0"
+    }
+}
+```
+
+And install dependencies:
+
+```bash
+$ curl -sS https://getcomposer.org/installer | php
+$ php composer.phar install
+```
+
 
 Example call
 ============
 ```php
 <?php
-use cmfcmf\OpenWeatherMap;
-use cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
-// Remove this line if you are using composer.
-require('cmfcmf/OpenWeatherMap.php');
+// Must point to composer's autoload file.
+require('vendor/autoload.php');
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -49,7 +73,7 @@ echo $weather->temperature;
 
 License
 =======
-MIT — Please see the [LICENSE file](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE) distributed with this source code for further information regarding copyright and licensing.
+MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE) distributed with this source code for further information regarding copyright and licensing.
 
 **Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.**
 - [OpenWeatherMap.org](http://www.OpenWeatherMap.org)

@@ -14,10 +14,15 @@
  * @see http://openweathermap.org/appid
  */
 
-use cmfcmf\OpenWeatherMap;
-use cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap;
 
-require('cmfcmf/OpenWeatherMap.php');
+if (file_exists('../vendor/autoload.php')) {
+    // Library is not part of a project. "composer install" was executed directly on this library's composer file.
+    require('../vendor/autoload.php');
+} else {
+    // Library is part of a project.
+    require('../../../autoload.php');
+}
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -39,7 +44,7 @@ echo "<br />\n";
 echo "<br />\n";
 
 foreach($forecast as $weather) {
-    // Each $weather contains a cmfcmf\ForecastWeather object which is almost the same as the cmfcmf\Weather object.
+    // Each $weather contains a Cmfcmf\ForecastWeather object which is almost the same as the Cmfcmf\Weather object.
     // Take a look into 'Examples_Current.php' to see the available options.
     echo "Weather forecast at " . $weather->time->day->format('d.m.Y') . " from " . $weather->time->from->format('H:i') . " to " .  $weather->time->to->format('H:i');
     echo "<br />\n";

@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
  * The temperature class representing a temperature object.
@@ -35,22 +35,6 @@ class Temperature
      * @var Unit The maximal temperature.
      */
     public $max;
-
-    /**
-     * Create a new temperature object.
-     *
-     * @param Unit $now The current temperature.
-     * @param Unit $min The minimal temperature.
-     * @param Unit $max The maximal temperature.
-     *
-     * @internal
-     */
-    public function __construct(Unit $now, Unit $min, Unit $max)
-    {
-        $this->now = $now;
-        $this->min = $min;
-        $this->max = $max;
-    }
 
     /**
      * Returns the current temperature as formatted string.
@@ -95,5 +79,21 @@ class Temperature
     public function getFormatted()
     {
         return $this->now->getFormatted();
+    }
+
+    /**
+     * Create a new temperature object.
+     *
+     * @param Unit $now The current temperature.
+     * @param Unit $min The minimal temperature.
+     * @param Unit $max The maximal temperature.
+     *
+     * @internal
+     */
+    public function __construct(Unit $now, Unit $min, Unit $max)
+    {
+        $this->now = $now;
+        $this->min = $min;
+        $this->max = $max;
     }
 }

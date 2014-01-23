@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
  * The city class representing a city object.
@@ -47,22 +47,29 @@ class City
     public $country;
 
     /**
+     * @var int The city's population
+     */
+    public $population;
+
+    /**
      * Create a new city object.
      *
-     * @param int $id The city id.
+     * @param int    $id The city id.
      * @param string $name The name of the city.
-     * @param float $lon The longitude of the city.
-     * @param float $lat The latitude of the city.
-     * @param string $country The abbreviation of the country the city is located in.
+     * @param float  $lon The longitude of the city.
+     * @param float  $lat The latitude of the city.
+     * @param string $country The abbreviation of the country the city is located in
+     * @param int    $population The city's population.
      *
      * @internal
      */
-    public function __construct($id, $name, $lon, $lat, $country)
+    public function __construct($id, $name = null, $lon = null, $lat = null, $country = null, $population = null)
     {
         $this->id = (int)$id;
-        $this->name = (string)$name;
-        $this->lon = (float)$lon;
-        $this->lat = (float)$lat;
-        $this->country = (string)$country;
+        $this->name = isset($name) ? (string)$name : null;
+        $this->lon = isset($lon) ? (float)$lon : null;
+        $this->lat = isset($lat) ? (float)$lat : null;
+        $this->country = isset($country) ? (string)$country : null;
+        $this->population = isset($population) ? (int)$population : null;
     }
 }

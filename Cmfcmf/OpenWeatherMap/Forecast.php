@@ -14,23 +14,24 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap;
 
-use cmfcmf\OpenWeatherMap,
-    cmfcmf\OpenWeatherMap\Util\City,
-    cmfcmf\OpenWeatherMap\Util\Sun,
-    cmfcmf\OpenWeatherMap\Util\Temperature,
-    cmfcmf\OpenWeatherMap\Util\Unit,
-    cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj,
-    cmfcmf\OpenWeatherMap\Util\Wind,
-    cmfcmf\OpenWeatherMap\Util\Time;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Util\City;
+use Cmfcmf\OpenWeatherMap\Util\Sun;
+use Cmfcmf\OpenWeatherMap\Util\Temperature;
+use Cmfcmf\OpenWeatherMap\Util\Unit;
+use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
+use Cmfcmf\OpenWeatherMap\Util\Wind;
+use Cmfcmf\OpenWeatherMap\Util\Time;
 
-class WeatherForecast extends OpenWeatherMap\Weather
+/**
+ * Class Forecast.
+ */
+class Forecast extends CurrentWeather
 {
     /**
      * @var Time The time of the forecast.
-     *
-     * @see cmfcmf\OpenWeatherMap\Util\Time The time object.
      */
     public $time;
 
@@ -38,16 +39,15 @@ class WeatherForecast extends OpenWeatherMap\Weather
      * Create a new weather object for forecasts.
      * @param \SimpleXMLElement $xml   The forecasts xml.
      * @param string $units Ths units used.
-     * @param string $lang The language used.
      *
      * @internal
      */
-    public function __construct($xml, $units = 'imperial', $lang = 'en')
+    public function __construct($xml, $units)
     {
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
         
         if ($units == 'metric') {
-            $temperatureUnit = '°C';
+            $temperatureUnit = "\xB0C";
         } else {
             $temperatureUnit = 'F';
         }
