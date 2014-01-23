@@ -6,8 +6,6 @@ A php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeather
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 -----------
 
-If you are looking for an implementation for the [CMS Zikula](http://www.zikula.org), you may want to take a look at [cmfcmf/Weather](https://github.com/cmfcmf/Weather).
-
 For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
 - `Examples_Current.php` Shows how to receive the current weather.
 - `Examples_Forecast.php` Shows how to receive weather forecasts.
@@ -15,6 +13,15 @@ For example code and how to use this api, please take a look into `Examples_*.ph
 - `Examples_Cache.php` Shows how to implement a cache.
 
 **Notice:** This api is not made by OpenWeatherMap, nor their official php api.
+
+Contribute || Support me
+========================
+I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**. 
+
+However if you like this and want to **support** _me_, a 17-year old student from Berlin, you may want to **flattr** or **gittip** a few coins?
+
+- [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software)
+- [Support me on gittip](https://www.gittip.com/cmfcmf)
 
 Installation
 ============
@@ -80,11 +87,3 @@ MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-P
 - [OpenWeatherMap.org/about](http://www.OpenWeatherMap.org/about)
 - [OpenWeatherMap.org/copyright](http://www.OpenWeatherMap.org/copyright)
 - [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
-
-Contribute || Support me
-========================
-I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**. 
-
-However if you like this and want to **support** _me_, you may want to **flattr** a few coins?
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software)
