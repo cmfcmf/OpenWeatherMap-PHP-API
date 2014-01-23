@@ -14,36 +14,28 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
-
-use cmfcmf\OpenWeatherMap\Util\Unit;
+namespace Cmfcmf\OpenWeatherMap\Fetcher;
 
 /**
- * The wind class representing a wind object.
+ * Class CurlFetcher.
+ *
+ * @internal
  */
-class Wind
+class CurlFetcher implements FetcherInterface
 {
     /**
-     * @var Unit The wind speed.
+     * {@inheritdoc}
      */
-    public $speed;
-
-    /**
-     * @var Unit The wind direction.
-     */
-    public $direction;
-
-    /**
-     * Create a new wind object.
-     *
-     * @param Unit $speed The wind speed.
-     * @param Unit $direction The wind direction.
-     *
-     * @internal
-     */
-    public function __construct(Unit $speed, Unit $direction)
+    public function fetch($url)
     {
-        $this->speed = $speed;
-        $this->direction = $direction;
+        $ch = curl_init($url);
+        $timeout = 5;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        $content = curl_exec($ch);
+        curl_close( $ch );
+
+        return $content;
     }
 }

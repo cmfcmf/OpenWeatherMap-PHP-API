@@ -14,10 +14,16 @@
  * @see http://openweathermap.org/appid
  */
 
-use cmfcmf\OpenWeatherMap;
-use cmfcmf\OpenWeatherMap\AbstractCache;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\AbstractCache;
 
-require('cmfcmf/OpenWeatherMap.php');
+if (file_exists('../vendor/autoload.php')) {
+    // Library is not part of a project. "composer install" was executed directly on this library's composer file.
+    require('../vendor/autoload.php');
+} else {
+    // Library is part of a project.
+    require('../../../autoload.php');
+}
 
 /**
  * Example cache implementation.

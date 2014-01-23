@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
  * The unit class representing a unit object.
@@ -81,7 +81,7 @@ class Unit
     {
         // Units are inconsistent. Only celsius and fahrenheit are not abbreviated. This check fixes that.
         if ($this->unit == 'celsius') {
-            return '°C';
+            return "\xB0C";
         } else if ($this->unit == 'fahrenheit') {
             return 'F';
         } else {

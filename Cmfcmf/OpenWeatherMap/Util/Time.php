@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
  * The time class representing a time object.
@@ -47,11 +47,11 @@ class Time
     public function __construct($from, $to = null)
     {
         if (isset($to)) {
-            $from = new \DateTime($from);
-            $to = new \DateTime($to);
+            $from = (is_object($from)) ? $from : new \DateTime($from);
+            $to = (is_object($to)) ? $to : new \DateTime($to);
             $day = new \DateTime($from->format('Y-m-d'));
         } else {
-            $from = new \DateTime($from);
+            $from = (is_object($from)) ? $from : new \DateTime($from);
             $day = clone $from;
             $to = clone $from;
             $to = $to->add(new \DateInterval('PT23H59M59S'));

@@ -14,21 +14,20 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap;
 
-use cmfcmf\OpenWeatherMap,
-    cmfcmf\OpenWeatherMap\Exception as OWMException,
-    cmfcmf\OpenWeatherMap\Util\City,
-    cmfcmf\OpenWeatherMap\Util\Sun,
-    cmfcmf\OpenWeatherMap\Util\Temperature,
-    cmfcmf\OpenWeatherMap\Util\Unit,
-    cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj,
-    cmfcmf\OpenWeatherMap\Util\Wind;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Util\City;
+use Cmfcmf\OpenWeatherMap\Util\Sun;
+use Cmfcmf\OpenWeatherMap\Util\Temperature;
+use Cmfcmf\OpenWeatherMap\Util\Unit;
+use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
+use Cmfcmf\OpenWeatherMap\Util\Wind;
 
 /**
- * Weather class returned by {@link OpenWeatherMap::getWeather()}.
+ * Weather class used to hold the current weather data.
  */
-class Weather
+class CurrentWeather
 {
     /**
      * The city object.
@@ -85,61 +84,20 @@ class Weather
     public $lastUpdate;
 
     /**
-     * The copyright notice. This is no offical text, this hint was made regarding to http://www.http://openweathermap.org/copyright.
-     *
-     * @var $copyright
-     *
-     * @see http://www.http://openweathermap.org/copyright http://www.http://openweathermap.org/copyright
-     */
-    public $copyright = "Weather data from <a href=\"http://www.openweathermap.org\">OpenWeatherMap.org</a>";
-
-    /**
      * Create a new weather object.
-     * @param        $query
-     * @param string $units
-     * @param string $lang
-     * @param string $appid
-     * @param bool   $cacheClass
-     * @param int    $seconds
      *
-     * @throws OWMException If OpenWeatherMap returns an error.
-     * @throws \Exception If the parameters are invalid.
+     * @param        $xml
+     * @param string $units
      *
      * @internal
      */
-    public function __construct($query, $units = 'imperial', $lang = 'en', $appid = '', $cacheClass = false, $seconds = 600)
+    public function __construct($xml, $units)
     {
-        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
-        libxml_use_internal_errors(true);
-        libxml_clear_errors();
-        
-        $owm = new OpenWeatherMap($cacheClass, $seconds);
-        
-        $answer = $owm->getRawWeatherData($query, $units, $lang, $appid, 'xml');
-        if ($answer === false) {
-            // $query has the wrong format, throw error.
-            throw new \Exception('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
-        }
-        
-        try {
-            $xml = new \SimpleXMLElement($answer);
-        } catch(\Exception $e) {
-            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
-            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
-            $error = json_decode($answer, true);
-            if (isset($error['message'])) {
-                throw new OWMException($error['message'], $error['cod']);
-            } else {
-                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . print_r($error));
-            }
-        }
-        
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
         $this->temperature = new Temperature(new Unit($xml->temperature['value'], $xml->temperature['unit']), new Unit($xml->temperature['min'], $xml->temperature['unit']), new Unit($xml->temperature['max'], $xml->temperature['unit']));
         $this->humidity = new Unit($xml->humidity['value'], $xml->humidity['unit']);
         $this->pressure = new Unit($xml->pressure['value'], $xml->pressure['unit']);
-        
-        
+
         // This is kind of a hack, because the units are missing in the xml document.
         if ($units == 'metric') {
             $windSpeedUnit = 'm/s';
@@ -147,7 +105,6 @@ class Weather
             $windSpeedUnit = 'mph';
         }
         $this->wind = new Wind(new Unit($xml->wind->speed['value'], $windSpeedUnit, $xml->wind->speed['name']), new Unit($xml->wind->direction['value'], $xml->wind->direction['code'], $xml->wind->direction['name']));
-        
         
         $this->clouds = new Unit($xml->clouds['value'], null, $xml->clouds['name']);
         $this->precipitation = new Unit($xml->precipitation['value'], $xml->precipitation['unit'], $xml->precipitation['mode']);

@@ -6,7 +6,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "cmfcmf",
+            "name": "Christian Flach (cmfcmf)",
             "email": "cmfcmf.flach@gmail.com",
             "homepage": "http://cmfcmf.github.io",
             "role": "Developer"
@@ -21,7 +21,7 @@
     },
     "autoload": {
         "psr-0": {
-            "cmfcmf\\": ""
+            "Cmfcmf\\": ""
         }
     }
 }

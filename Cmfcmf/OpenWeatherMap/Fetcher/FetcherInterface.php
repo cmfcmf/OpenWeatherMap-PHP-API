@@ -14,13 +14,23 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap\Fetcher;
 
 /**
- * Dummy class extending \Exception to allow checking if it is an OpenWeatherMap error
- * or an argument error.
+ * Interface FetcherInterface.
+ *
+ * @api
  */
-class Exception extends \Exception
+interface FetcherInterface
 {
-
+    /**
+     * Fetch contents from the specified url.
+     *
+     * @param string $url The url to be fetched.
+     *
+     * @return string The fetched content.
+     *
+     * @api
+     */
+    public function fetch ($url);
 }

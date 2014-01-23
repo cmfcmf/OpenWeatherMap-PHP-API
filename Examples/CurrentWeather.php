@@ -14,10 +14,16 @@
  * @see http://openweathermap.org/appid
  */
 
-use cmfcmf\OpenWeatherMap;
-use cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
-require('cmfcmf/OpenWeatherMap.php');
+if (file_exists('../vendor/autoload.php')) {
+    // Library is not part of a project. "composer install" was executed directly on this library's composer file.
+    require('../vendor/autoload.php');
+} else {
+    // Library is part of a project.
+    require('../../../autoload.php');
+}
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -170,28 +176,28 @@ echo "<br /><br />\n\n\nEXAMPLE 9<hr />\n\n\n";
 echo "Precipation: " . $weather->precipitation->getDescription() . " (" . $weather->precipitation . ")";
 echo "<br />\n";
 
-// Example 10: Show copyright notice. WARNING: This is no offical text. This hint was made regarding to http://www.http://openweathermap.org/copyright .
+// Example 10: Show copyright notice. WARNING: This is no offical text. This hint was created regarding to http://www.http://openweathermap.org/copyright .
 echo "<br /><br />\n\n\nEXAMPLE 10<hr />\n\n\n";
 
-echo $weather->copyright;
+echo $owm::COPYRIGHT;
 echo "<br />\n";
 
 // Example 11: Get raw xml data.
 echo "<br /><br />\n\n\nEXAMPLE 11<hr />\n\n\n";
 
-echo "<pre><code>" . htmlspecialchars($owm->getRawData('Berlin', $units, $lang, null, 'xml')) . "</code></pre>";
+echo "<pre><code>" . htmlspecialchars($owm->getRawWeatherData('Berlin', $units, $lang, null, 'xml')) . "</code></pre>";
 echo "<br />\n";
 
 // Example 12: Get raw json data.
 echo "<br /><br />\n\n\nEXAMPLE 12<hr />\n\n\n";
 
-echo "<code>" . htmlspecialchars($owm->getRawData('Berlin', $units, $lang, null, 'json')) . "</code>";
+echo "<code>" . htmlspecialchars($owm->getRawWeatherData('Berlin', $units, $lang, null, 'json')) . "</code>";
 echo "<br />\n";
 
 // Example 13: Get raw html data.
 echo "<br /><br />\n\n\nEXAMPLE 13<hr />\n\n\n";
 
-echo $owm->getRawData('Berlin', $units, $lang, null, 'html');
+echo $owm->getRawWeatherData('Berlin', $units, $lang, null, 'html');
 echo "<br />\n";
 
 // Example 14: Error handling.
@@ -225,6 +231,4 @@ try {
 }
 
 // Example 15: Using an api key:
-
-# $owm->getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');
-# $owm->getRawData('Berlin', $units, $lang, 'Your-Api-Key-Here', 'json');
+$owm->getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');

@@ -14,7 +14,7 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace cmfcmf\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap;
 
 /**
  * Abstract cache class to be overwritten by custom cache implementations.
@@ -41,7 +41,7 @@ abstract class AbstractCache
      * @note This is not the time when the weather was cached, but the {@link Weather::$lastUpdate} value of the cached weather.
      * @note You need to check here if a cached result is outdated. Return false in that case.
      */
-    abstract function isCached($type, $query, $units, $lang, $mode);
+    public abstract function isCached($type, $query, $units, $lang, $mode);
 
     /**
      * Returns cached weather data.
@@ -54,7 +54,7 @@ abstract class AbstractCache
      *
      * @return string|bool The cached data if it exists, false otherwise.
      */
-    abstract function getCached($type, $query, $units, $lang, $mode);
+    public abstract function getCached($type, $query, $units, $lang, $mode);
 
     /**
      * Saves cached weather data.
@@ -68,7 +68,7 @@ abstract class AbstractCache
      *
      * @return bool True on success, false on failure.
      */
-    abstract function setCached($type, $content, $query, $units, $lang, $mode);
+    public abstract function setCached($type, $content, $query, $units, $lang, $mode);
 
     /**
      * Set after how much seconds the cache shall expire.
