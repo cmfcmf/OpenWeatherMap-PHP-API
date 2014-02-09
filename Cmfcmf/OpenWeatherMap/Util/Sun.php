@@ -37,10 +37,14 @@ class Sun
      * @param \DateTime $rise The time of the sun rise
      * @param \DateTime $set The time of the sun set.
      *
+     * @throws \LogicException If sunset is before sunrise.
      * @internal
      */
     public function __construct(\DateTime $rise, \DateTime $set)
     {
+        if ($set < $rise) {
+            throw new \LogicException('Sunset cannot be before sunrise!');
+        }
         $this->rise = $rise;
         $this->set = $set;
     }
