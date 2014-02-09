@@ -40,7 +40,7 @@ class Time
      * Create a new time object.
      *
      * @param string $from The start time for the forecast.
-     * @param string     $to   The end time for the forecast.
+     * @param string $to   The end time for the forecast.
      *
      * @internal
      */
