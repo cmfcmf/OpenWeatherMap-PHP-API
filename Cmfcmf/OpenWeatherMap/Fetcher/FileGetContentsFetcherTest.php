@@ -32,7 +32,7 @@ class FileGetContentsFetcherTest extends \PHPUnit_Framework_TestCase
     {
         $fetcher = new FileGetContentsFetcher();
 
-        $fetcher->fetch('http://notexisting.example.com/');
+        $fetcher->fetch('http://notexisting.example.com');
     }
 
     /**
@@ -49,8 +49,8 @@ class FileGetContentsFetcherTest extends \PHPUnit_Framework_TestCase
     {
         $fetcher = new FileGetContentsFetcher();
 
-        $content = $fetcher->fetch('http://www.example.com');
+        $content = $fetcher->fetch('http://httpbin.org/html');
 
-        $this->assertContains('Example Domain', $content);
+        $this->assertContains('Herman Melville', $content);
     }
 }

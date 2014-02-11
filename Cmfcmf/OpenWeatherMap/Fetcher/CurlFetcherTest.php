@@ -25,7 +25,7 @@ class CurlFetcherTest extends \PHPUnit_Framework_TestCase
     {
         $fetcher = new CurlFetcher();
 
-        $content = $fetcher->fetch('http://notexisting.example.com/');
+        $content = $fetcher->fetch('http://notexisting.example.com');
 
         $this->assertSame(false, $content);
     }
@@ -34,7 +34,7 @@ class CurlFetcherTest extends \PHPUnit_Framework_TestCase
     {
         $fetcher = new CurlFetcher();
 
-        $content = $fetcher->fetch('http://notexisting.example.com/');
+        $content = $fetcher->fetch('');
 
         $this->assertSame(false, $content);
     }
@@ -43,8 +43,8 @@ class CurlFetcherTest extends \PHPUnit_Framework_TestCase
     {
         $fetcher = new CurlFetcher();
 
-        $content = $fetcher->fetch('http://www.example.com');
+        $content = $fetcher->fetch('http://httpbin.org/html');
 
-        $this->assertContains('Example Domain', $content);
+        $this->assertContains('Herman Melville', $content);
     }
 }
