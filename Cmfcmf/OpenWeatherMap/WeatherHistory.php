@@ -51,13 +51,24 @@ class WeatherHistory implements \Iterator
      */
     private $position = 0;
 
-    function __construct($weatherHistory, $query)
+    public function __construct($weatherHistory, $query)
     {
-        $this->city = new OpenWeatherMap\Util\City($weatherHistory['city_id'], (is_string($query)) ? $query : null, (isset($query['lon'])) ? $query['lon'] : null, (isset($query['lat'])) ? $query['lat'] : null, $weatherHistory['list'][0]['city']['country'], $weatherHistory['list'][0]['city']['population']);
+        if (isset($weatherHistory['list'][0]['city'])) {
+            $country = $weatherHistory['list'][0]['city']['country'];
+            $population = $weatherHistory['list'][0]['city']['population'];
+        } else {
+            $country = null;
+            $population = null;
+        }
+
+        $this->city = new OpenWeatherMap\Util\City($weatherHistory['city_id'], (is_string($query)) ? $query : null, (isset($query['lon'])) ? $query['lon'] : null, (isset($query['lat'])) ? $query['lat'] : null, $country, $population);
         $this->calctime = $weatherHistory['calctime'];
 
         foreach ($weatherHistory['list'] as $history) {
-            $units = array_keys($history['rain']);
+            if (isset($history['rain'])) {
+                $units = array_keys($history['rain']);
+            }
+
             $this->histories[] = new History(
                 $this->city,
                 $history['weather'][0],
@@ -69,7 +80,7 @@ class WeatherHistory implements \Iterator
                 $history['main']['pressure'],
                 $history['main']['humidity'],
                 $history['clouds']['all'],
-                array('val' => $history['rain'][($units[0])], 'unit' => $units[0]),
+                isset($history['rain']) ? array('val' => $history['rain'][($units[0])], 'unit' => $units[0]) : null,
                 $history['wind'],
                 \DateTime::createFromFormat('U', $history['dt'])
             );
