@@ -38,6 +38,7 @@ class Temperature
 
     /**
      * Returns the current temperature as formatted string.
+     *
      * @return string The current temperature as a formatted string.
      */
     public function __toString()
@@ -47,6 +48,7 @@ class Temperature
 
     /**
      * Returns the current temperature's unit.
+     *
      * @return string The current temperature's unit.
      */
     public function getUnit()
@@ -56,6 +58,7 @@ class Temperature
 
     /**
      * Returns the current temperature.
+     *
      * @return string The current temperature.
      */
     public function getValue()
@@ -65,6 +68,7 @@ class Temperature
 
     /**
      * Returns the current temperature's description.
+     *
      * @return string The current temperature's description.
      */
     public function getDescription()
@@ -74,6 +78,7 @@ class Temperature
 
     /**
      * Returns the current temperature as formatted string.
+     *
      * @return string The current temperature as formatted string.
      */
     public function getFormatted()

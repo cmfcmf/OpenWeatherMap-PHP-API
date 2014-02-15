@@ -32,5 +32,5 @@ interface FetcherInterface
      *
      * @api
      */
-    public function fetch ($url);
+    public function fetch($url);
 }

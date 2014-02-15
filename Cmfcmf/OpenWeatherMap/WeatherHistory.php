@@ -69,56 +69,47 @@ class WeatherHistory implements \Iterator
                 $units = array_keys($history['rain']);
             }
 
-            $this->histories[] = new History(
-                $this->city,
-                $history['weather'][0],
-                array(
-                    'now' => $history['main']['temp'],
-                    'min' => $history['main']['temp_min'],
-                    'max' => $history['main']['temp_max']
-                ),
-                $history['main']['pressure'],
-                $history['main']['humidity'],
-                $history['clouds']['all'],
-                isset($history['rain']) ? array('val' => $history['rain'][($units[0])], 'unit' => $units[0]) : null,
-                $history['wind'],
-                \DateTime::createFromFormat('U', $history['dt'])
-            );
+            $this->histories[] = new History($this->city, $history['weather'][0], array('now' => $history['main']['temp'], 'min' => $history['main']['temp_min'], 'max' => $history['main']['temp_max']), $history['main']['pressure'], $history['main']['humidity'], $history['clouds']['all'], isset($history['rain']) ? array('val' => $history['rain'][($units[0])], 'unit' => $units[0]) : null, $history['wind'], \DateTime::createFromFormat('U', $history['dt']));
         }
     }
 
     /**
      * @internal
      */
-    public function rewind() {
+    public function rewind()
+    {
         $this->position = 0;
     }
 
     /**
      * @internal
      */
-    public function current() {
+    public function current()
+    {
         return $this->histories[$this->position];
     }
 
     /**
      * @internal
      */
-    public function key() {
+    public function key()
+    {
         return $this->position;
     }
 
     /**
      * @internal
      */
-    public function next() {
+    public function next()
+    {
         ++$this->position;
     }
 
     /**
      * @internal
      */
-    public function valid() {
+    public function valid()
+    {
         return isset($this->histories[$this->position]);
     }
 } 

@@ -22,10 +22,15 @@ class UnitTest extends \PHPUnit_Framework_TestCase
     private $unit;
 
     const POSITIVE_INT_VALUE = 23;
+
     const POSITIVE_FLOAT_VALUE = 48.23534;
+
     const NEGATIVE_INT_VALUE = -30;
+
     const NEGATIVE_FLOAT_VALUE = -93.45839;
+
     const ZERO_INT_VALUE = 0;
+
     const ZERO_FLOAT_VALUE = 0.0;
 
     public function testGetValueWithPositiveIntValue()

@@ -16,13 +16,13 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
+use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
 use Cmfcmf\OpenWeatherMap\Util\Wind;
-use Cmfcmf\OpenWeatherMap;
 
 /**
  * Weather class used to hold the current weather data.
@@ -105,7 +105,7 @@ class CurrentWeather
             $windSpeedUnit = 'mph';
         }
         $this->wind = new Wind(new Unit($xml->wind->speed['value'], $windSpeedUnit, $xml->wind->speed['name']), new Unit($xml->wind->direction['value'], $xml->wind->direction['code'], $xml->wind->direction['name']));
-        
+
         $this->clouds = new Unit($xml->clouds['value'], null, $xml->clouds['name']);
         $this->precipitation = new Unit($xml->precipitation['value'], $xml->precipitation['unit'], $xml->precipitation['mode']);
         $this->sun = new Sun(new \DateTime($xml->city->sun['rise']), new \DateTime($xml->city->sun['set']));

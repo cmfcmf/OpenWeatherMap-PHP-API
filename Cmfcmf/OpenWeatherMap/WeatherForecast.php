@@ -66,8 +66,8 @@ class WeatherForecast implements \Iterator
     {
         $this->city = new City(-1, $xml->location->name, $xml->location->location['longitude'], $xml->location->location['latitude'], $xml->location->country);
         $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
-        
-        foreach($xml->forecast->time as $time) {
+
+        foreach ($xml->forecast->time as $time) {
             $forecast = new Forecast($time, $units);
             $forecast->city = $this->city;
             $this->forecasts[] = $forecast;
@@ -77,35 +77,40 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
-    public function rewind() {
+    public function rewind()
+    {
         $this->position = 0;
     }
 
     /**
      * @internal
      */
-    public function current() {
+    public function current()
+    {
         return $this->forecasts[$this->position];
     }
 
     /**
      * @internal
      */
-    public function key() {
+    public function key()
+    {
         return $this->position;
     }
 
     /**
      * @internal
      */
-    public function next() {
+    public function next()
+    {
         ++$this->position;
     }
 
     /**
      * @internal
      */
-    public function valid() {
+    public function valid()
+    {
         return isset($this->forecasts[$this->position]);
     }
 }

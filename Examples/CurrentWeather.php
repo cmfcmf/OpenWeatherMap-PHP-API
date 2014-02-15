@@ -206,7 +206,7 @@ echo "<br /><br />\n\n\nEXAMPLE 14<hr />\n\n\n";
 // Try wrong city name.
 try {
     $weather = $owm->getWeather("ThisCityNameIsNotValidAndDoesNotExist", $units, $lang);
-} catch(OWMException $e) {
+} catch (OWMException $e) {
     echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }
@@ -214,7 +214,7 @@ try {
 // Try invalid $query.
 try {
     $weather = $owm->getWeather(new \DateTime('now'), $units, $lang);
-} catch(\Exception $e) {
+} catch (\Exception $e) {
     echo $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }
@@ -222,10 +222,10 @@ try {
 // Full error handling would look like this:
 try {
     $weather = $owm->getWeather(-1, $units, $lang);
-} catch(OWMException $e) {
+} catch (OWMException $e) {
     echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
-} catch(\Exception $e) {
+} catch (\Exception $e) {
     echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
     echo "<br />\n";
 }

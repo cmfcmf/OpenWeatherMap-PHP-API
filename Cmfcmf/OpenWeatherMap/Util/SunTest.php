@@ -42,7 +42,6 @@ class SunTest extends \PHPUnit_Framework_TestCase
     }
 
 
-
     private function givenThereIsASunObject($rise, $set)
     {
         $this->sun = new Sun($rise, $set);

@@ -46,7 +46,7 @@ class Weather
     /**
      * Create a new weather object.
      *
-     * @param int $id The icon id.
+     * @param int    $id The icon id.
      * @param string $description The weather description.
      * @param string $icon The icon name.
      *

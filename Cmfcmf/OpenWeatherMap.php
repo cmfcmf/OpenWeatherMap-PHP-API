@@ -35,7 +35,7 @@ class OpenWeatherMap
      * @var string $weatherUrl The basic api url to fetch weather data from.
      */
     private $weatherUrl = "http://api.openweathermap.org/data/2.5/weather?";
-    
+
     /**
      * @var string $url The basic api url to fetch weekly forecast data from.
      */
@@ -101,7 +101,7 @@ class OpenWeatherMap
         if ($seconds == 0) {
             $cacheClass = false;
         }
-        
+
         $this->cacheClass = $cacheClass;
         $this->seconds = $seconds;
         $this->fetcher = $fetcher;
@@ -156,7 +156,7 @@ class OpenWeatherMap
 
         try {
             $xml = new \SimpleXMLElement($answer);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             // Invalid xml format. This happens in case OpenWeatherMap returns an error.
             // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
             $error = json_decode($answer, true);
@@ -166,6 +166,7 @@ class OpenWeatherMap
                 throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
             }
         }
+
         return new CurrentWeather($xml, $units);
     }
 
@@ -225,7 +226,7 @@ class OpenWeatherMap
 
         try {
             $xml = new \SimpleXMLElement($answer);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             // Invalid xml format. This happens in case OpenWeatherMap returns an error.
             // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
             $error = json_decode($answer, true);
@@ -295,23 +296,23 @@ class OpenWeatherMap
 
         return new WeatherHistory($xml, $query);
     }
-    
+
     /**
      * @deprecated Use {@link self::getRawWeatherData()} instead.
      */
     public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode );
+        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
     }
-    
+
     /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the current weather.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
-     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
@@ -354,10 +355,10 @@ class OpenWeatherMap
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the hourly forecast.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
-     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
@@ -400,10 +401,10 @@ class OpenWeatherMap
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the daily forecast.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string $lang The language to use for descriptions, default is 'en'. For possible values see below.
-     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
@@ -438,7 +439,7 @@ class OpenWeatherMap
     public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl);
-        
+
         return $this->cacheOrFetchResult('dailyForecast', $query, $units, $lang, $mode, $url);
     }
 
@@ -449,7 +450,7 @@ class OpenWeatherMap
      * @param \DateTime        $start The \DateTime object of the date to get the first weather information from.
      * @param \DateTime|int    $endOrCount Can be either a \DateTime object representing the end of the period to
      *                                     receive weather history data for or an integer counting the number of
-*                                          reports requested.
+     *                                          reports requested.
      * @param string           $type The period of the weather history requested. Can be either be either "tick",
      *                               "hour" or "day".
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
@@ -547,11 +548,11 @@ class OpenWeatherMap
     /**
      * Build the url to fetch weather data from.
      *
-     * @param $query
-     * @param $units
-     * @param $lang
-     * @param $appid
-     * @param $mode
+     * @param        $query
+     * @param        $units
+     * @param        $lang
+     * @param        $appid
+     * @param        $mode
      * @param string $url The url to prepend.
      *
      * @return bool|string The fetched url, false on failure.
@@ -566,7 +567,7 @@ class OpenWeatherMap
         if (!empty($appid)) {
             $url .= "&APPID=$appid";
         }
-        
+
         return $url;
     }
 
@@ -582,7 +583,7 @@ class OpenWeatherMap
      */
     private function buildQueryUrlParameter($query)
     {
-        switch($query) {
+        switch ($query) {
             case (is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon'])):
                 return "lat={$query['lat']}&lon={$query['lon']}";
             case (is_numeric($query)):

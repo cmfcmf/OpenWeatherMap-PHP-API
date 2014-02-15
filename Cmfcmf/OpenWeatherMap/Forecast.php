@@ -16,6 +16,7 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
+use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
@@ -23,7 +24,6 @@ use Cmfcmf\OpenWeatherMap\Util\Time;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
 use Cmfcmf\OpenWeatherMap\Util\Wind;
-use Cmfcmf\OpenWeatherMap;
 
 /**
  * Class Forecast.
@@ -37,15 +37,16 @@ class Forecast extends CurrentWeather
 
     /**
      * Create a new weather object for forecasts.
-     * @param \SimpleXMLElement $xml   The forecasts xml.
-     * @param string $units Ths units used.
+     *
+     * @param \SimpleXMLElement $xml The forecasts xml.
+     * @param string            $units Ths units used.
      *
      * @internal
      */
     public function __construct($xml, $units)
     {
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
-        
+
         if ($units == 'metric') {
             $temperatureUnit = "\xB0C";
         } else {
@@ -71,7 +72,7 @@ class Forecast extends CurrentWeather
         $this->sun = new Sun(new \DateTime($xml->city->sun['rise']), new \DateTime($xml->city->sun['set']));
         $this->weather = new WeatherObj($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
         $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
-        
+
         if (isset($xml['from'])) {
             $this->time = new Time($xml['from'], $xml['to']);
         } else {
