@@ -16,13 +16,13 @@
 
 namespace Cmfcmf;
 
+use Cmfcmf\OpenWeatherMap\CurrentWeather;
+use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
 use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
-use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher;
-use Cmfcmf\OpenWeatherMap\WeatherHistory;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
-use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap\WeatherHistory;
 
 /**
  * Main class for the OpenWeatherMap-PHP-API. Only use this class.

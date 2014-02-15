@@ -16,8 +16,6 @@
 
 namespace Cmfcmf\OpenWeatherMap\Util;
 
-use Cmfcmf\OpenWeatherMap\Util\Unit;
-
 /**
  * The wind class representing a wind object.
  */

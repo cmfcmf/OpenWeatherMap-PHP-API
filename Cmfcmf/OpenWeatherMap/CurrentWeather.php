@@ -16,13 +16,13 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
 use Cmfcmf\OpenWeatherMap\Util\Wind;
+use Cmfcmf\OpenWeatherMap;
 
 /**
  * Weather class used to hold the current weather data.
