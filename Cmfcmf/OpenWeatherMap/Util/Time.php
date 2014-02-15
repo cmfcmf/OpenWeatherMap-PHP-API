@@ -47,11 +47,11 @@ class Time
     public function __construct($from, $to = null)
     {
         if (isset($to)) {
-            $from = (is_object($from)) ? $from : new \DateTime($from);
-            $to = (is_object($to)) ? $to : new \DateTime($to);
+            $from = (is_a($from, 'DateTime')) ? $from : new \DateTime($from);
+            $to = (is_a($to, 'DateTime')) ? $to : new \DateTime($to);
             $day = new \DateTime($from->format('Y-m-d'));
         } else {
-            $from = (is_object($from)) ? $from : new \DateTime($from);
+            $from = (is_a($from, 'DateTime')) ? $from : new \DateTime($from);
             $day = clone $from;
             $to = clone $from;
             $to = $to->add(new \DateInterval('PT23H59M59S'));
