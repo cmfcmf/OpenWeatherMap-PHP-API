@@ -29,46 +29,32 @@ abstract class AbstractCache
     /**
      * Checks whether a cached weather data is available.
      *
-     * @param string           $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
-     * @param array|int|string $query The query parameters used.
-     * @param string           $units The units requested.
-     * @param string           $lang The language requested.
-     * @param string           $mode The mode requested ('xml' or'json').
+     * @param string $url The unique url of the cached content.
      *
-     * @return \DateTime|bool A \DateTime object containing the time when the weather information was last updated, false if no
-     * cached information is available.
+     * @return bool False if no cached information is available, otherwise true.
      *
-     * @note This is not the time when the weather was cached, but the {@link Weather::$lastUpdate} value of the cached weather.
-     * @note You need to check here if a cached result is outdated. Return false in that case.
+     * You need to check if a cached result is outdated here. Return false in that case.
      */
-    public abstract function isCached($type, $query, $units, $lang, $mode);
+    abstract public function isCached($url);
 
     /**
      * Returns cached weather data.
      *
-     * @param string           $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
-     * @param array|int|string $query The query parameters used.
-     * @param string           $units The units requested.
-     * @param string           $lang The language requested.
-     * @param string           $mode The mode requested ('xml' or'json').
+     * @param string $url The unique url of the cached content.
      *
      * @return string|bool The cached data if it exists, false otherwise.
      */
-    public abstract function getCached($type, $query, $units, $lang, $mode);
+    abstract public function getCached($url);
 
     /**
      * Saves cached weather data.
      *
-     * @param string           $type The type of the cached data. Can be either 'weather', 'hourlyForecast' or 'dailyForecast'.
-     * @param string           $content The weather data to cache.
-     * @param array|int|string $query The query parameters used.
-     * @param string           $units The units requested.
-     * @param string           $lang The language requested.
-     * @param string           $mode The mode requested ('xml' or'json').
+     * @param string $url     The unique url of the cached content.
+     * @param string $content The weather data to cache.
      *
      * @return bool True on success, false on failure.
      */
-    public abstract function setCached($type, $content, $query, $units, $lang, $mode);
+    abstract public function setCached($url, $content);
 
     /**
      * Set after how much seconds the cache shall expire.

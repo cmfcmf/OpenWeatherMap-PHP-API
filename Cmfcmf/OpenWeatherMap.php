@@ -16,6 +16,7 @@
 
 namespace Cmfcmf;
 
+use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
@@ -77,11 +78,10 @@ class OpenWeatherMap
      * Constructs the OpenWeatherMap object.
      *
      * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                       CurlFetcher() if if cURL is available. Otherwise defaults to
+     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
      *                                       FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param bool|string           $cacheClass If set to false, caching is disabled. If this is a valid class
-     *                                          extending Cmfcmf\OpenWeatherMap\Util\Cache, caching will be enabled.
-     *                                          Default false.
+     * @param bool|string           $cacheClass If set to false, caching is disabled. Otherwise this must be a class
+     *                                       extending AbstractCache. Defaults to false.
      * @param int                   $seconds How long weather data shall be cached. Default 10 minutes.
      *
      * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
@@ -89,8 +89,8 @@ class OpenWeatherMap
      */
     public function __construct($fetcher = null, $cacheClass = false, $seconds = 600)
     {
-        if ($cacheClass !== false && !class_exists($cacheClass)) {
-            throw new \Exception("Class $cacheClass does not exist.");
+        if ($cacheClass !== false && !($cacheClass instanceof AbstractCache)) {
+            throw new \Exception("The cache class must implement the FetcherInterface!");
         }
         if (!is_numeric($seconds)) {
             throw new \Exception("\$seconds must be numeric.");
@@ -348,7 +348,7 @@ class OpenWeatherMap
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherUrl);
 
-        return $this->cacheOrFetchResult('weather', $query, $units, $lang, $mode, $url);
+        return $this->cacheOrFetchResult($url);
     }
 
     /**
@@ -394,7 +394,7 @@ class OpenWeatherMap
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherHourlyForecastUrl);
 
-        return $this->cacheOrFetchResult('hourlyForecast', $query, $units, $lang, $mode, $url);
+        return $this->cacheOrFetchResult($url);
     }
 
     /**
@@ -445,7 +445,7 @@ class OpenWeatherMap
         }
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
 
-        return $this->cacheOrFetchResult('dailyForecast', $query, $units, $lang, $mode, $url);
+        return $this->cacheOrFetchResult($url);
     }
 
     /**
@@ -515,7 +515,7 @@ class OpenWeatherMap
             $queryUrl .= "&APPID=$appid";
         }
 
-        return $this->cacheOrFetchResult('weatherHistory', $query, $units, $lang, $type, $queryUrl);
+        return $this->cacheOrFetchResult($queryUrl);
     }
 
     /**
@@ -532,17 +532,17 @@ class OpenWeatherMap
      *
      * @internal
      */
-    private function cacheOrFetchResult($type, $query, $units, $lang, $mode, $url)
+    private function cacheOrFetchResult($url)
     {
         if ($this->cacheClass !== false) {
             /** @var \Cmfcmf\OpenWeatherMap\AbstractCache $cache */
-            $cache = new $this->cacheClass;
+            $cache = $this->cacheClass;
             $cache->setSeconds($this->seconds);
-            if ($cache->isCached($type, $query, $units, $lang, $mode)) {
-                return $cache->getCached($type, $query, $units, $lang, $mode);
+            if ($cache->isCached($url)) {
+                return $cache->getCached($url);
             }
             $result = $this->fetcher->fetch($url);
-            $cache->setCached($type, $result, $query, $units, $lang, $mode);
+            $cache->setCached($url, $result);
         } else {
             $result = $this->fetcher->fetch($url);
         }

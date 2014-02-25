@@ -32,34 +32,48 @@ if (file_exists('../vendor/autoload.php')) {
  */
 class ExampleCache extends AbstractCache
 {
-    /**
-     * @inheritdoc
-     */
-    public function isCached($type, $query, $units, $lang, $mode)
+    private function urlToPath($url)
     {
-        echo "Checking cache for $type $query $units $lang $mode …<br />";
+        $tmp = sys_get_temp_dir();
+        $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
+        if (!is_dir($dir)) {
+            mkdir($dir);
+        }
 
-        return false;
+        $path = $dir . DIRECTORY_SEPARATOR . md5($url);
+
+        return $path;
     }
 
     /**
      * @inheritdoc
      */
-    public function getCached($type, $query, $units, $lang, $mode)
+    public function isCached($url)
     {
-        echo "Get cache for $type $query $units $lang $mode …<br />";
+        $path = $this->urlToPath($url);
+        if (!file_exists($path) || filectime($path) + $this->seconds < time()) {
+            echo "Weather data is NOT cached!\n";
+            return false;
+        }
 
-        return false;
+        echo "Weather data is cached!\n";
+        return true;
     }
 
     /**
      * @inheritdoc
      */
-    public function setCached($type, $content, $query, $units, $lang, $mode)
+    public function getCached($url)
     {
-        echo "Set cache for $type $query $units $lang $mode … ({$this->seconds} seconds)<br />";
+        return file_get_contents($this->urlToPath($url));
+    }
 
-        return false;
+    /**
+     * @inheritdoc
+     */
+    public function setCached($url, $content)
+    {
+        file_put_contents($this->urlToPath($url), $content);
     }
 }
 
@@ -69,8 +83,8 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Example 1: Use your own cache implementation. See the example_cache file.
-$owm = new OpenWeatherMap('ExampleCache', 100);
+// Example 1: Use your own cache implementation. Cache for 10 seconds only in this example.
+$owm = new OpenWeatherMap(null, new ExampleCache(), 10);
 
 $weather = $owm->getWeather('Berlin', $units, $lang);
 echo "EXAMPLE 1<hr />\n\n\n";
