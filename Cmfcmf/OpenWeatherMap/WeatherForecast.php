@@ -59,18 +59,28 @@ class WeatherForecast implements \Iterator
      *
      * @param        $xml
      * @param string $units
+     * @param int    $days  How many days of forecast to receive.
      *
      * @internal
      */
-    public function __construct($xml, $units)
+    public function __construct($xml, $units, $days)
     {
         $this->city = new City(-1, $xml->location->name, $xml->location->location['longitude'], $xml->location->location['latitude'], $xml->location->country);
         $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
 
+        $counter = 0;
         foreach ($xml->forecast->time as $time) {
             $forecast = new Forecast($time, $units);
             $forecast->city = $this->city;
             $this->forecasts[] = $forecast;
+
+            $counter++;
+            // Make sure to only return the requested number of days.
+            if ($days <= 5 && $counter == $days * 8) {
+                break;
+            } else if ($days > 5 && $counter == $days) {
+                break;
+            }
         }
     }
 

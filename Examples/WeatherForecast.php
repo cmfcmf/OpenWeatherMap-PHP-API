@@ -60,6 +60,6 @@ echo "EXAMPLE 2<hr />\n\n\n";
 
 foreach ($forecast as $weather) {
     echo "Weather forecast at " . $weather->time->day->format('d.m.Y') . " from " . $weather->time->from->format('H:i') . " to " . $weather->time->to->format('H:i') . "<br />";
-    echo $weather->temperature . "<br />";
-    echo "---<br />";
+    echo $weather->temperature . "<br />\n";
+    echo "---<br />\n";
 }
