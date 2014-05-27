@@ -7,7 +7,9 @@
  * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
  *
- * Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap before using this class:
+ *
  * @see http://www.OpenWeatherMap.org
  * @see http://www.OpenWeatherMap.org/about
  * @see http://www.OpenWeatherMap.org/copyright
@@ -67,6 +69,8 @@ class WeatherHistory implements \Iterator
         foreach ($weatherHistory['list'] as $history) {
             if (isset($history['rain'])) {
                 $units = array_keys($history['rain']);
+            } else {
+                $units = array(0 => null);
             }
 
             $this->histories[] = new History($this->city, $history['weather'][0], array('now' => $history['main']['temp'], 'min' => $history['main']['temp_min'], 'max' => $history['main']['temp_max']), $history['main']['pressure'], $history['main']['humidity'], $history['clouds']['all'], isset($history['rain']) ? array('val' => $history['rain'][($units[0])], 'unit' => $units[0]) : null, $history['wind'], \DateTime::createFromFormat('U', $history['dt']));
@@ -112,4 +116,4 @@ class WeatherHistory implements \Iterator
     {
         return isset($this->histories[$this->position]);
     }
-} 
+}

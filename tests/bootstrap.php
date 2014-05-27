@@ -5,6 +5,7 @@ call_user_func(function () {
         throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
     }
 
+    /** @noinspection PhpIncludeInspection */
     require_once $autoloadFile;
 
     ini_set('date.timezone', 'Europe/Berlin');

@@ -7,7 +7,9 @@
  * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
  *
- * Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap before using this class:
+ *
  * @see http://www.OpenWeatherMap.org
  * @see http://www.OpenWeatherMap.org/about
  * @see http://www.OpenWeatherMap.org/copyright
@@ -521,11 +523,6 @@ class OpenWeatherMap
     /**
      * Fetches the result or delivers a cached version of the result.
      *
-     * @param $type
-     * @param $query
-     * @param $units
-     * @param $lang
-     * @param $mode
      * @param $url
      *
      * @return string

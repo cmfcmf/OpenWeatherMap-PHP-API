@@ -7,7 +7,9 @@
  * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
  *
- * Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap before using this class:
+ *
  * @see http://www.OpenWeatherMap.org
  * @see http://www.OpenWeatherMap.org/about
  * @see http://www.OpenWeatherMap.org/copyright
@@ -22,6 +24,7 @@ if (file_exists('../vendor/autoload.php')) {
     require('../vendor/autoload.php');
 } else {
     // Library is part of a project.
+    /** @noinspection PhpIncludeInspection */
     require('../../../autoload.php');
 }
 
