@@ -34,7 +34,7 @@ class Wind
     /**
      * Create a new wind object.
      *
-     * @param Unit $speed The wind speed.
+     * @param Unit $speed     The wind speed.
      * @param Unit $direction The wind direction.
      *
      * @internal

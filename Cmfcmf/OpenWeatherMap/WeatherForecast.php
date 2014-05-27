@@ -59,7 +59,7 @@ class WeatherForecast implements \Iterator
      *
      * @param        $xml
      * @param string $units
-     * @param int    $days  How many days of forecast to receive.
+     * @param int    $days How many days of forecast to receive.
      *
      * @internal
      */

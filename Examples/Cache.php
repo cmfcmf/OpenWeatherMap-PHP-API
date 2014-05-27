@@ -53,10 +53,12 @@ class ExampleCache extends AbstractCache
         $path = $this->urlToPath($url);
         if (!file_exists($path) || filectime($path) + $this->seconds < time()) {
             echo "Weather data is NOT cached!\n";
+
             return false;
         }
 
         echo "Weather data is cached!\n";
+
         return true;
     }
 

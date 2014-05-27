@@ -38,7 +38,7 @@ class Forecast extends CurrentWeather
     /**
      * Create a new weather object for forecasts.
      *
-     * @param \SimpleXMLElement $xml The forecasts xml.
+     * @param \SimpleXMLElement $xml   The forecasts xml.
      * @param string            $units Ths units used.
      *
      * @internal

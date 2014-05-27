@@ -54,11 +54,11 @@ class City
     /**
      * Create a new city object.
      *
-     * @param int    $id The city id.
-     * @param string $name The name of the city.
-     * @param float  $lon The longitude of the city.
-     * @param float  $lat The latitude of the city.
-     * @param string $country The abbreviation of the country the city is located in
+     * @param int    $id         The city id.
+     * @param string $name       The name of the city.
+     * @param float  $lon        The longitude of the city.
+     * @param float  $lat        The latitude of the city.
+     * @param string $country    The abbreviation of the country the city is located in
      * @param int    $population The city's population.
      *
      * @internal

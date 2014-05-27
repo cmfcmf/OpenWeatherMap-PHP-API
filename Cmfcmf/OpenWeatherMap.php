@@ -77,12 +77,12 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                       FileGetContentsFetcher() using 'file_get_contents()'.
+     * @param null|FetcherInterface $fetcher    The interface to fetch the data from OpenWeatherMap. Defaults to
+     *                                          CurlFetcher() if cURL is available. Otherwise defaults to
+     *                                          FileGetContentsFetcher() using 'file_get_contents()'.
      * @param bool|string           $cacheClass If set to false, caching is disabled. Otherwise this must be a class
-     *                                       extending AbstractCache. Defaults to false.
-     * @param int                   $seconds How long weather data shall be cached. Default 10 minutes.
+     *                                          extending AbstractCache. Defaults to false.
+     * @param int                   $seconds    How long weather data shall be cached. Default 10 minutes.
      *
      * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
      * @api
@@ -112,7 +112,7 @@ class OpenWeatherMap
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
@@ -175,9 +175,9 @@ class OpenWeatherMap
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param int              $days For how much days you want to get a forecast. Default 1, maximum: 14.
+     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 14.
      *
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
@@ -248,7 +248,7 @@ class OpenWeatherMap
      * @param int              $endOrCount
      * @param string           $type
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
@@ -310,9 +310,9 @@ class OpenWeatherMap
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
@@ -356,9 +356,9 @@ class OpenWeatherMap
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
@@ -402,10 +402,10 @@ class OpenWeatherMap
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string           $mode The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default)
-     * @param int              $cnt How many days of forecast shall be returned? Maximum (and default): 14
+     * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default)
+     * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 14
      *
      * @throws \InvalidArgumentException If $cnt is higher than 14.
      * @return string Returns false on failure and the fetched data in the format you specified on success.
@@ -451,16 +451,16 @@ class OpenWeatherMap
     /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the daily forecast.
      *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param \DateTime        $start The \DateTime object of the date to get the first weather information from.
-     * @param \DateTime|int    $endOrCount Can be either a \DateTime object representing the end of the period to
-     *                                     receive weather history data for or an integer counting the number of
+     * @param array|int|string $query           The place to get weather information for. For possible values see below.
+     * @param \DateTime        $start           The \DateTime object of the date to get the first weather information from.
+     * @param \DateTime|int    $endOrCount      Can be either a \DateTime object representing the end of the period to
+     *                                          receive weather history data for or an integer counting the number of
      *                                          reports requested.
-     * @param string           $type The period of the weather history requested. Can be either be either "tick",
-     *                               "hour" or "day".
-     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang The language to use for descriptions, default is 'en'. For possible values see below.
-     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $type            The period of the weather history requested. Can be either be either "tick",
+     *                                          "hour" or "day".
+     * @param string           $units           Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang            The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $appid           Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws \InvalidArgumentException
      *

@@ -45,8 +45,8 @@ class Unit
     /**
      * Create a new unit object.
      *
-     * @param float  $value The value.
-     * @param string $unit The unit of the value.
+     * @param float  $value       The value.
+     * @param string $unit        The unit of the value.
      * @param string $description The description of the value.
      *
      * @internal

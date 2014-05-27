@@ -35,7 +35,7 @@ class Sun
      * Create a new sun object.
      *
      * @param \DateTime $rise The time of the sun rise
-     * @param \DateTime $set The time of the sun set.
+     * @param \DateTime $set  The time of the sun set.
      *
      * @throws \LogicException If sunset is before sunrise.
      * @internal
