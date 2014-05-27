@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenWeatherMap-PHP-API — An php api to parse weather data from http://www.OpenWeatherMap.org .
+ * OpenWeatherMap-PHP-API — A php api to parse weather data from http://www.OpenWeatherMap.org .
  *
  * @license MIT
  *

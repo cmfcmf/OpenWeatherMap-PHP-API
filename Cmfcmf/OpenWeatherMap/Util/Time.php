@@ -1,6 +1,6 @@
 <?php
 /**
- * OpenWeatherMap-PHP-API — An php api to parse weather data from http://www.OpenWeatherMap.org .
+ * OpenWeatherMap-PHP-API — A php api to parse weather data from http://www.OpenWeatherMap.org .
  *
  * @license MIT
  *
@@ -47,11 +47,11 @@ class Time
     public function __construct($from, $to = null)
     {
         if (isset($to)) {
-            $from = (!is_string($from) && is_a($from, 'DateTime')) ? $from : new \DateTime($from);
-            $to = (!is_string($to) && is_a($to, 'DateTime')) ? $to : new \DateTime($to);
+            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string) $from);
+            $to = ($to instanceof \DateTime) ? $to : new \DateTime((string) $to);
             $day = new \DateTime($from->format('Y-m-d'));
         } else {
-            $from = (!is_string($from) && is_a($from, 'DateTime')) ? $from : new \DateTime($from);
+            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string) $from);
             $day = clone $from;
             $to = clone $from;
             $to = $to->add(new \DateInterval('PT23H59M59S'));
