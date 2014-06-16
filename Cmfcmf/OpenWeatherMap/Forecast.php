@@ -50,7 +50,7 @@ class Forecast extends CurrentWeather
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
 
         if ($units == 'metric') {
-            $temperatureUnit = "\xB0C";
+            $temperatureUnit = "&deg;C";
         } else {
             $temperatureUnit = 'F';
         }
