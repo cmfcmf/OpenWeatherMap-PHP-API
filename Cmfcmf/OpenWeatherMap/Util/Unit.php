@@ -83,7 +83,7 @@ class Unit
     {
         // Units are inconsistent. Only celsius and fahrenheit are not abbreviated. This check fixes that.
         if ($this->unit == 'celsius') {
-            return "\xB0C";
+            return "&deg;C";
         } else if ($this->unit == 'fahrenheit') {
             return 'F';
         } else {
