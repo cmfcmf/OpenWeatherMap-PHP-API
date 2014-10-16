@@ -14,14 +14,9 @@ For example code and how to use this api, please take a look into `Examples_*.ph
 
 **Notice:** This api is not made by OpenWeatherMap, nor their official php api.
 
-Contribute || Support me
-========================
-I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**. 
-
-However if you like this and want to **support** _me_, a 17-year old student from Berlin, you may want to **flattr** or **gittip** a few coins?
-
-- [![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=cmfcmf&url=https://github.com/cmfcmf/OpenWeatherMap-PHP-Api&title=OpenWeatherMap-PHP-Api&language=&tags=github&category=software)
-- [Support me on gittip](https://www.gittip.com/cmfcmf)
+Contribute!
+===========
+I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**.
 
 Installation
 ============
