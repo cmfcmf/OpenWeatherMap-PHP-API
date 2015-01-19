@@ -110,8 +110,9 @@ class CurrentWeather
 
         $this->clouds = new Unit($xml->clouds['value'], null, $xml->clouds['name']);
         $this->precipitation = new Unit($xml->precipitation['value'], $xml->precipitation['unit'], $xml->precipitation['mode']);
-        $this->sun = new Sun(new \DateTime($xml->city->sun['rise']), new \DateTime($xml->city->sun['set']));
+        $utctz = new \DateTimeZone('UTC');
+        $this->sun = new Sun(new \DateTime($xml->city->sun['rise'], $utctz), new \DateTime($xml->city->sun['set'], $utctz));
         $this->weather = new WeatherObj($xml->weather['number'], $xml->weather['value'], $xml->weather['icon']);
-        $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
+        $this->lastUpdate = new \DateTime($xml->lastupdate['value'], $utctz);
     }
 }
