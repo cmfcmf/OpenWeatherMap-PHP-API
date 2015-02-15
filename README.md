@@ -2,7 +2,7 @@ OpenWeatherMap-PHP-Api
 ======================
 A php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeatherMap.org). This api tries to normalise and abstract the data and remove inconsistencies.
 
-[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)[![Code Coverage](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/coverage.png?s=65153e7cfb13e050d734c645e38f2dd7ea7a6860)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/cmfcmf/openweathermap-php-api/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)[![Code Coverage](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/coverage.png?s=65153e7cfb13e050d734c645e38f2dd7ea7a6860)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 -----------
 
