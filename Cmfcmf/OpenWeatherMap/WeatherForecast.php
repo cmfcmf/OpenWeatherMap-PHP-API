@@ -20,6 +20,7 @@ namespace Cmfcmf\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
+use Cmfcmf\OpenWeatherMap\Util\Sun;
 
 /**
  * Weather class returned by Cmfcmf\OpenWeatherMap->getWeather().
@@ -34,6 +35,13 @@ class WeatherForecast implements \Iterator
      * @var Util\City
      */
     public $city;
+
+    /**
+     * A sun object
+     *
+     * @var Util\Sun
+     */
+    public $sun;
 
     /**
      * The time of the last update of this weather data.
@@ -68,6 +76,7 @@ class WeatherForecast implements \Iterator
     public function __construct($xml, $units, $days)
     {
         $this->city = new City(-1, $xml->location->name, $xml->location->location['longitude'], $xml->location->location['latitude'], $xml->location->country);
+        $this->sun = new Sun(new \DateTime($xml->sun['rise']), new \DateTime($xml->sun['set']));
         $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
 
         $counter = 0;
