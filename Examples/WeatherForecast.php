@@ -44,6 +44,8 @@ echo "City: " . $forecast->city->name;
 echo "<br />\n";
 echo "LastUpdate: " . $forecast->lastUpdate->format('d.m.Y H:i');
 echo "<br />\n";
+echo "Sunrise : " . $forecast->sun->rise->format("H:i:s") . " Sunset : " . $forecast->sun->set->format("H:i:s");
+echo "<br />\n";
 echo "<br />\n";
 
 foreach ($forecast as $weather) {
