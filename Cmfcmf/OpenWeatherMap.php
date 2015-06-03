@@ -220,10 +220,10 @@ class OpenWeatherMap
 
         if ($days <= 5) {
             $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
-        } else if ($days <= 14) {
+        } else if ($days <= 16) {
             $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
         } else {
-            throw new \InvalidArgumentException('Error: forecasts are only available for the next 14 days. $days must be lower than 15.');
+            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be lower than 17.');
         }
 
         try {
@@ -440,10 +440,10 @@ class OpenWeatherMap
      *
      * @api
      */
-    public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 14)
+    public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 16)
     {
-        if ($cnt > 14) {
-            throw new \InvalidArgumentException('$cnt must be 14 or below!');
+        if ($cnt > 16) {
+            throw new \InvalidArgumentException('$cnt must be 16 or below!');
         }
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
 
