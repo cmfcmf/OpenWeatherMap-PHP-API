@@ -179,7 +179,7 @@ class OpenWeatherMap
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
      * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 14.
+     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 16.
      *
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
@@ -407,9 +407,9 @@ class OpenWeatherMap
      * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default)
-     * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 14
+     * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 16
      *
-     * @throws \InvalidArgumentException If $cnt is higher than 14.
+     * @throws \InvalidArgumentException If $cnt is higher than 16.
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
      * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
