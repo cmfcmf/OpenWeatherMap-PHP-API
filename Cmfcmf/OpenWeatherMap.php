@@ -179,7 +179,7 @@ class OpenWeatherMap
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
      * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 14.
+     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 16.
      *
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
@@ -220,10 +220,10 @@ class OpenWeatherMap
 
         if ($days <= 5) {
             $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
-        } else if ($days <= 14) {
+        } else if ($days <= 16) {
             $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
         } else {
-            throw new \InvalidArgumentException('Error: forecasts are only available for the next 14 days. $days must be lower than 15.');
+            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be lower than 17.');
         }
 
         try {
@@ -407,9 +407,9 @@ class OpenWeatherMap
      * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default)
-     * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 14
+     * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 16
      *
-     * @throws \InvalidArgumentException If $cnt is higher than 14.
+     * @throws \InvalidArgumentException If $cnt is higher than 16.
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
      * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
@@ -440,10 +440,10 @@ class OpenWeatherMap
      *
      * @api
      */
-    public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 14)
+    public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 16)
     {
-        if ($cnt > 14) {
-            throw new \InvalidArgumentException('$cnt must be 14 or below!');
+        if ($cnt > 16) {
+            throw new \InvalidArgumentException('$cnt must be 16 or below!');
         }
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
 
