@@ -5,7 +5,7 @@
 
     <testsuites>
         <testsuite name="cmfcmf/openweathermap-php-api test suite">
-            <directory suffix="Test.php">.</directory>
+            <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>
 

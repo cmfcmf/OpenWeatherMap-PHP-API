@@ -12,7 +12,9 @@
  * information regarding copyright and licensing.
  */
 
-namespace Cmfcmf\OpenWeatherMap\Util;
+namespace Cmfcmf\OpenWeatherMap\Tests\Util;
+
+use \Cmfcmf\OpenWeatherMap\Util\Unit;
 
 class UnitTest extends \PHPUnit_Framework_TestCase
 {

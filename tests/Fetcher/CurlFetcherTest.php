@@ -16,40 +16,36 @@
  * @see http://openweathermap.org/appid
  */
 
-namespace Cmfcmf\OpenWeatherMap\Fetcher;
+namespace Cmfcmf\OpenWeatherMap\Tests\Fetcher;
 
-class FileGetContentsFetcherTest extends \PHPUnit_Framework_TestCase
+use \Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
+
+/**
+ * @requires function curl_version
+ */
+class CurlFetcherTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-        if (!ini_get('allow_url_fopen')) {
-            $this->markTestSkipped('"allow_url_fopen" is set to off.');
-        }
-    }
-
-    /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
-     */
     public function testInvalidUrl()
     {
-        $fetcher = new FileGetContentsFetcher();
+        $fetcher = new CurlFetcher();
 
-        $fetcher->fetch('http://notexisting.example.com');
+        $content = $fetcher->fetch('http://notexisting.example.com');
+
+        $this->assertSame(false, $content);
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
-     */
     public function testEmptyUrl()
     {
-        $fetcher = new FileGetContentsFetcher();
+        $fetcher = new CurlFetcher();
 
-        $fetcher->fetch('');
+        $content = $fetcher->fetch('');
+
+        $this->assertSame(false, $content);
     }
 
     public function testValidUrl()
     {
-        $fetcher = new FileGetContentsFetcher();
+        $fetcher = new CurlFetcher();
 
         $content = $fetcher->fetch('http://httpbin.org/html');
 
