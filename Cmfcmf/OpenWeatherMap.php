@@ -256,7 +256,7 @@ class OpenWeatherMap
      * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return WeatherForecast The WeatherForecast object.
+     * @return WeatherHistory The WeatherHistory object.
      *
      * There are three ways to specify the place to get weather information for:
      * - Use the city name: $query must be a string containing the city name.
