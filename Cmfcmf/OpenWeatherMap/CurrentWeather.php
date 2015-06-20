@@ -88,12 +88,12 @@ class CurrentWeather
     /**
      * Create a new weather object.
      *
-     * @param        $xml
-     * @param string $units
+     * @param \SimpleXMLElement $xml
+     * @param string            $units
      *
      * @internal
      */
-    public function __construct($xml, $units)
+    public function __construct(\SimpleXMLElement $xml, $units)
     {
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
         $this->temperature = new Temperature(new Unit($xml->temperature['value'], $xml->temperature['unit']), new Unit($xml->temperature['min'], $xml->temperature['unit']), new Unit($xml->temperature['max'], $xml->temperature['unit']));

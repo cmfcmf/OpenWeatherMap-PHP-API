@@ -45,7 +45,7 @@ class Forecast extends CurrentWeather
      *
      * @internal
      */
-    public function __construct($xml, $units)
+    public function __construct(\SimpleXMLElement $xml, $units)
     {
         $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
 
