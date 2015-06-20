@@ -11,8 +11,7 @@
  * OpenWeatherMap before using this class:
  *
  * @see http://www.OpenWeatherMap.org
- * @see http://www.OpenWeatherMap.org/about
- * @see http://www.OpenWeatherMap.org/copyright
+ * @see http://www.OpenWeatherMap.org/terms
  * @see http://openweathermap.org/appid
  */
 

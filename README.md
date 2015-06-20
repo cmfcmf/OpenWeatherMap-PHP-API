@@ -77,8 +77,7 @@ License
 =======
 MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE) distributed with this source code for further information regarding copyright and licensing.
 
-**Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.**
+**Please check out the following links to read about the usage policies and the license of OpenWeatherMap before using the service.**
 - [OpenWeatherMap.org](http://www.OpenWeatherMap.org)
-- [OpenWeatherMap.org/about](http://www.OpenWeatherMap.org/about)
-- [OpenWeatherMap.org/copyright](http://www.OpenWeatherMap.org/copyright)
+- [OpenWeatherMap.org/terms](http://www.OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
