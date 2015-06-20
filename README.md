@@ -80,5 +80,5 @@ MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-P
 **Please visit the following links to read about the usage policies and the license of OpenWeatherMap before using this class.**
 - [OpenWeatherMap.org](http://www.OpenWeatherMap.org)
 - [OpenWeatherMap.org/about](http://www.OpenWeatherMap.org/about)
-- [OpenWeatherMap.org/copyright](http://www.OpenWeatherMap.org/copyright)
+- [OpenWeatherMap.org/terms](http://www.OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
