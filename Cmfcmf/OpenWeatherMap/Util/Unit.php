@@ -64,7 +64,7 @@ class Unit
      *
      * @return string The value as formatted string with unit.
      *
-     * @note The unit is not included if it is empty.
+     * The unit is not included if it is empty.
      */
     public function __toString()
     {
@@ -76,7 +76,7 @@ class Unit
      *
      * @return string The value's unit.
      *
-     * @note This also converts 'celsius' to '°C' and 'fahrenheit' to 'F'.
+     * This also converts 'celsius' to '°C' and 'fahrenheit' to 'F'.
      */
     public function getUnit()
     {
@@ -115,7 +115,7 @@ class Unit
      *
      * @return string The value as formatted string with unit.
      *
-     * @note The unit is not included if it is empty.
+     * The unit is not included if it is empty.
      */
     public function getFormatted()
     {

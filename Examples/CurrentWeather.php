@@ -60,7 +60,7 @@ echo $weather->temperature->getUnit();
 echo "<br />\n";
 
 /**
- * @notice In the example above we're using a "shortcut". OpenWeatherMap returns the minimum temperature of a day,
+ * In the example above we're using a "shortcut". OpenWeatherMap returns the minimum temperature of a day,
  * the maximum temperature and the temperature right now. If you don't specify which temperature you want, it will default
  * to the current temperature. See below how to access the other values. Notice that each of them has implemented the methods
  * "getFormatted()", "getValue()", "getUnit()".
@@ -79,7 +79,7 @@ echo "Maximum: " . $weather->temperature->max;
 echo "<br />\n";
 
 /**
- * @notice When speaking about "current" and "now", this means when the weather data was last updated. You can get this
+ * When speaking about "current" and "now", this means when the weather data was last updated. You can get this
  * via a DateTime object:
  */
 echo "Last update: " . $weather->lastUpdate->format('r');
@@ -90,7 +90,7 @@ $weather = $owm->getWeather('Hongkong', $units, $lang);
 echo "<br /><br />\n\n\nEXAMPLE 2<hr />\n\n\n";
 
 /**
- * @notice You can use the methods above to only get the value or the unit.
+ * You can use the methods above to only get the value or the unit.
  */
 
 echo "Pressure: " . $weather->pressure;
@@ -102,7 +102,7 @@ echo "<br />\n";
 echo "<br /><br />\n\n\nEXAMPLE 3<hr />\n\n\n";
 
 /**
- * @notice These functions return a DateTime object.
+ * These functions return a DateTime object.
  */
 
 echo "Sunrise: " . $weather->sun->rise->format('r');
@@ -156,7 +156,7 @@ echo "Direction: " . $weather->wind->direction;
 echo "<br />\n";
 
 /**
- * @notice For speed and direction there is a description available, which isn't always translated.
+ * For speed and direction there is a description available, which isn't always translated.
  */
 
 echo "Speed: " . $weather->wind->speed->getDescription();
