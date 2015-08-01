@@ -84,7 +84,7 @@ class Unit
         // Also, the API started to return "metric" as temperature unit recently. Also fix that.
         if ($this->unit == 'celsius' || $this->unit == 'metric') {
             return "&deg;C";
-        } else if ($this->unit == 'fahrenheit') {
+        } elseif ($this->unit == 'fahrenheit') {
             return 'F';
         } else {
             return $this->unit;

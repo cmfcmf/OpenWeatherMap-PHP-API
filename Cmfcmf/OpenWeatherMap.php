@@ -219,7 +219,7 @@ class OpenWeatherMap
 
         if ($days <= 5) {
             $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
-        } else if ($days <= 16) {
+        } elseif ($days <= 16) {
             $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
         } else {
             throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be lower than 17.');
@@ -505,7 +505,7 @@ class OpenWeatherMap
 
         if ($endOrCount instanceof \DateTime) {
             $queryUrl .= "&end={$endOrCount->format('U')}";
-        } else if (is_numeric($endOrCount) && $endOrCount > 0) {
+        } elseif (is_numeric($endOrCount) && $endOrCount > 0) {
             $queryUrl .= "&cnt=$endOrCount";
         } else {
             throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');

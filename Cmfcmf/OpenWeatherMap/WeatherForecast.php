@@ -88,7 +88,7 @@ class WeatherForecast implements \Iterator
             // Make sure to only return the requested number of days.
             if ($days <= 5 && $counter == $days * 8) {
                 break;
-            } else if ($days > 5 && $counter == $days) {
+            } elseif ($days > 5 && $counter == $days) {
                 break;
             }
         }

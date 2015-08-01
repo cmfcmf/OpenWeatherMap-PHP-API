@@ -23,5 +23,4 @@ namespace Cmfcmf\OpenWeatherMap;
  */
 class Exception extends \Exception
 {
-
 }
