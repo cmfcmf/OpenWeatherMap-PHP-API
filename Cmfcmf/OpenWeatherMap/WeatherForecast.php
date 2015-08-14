@@ -50,11 +50,11 @@ class WeatherForecast implements \Iterator
     public $lastUpdate;
 
     /**
-     * An array of {@link WeatherForecast} objects.
+     * An array of {@link Forecast} objects.
      *
-     * @var array
+     * @var Forecast[]
      *
-     * @see WeatherForecast The WeatherForecast class.
+     * @see Forecast The Forecast class.
      */
     private $forecasts;
 
