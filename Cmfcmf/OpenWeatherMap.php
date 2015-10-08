@@ -71,8 +71,14 @@ class OpenWeatherMap
     private $seconds;
 
     /**
+     * @var Bool True if the last call was fetched from cache, usefull for rate limits 
+     */
+    private $wasCached=false;
+    
+    /**
      * @var FetcherInterface The url fetcher.
      */
+    
     private $fetcher;
 
     /**
@@ -534,7 +540,9 @@ class OpenWeatherMap
             /** @var \Cmfcmf\OpenWeatherMap\AbstractCache $cache */
             $cache = $this->cacheClass;
             $cache->setSeconds($this->seconds);
+            $this->wasCached=false;
             if ($cache->isCached($url)) {
+            	$this->wasCached=true;
                 return $cache->getCached($url);
             }
             $result = $this->fetcher->fetch($url);
@@ -584,6 +592,7 @@ class OpenWeatherMap
      */
     private function buildQueryUrlParameter($query)
     {
+    	
         switch ($query) {
             case (is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon'])):
                 return "lat={$query['lat']}&lon={$query['lon']}";
@@ -595,4 +604,18 @@ class OpenWeatherMap
                 throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
         }
     }
+    
+    /**
+     * Shows it the last result was fetched from cache
+     *
+     * 
+     * @return bool true if last result was fetched from cache, otherwise false.
+     * 
+     */
+    public function wasCached()
+    {
+    	 
+    	return $this->wasCached;
+    }
+    
 }
