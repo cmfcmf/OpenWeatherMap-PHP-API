@@ -127,6 +127,5 @@ class Temperature
         $this->morning = $morning;
         $this->evening = $evening;
         $this->night = $night;
-        
     }
 }
