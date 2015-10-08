@@ -118,7 +118,7 @@ class Temperature
      *
      * @internal
      */
- public function __construct(Unit $now, Unit $min, Unit $max, Unit $day, Unit $morning, Unit $evening, Unit $night)
+    public function __construct(Unit $now, Unit $min, Unit $max, Unit $day, Unit $morning, Unit $evening, Unit $night)
     {
         $this->now = $now;
         $this->min = $min;
