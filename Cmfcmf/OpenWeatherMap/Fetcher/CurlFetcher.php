@@ -29,11 +29,20 @@ class CurlFetcher implements FetcherInterface
      */
     public function fetch($url)
     {
+        global $curl;
+        
         $ch = curl_init($url);
         $timeout = 5;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+        
+        if(isset($curl['options'])) {
+            foreach($curl['options'] as $k => $v) {
+                curl_setopt($ch, constant('CURLOPT_'.$k), $v);
+            }
+        }
+        
         $content = curl_exec($ch);
         curl_close($ch);
 
