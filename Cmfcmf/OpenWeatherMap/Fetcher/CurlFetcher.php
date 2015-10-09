@@ -37,8 +37,8 @@ class CurlFetcher implements FetcherInterface
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         
-        if(isset($curl['options'])) {
-            foreach($curl['options'] as $k => $v) {
+        if (isset($curl['options'])) {
+            foreach ($curl['options'] as $k => $v) {
                 curl_setopt($ch, constant('CURLOPT_'.$k), $v);
             }
         }
