@@ -35,7 +35,7 @@ class CurlFetcher implements FetcherInterface
      * @param array $curlOptions The Curl options to use. See http://php.net/manual/de/function.curl-setopt.php
      * for a list of available options.
      */
-    public function __construct($curlOptions = [])
+    public function __construct($curlOptions = array())
     {
         $this->curlOptions = $curlOptions;
     }
