@@ -121,9 +121,9 @@ class Unit
     public function getFormatted()
     {
         if ($this->getUnit() != "") {
-            return "{$this->getValue()} {$this->getUnit()}";
+            return $this->getValue() . " " . $this->getUnit();
         } else {
-            return "{$this->getValue()}";
+            return (string)$this->getValue();
         }
     }
 }
