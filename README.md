@@ -9,7 +9,7 @@ A php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeather
 For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
 - `Examples_Current.php` Shows how to receive the current weather.
 - `Examples_Forecast.php` Shows how to receive weather forecasts.
-- [*NEW*] `Examples_History.php` Shows how to receive weather history.
+- `Examples_History.php` Shows how to receive weather history.
 - `Examples_Cache.php` Shows how to implement a cache.
 
 **Notice:** This api is not made by OpenWeatherMap, nor their official php api.
