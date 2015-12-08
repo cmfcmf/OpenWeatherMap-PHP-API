@@ -542,7 +542,7 @@ class OpenWeatherMap
             $cache->setSeconds($this->seconds);
             $this->wasCached=false;
             if ($cache->isCached($url)) {
-            	$this->wasCached=true;
+                $this->wasCached=true;
                 return $cache->getCached($url);
             }
             $result = $this->fetcher->fetch($url);
@@ -592,7 +592,6 @@ class OpenWeatherMap
      */
     private function buildQueryUrlParameter($query)
     {
-    	
         switch ($query) {
             case (is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon'])):
                 return "lat={$query['lat']}&lon={$query['lon']}";
@@ -614,8 +613,6 @@ class OpenWeatherMap
      */
     public function wasCached()
     {
-    	 
-    	return $this->wasCached;
+        return $this->wasCached;
     }
-    
 }
