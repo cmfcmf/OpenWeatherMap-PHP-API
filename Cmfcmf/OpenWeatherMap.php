@@ -71,9 +71,9 @@ class OpenWeatherMap
     private $seconds;
 
     /**
-     * @var Bool True if the last call was fetched from cache, usefull for rate limits 
+     * @var bool
      */
-    private $wasCached=false;
+    private $wasCached = false;
     
     /**
      * @var FetcherInterface The url fetcher.
@@ -605,11 +605,9 @@ class OpenWeatherMap
     }
     
     /**
-     * Shows it the last result was fetched from cache
-     *
+     * Returns whether or not the last result was fetched from the cache.
      * 
      * @return bool true if last result was fetched from cache, otherwise false.
-     * 
      */
     public function wasCached()
     {
