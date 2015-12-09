@@ -6,17 +6,17 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - 7
   - hhvm
-  - nightly
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: hhvm
-    - php: nightly
 
 install:
   - composer install --dev
 
+script: phpunit ---coverage-text --coverage-clover=coverage.clover
 
-script: phpunit
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
