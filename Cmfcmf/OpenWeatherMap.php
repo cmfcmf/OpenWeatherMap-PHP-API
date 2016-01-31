@@ -82,7 +82,15 @@ class OpenWeatherMap
     private $fetcher;
 
     /**
+     * @var $apiKey.
+     */
+
+    private $apiKey = '';
+
+    /**
      * Constructs the OpenWeatherMap object.
+     *
+     * @param null|string           $appid      The API key. Defaults to null.
      *
      * @param null|FetcherInterface $fetcher    The interface to fetch the data from OpenWeatherMap. Defaults to
      *                                          CurlFetcher() if cURL is available. Otherwise defaults to
@@ -94,7 +102,7 @@ class OpenWeatherMap
      * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
      * @api
      */
-    public function __construct($fetcher = null, $cacheClass = false, $seconds = 600)
+    public function __construct($appid = null, $fetcher = null, $cacheClass = false, $seconds = 600)
     {
         if ($cacheClass !== false && !($cacheClass instanceof AbstractCache)) {
             throw new \Exception("The cache class must implement the FetcherInterface!");
@@ -109,10 +117,34 @@ class OpenWeatherMap
             $cacheClass = false;
         }
 
+        if (!is_null($appid)) {
+            $this->apiKey = $appid;
+        }
         $this->cacheClass = $cacheClass;
         $this->seconds = $seconds;
         $this->fetcher = $fetcher;
     }
+
+    /**
+     * Sets the API Key
+     * @param	string	API key for the OpenWeatherMap account making the connection.
+     *
+     * @api
+     */
+     public function setApiKey($appid)
+     {
+         $this->apiKey = $appid;
+     }
+
+    /**
+     * Returns the API Key
+     *
+     * @api
+     */
+     public function getApiKey()
+     {
+         return $this->apiKey;
+     }
 
     /**
      * Returns the current weather at the place you specified as an object.
@@ -159,7 +191,7 @@ class OpenWeatherMap
         libxml_use_internal_errors(true);
         libxml_clear_errors();
 
-        $answer = $this->getRawWeatherData($query, $units, $lang, $appid, 'xml');
+        $answer = $this->getRawWeatherData($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, 'xml');
 
         try {
             $xml = new \SimpleXMLElement($answer);
@@ -224,9 +256,9 @@ class OpenWeatherMap
         libxml_clear_errors();
 
         if ($days <= 5) {
-            $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
+            $answer = $this->getRawHourlyForecastData($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, 'xml');
         } elseif ($days <= 16) {
-            $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
+            $answer = $this->getRawDailyForecastData($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, 'xml', $days);
         } else {
             throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be lower than 17.');
         }
@@ -295,7 +327,7 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
         }
 
-        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, $appid), true);
+        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, empty($appid) ? $this->apiKey : $appid), true);
 
         if ($xml['cod'] != 200) {
             throw new OWMException($xml['message'], $xml['cod']);
@@ -309,7 +341,7 @@ class OpenWeatherMap
      */
     public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
+        return $this->getRawWeatherData($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, $mode);
     }
 
     /**
@@ -353,7 +385,7 @@ class OpenWeatherMap
      */
     public function getRawWeatherData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
-        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherUrl);
+        $url = $this->buildUrl($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, $mode, $this->weatherUrl);
 
         return $this->cacheOrFetchResult($url);
     }
@@ -399,7 +431,7 @@ class OpenWeatherMap
      */
     public function getRawHourlyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
-        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherHourlyForecastUrl);
+        $url = $this->buildUrl($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, $mode, $this->weatherHourlyForecastUrl);
 
         return $this->cacheOrFetchResult($url);
     }
@@ -450,7 +482,7 @@ class OpenWeatherMap
         if ($cnt > 16) {
             throw new \InvalidArgumentException('$cnt must be 16 or below!');
         }
-        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
+        $url = $this->buildUrl($query, $units, $lang, empty($appid) ? $this->apiKey : $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
 
         return $this->cacheOrFetchResult($url);
     }
@@ -516,11 +548,9 @@ class OpenWeatherMap
         } else {
             throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');
         }
-        $queryUrl .= "&type=$type&units=$units&lang=$lang";
+        $queryUrl .= "&type=$type&units=$units&lang=$lang&APPID=";
 
-        if (!empty($appid)) {
-            $queryUrl .= "&APPID=$appid";
-        }
+        $queryUrl .= empty($appid) ? $this->apiKey : $appid;
 
         return $this->cacheOrFetchResult($queryUrl);
     }
@@ -572,10 +602,8 @@ class OpenWeatherMap
     {
         $queryUrl = $this->buildQueryUrlParameter($query);
 
-        $url = $url . "$queryUrl&units=$units&lang=$lang&mode=$mode";
-        if (!empty($appid)) {
-            $url .= "&APPID=$appid";
-        }
+        $url = $url . "$queryUrl&units=$units&lang=$lang&mode=$mode&APPID=";
+        $url .= empty($appid) ? $this->apiKey : $appid;
 
         return $url;
     }
