@@ -82,6 +82,8 @@ class WeatherForecast implements \Iterator
         foreach ($xml->forecast->time as $time) {
             $forecast = new Forecast($time, $units);
             $forecast->city = $this->city;
+            $forecast->sun = $this->sun;
+            $forecast->lastUpdate = $this->lastUpdate;
             $this->forecasts[] = $forecast;
 
             $counter++;
