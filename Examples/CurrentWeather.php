@@ -27,6 +27,10 @@ if (file_exists('../vendor/autoload.php')) {
     require('../../../autoload.php');
 }
 
+// Load the app configuration
+$ini = parse_ini_file('../Examples.ini');
+$myApiKey = $ini['api_key'];
+
 // Language of data (try your own language here!):
 $lang = 'de';
 
@@ -34,7 +38,7 @@ $lang = 'de';
 $units = 'metric';
 
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap();
+$owm = new OpenWeatherMap($myApiKey);
 
 // Example 1: Get current temperature in Berlin.
 $weather = $owm->getWeather('Berlin', $units, $lang);
@@ -233,4 +237,8 @@ try {
 }
 
 // Example 15: Using an api key:
-$owm->getWeather('Berlin', $units, $lang, 'Your-Api-Key-Here');
+echo "<br /><br />\n\n\nEXAMPLE 15<hr />\n\n\n";
+$weather = $owm->getWeather('Berlin', $units, $lang, $myApiKey);
+echo $weather->temperature . "\n";
+echo "<br />\n";
+
