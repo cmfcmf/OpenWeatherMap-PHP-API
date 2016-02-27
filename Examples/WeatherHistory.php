@@ -14,16 +14,15 @@
  * @see http://www.OpenWeatherMap.org/terms
  * @see http://openweathermap.org/appid
  */
-
 use Cmfcmf\OpenWeatherMap;
 
 if (file_exists('../vendor/autoload.php')) {
     // Library is not part of a project. "composer install" was executed directly on this library's composer file.
-    require('../vendor/autoload.php');
+    require '../vendor/autoload.php';
 } else {
     // Library is part of a project.
     /** @noinspection PhpIncludeInspection */
-    require('../../../autoload.php');
+    require '../../../autoload.php';
 }
 
 // Load the app configuration
@@ -43,6 +42,5 @@ $owm = new OpenWeatherMap($myApiKey);
 $history = $owm->getWeatherHistory('Berlin', new \DateTime('2014-01-01'), new \DateTime('now'), 'hour', $units, $lang);
 
 foreach ($history as $weather) {
-    echo "Average temperature at " . $weather->time->format('d.m.Y H:i') . ": " . $weather->temperature . "\n\r<br />";
+    echo 'Average temperature at '.$weather->time->format('d.m.Y H:i').': '.$weather->temperature."\n\r<br />";
 }
-
