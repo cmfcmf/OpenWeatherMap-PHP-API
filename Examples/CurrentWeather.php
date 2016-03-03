@@ -37,7 +37,8 @@ $lang = 'de';
 $units = 'metric';
 
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap($myApiKey);
+$owm = new OpenWeatherMap();
+$owm->setApiKey($myApiKey);
 
 // Example 1: Get current temperature in Berlin.
 $weather = $owm->getWeather('Berlin', $units, $lang);
