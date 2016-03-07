@@ -134,11 +134,11 @@ class OpenWeatherMap
 
      /**
       * Returns the API Key.
-	  *
-   	  * @return string
       *
-      * @api
-      */
+	  * @return string
+	  *
+	  * @api
+	  */
      public function getApiKey()
      {
          return $this->apiKey;
