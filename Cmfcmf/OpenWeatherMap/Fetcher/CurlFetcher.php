@@ -25,13 +25,13 @@ namespace Cmfcmf\OpenWeatherMap\Fetcher;
 class CurlFetcher implements FetcherInterface
 {
     /**
-     * @var array The Curl options to use. 
+     * @var array The Curl options to use.
      */
     private $curlOptions;
 
     /**
      * Create a new CurlFetcher instance.
-     * 
+     *
      * @param array $curlOptions The Curl options to use. See http://php.net/manual/de/function.curl-setopt.php
      * for a list of available options.
      */
