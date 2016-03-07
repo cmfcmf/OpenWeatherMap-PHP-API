@@ -1,7 +1,9 @@
-OpenWeatherMap-PHP-Api
+OpenWeatherMap PHP API
 ======================
-A php api to parse weather data from [OpenWeatherMap.org](http://www.OpenWeatherMap.org). 
-The api tries to normalise and abstract the data and remove inconsistencies.
+A php API to retrieve and parse global weather data from 
+[OpenWeatherMap.org](http://www.OpenWeatherMap.org).
+This library aims to normalise the provided data and remove some inconsistencies.
+This library is neither maintained by OpenWeatherMap nor their official PHP API.
 
 [![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
@@ -9,40 +11,29 @@ The api tries to normalise and abstract the data and remove inconsistencies.
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 -----------
 
-For example code and how to use this api, please take a look into `Examples_*.php` files and run them in your browser.
+For example code and how to use this API, please take a look into 
+`Examples_*.php` files and open them in your browser.
 - `Examples_Current.php` Shows how to receive the current weather.
 - `Examples_Forecast.php` Shows how to receive weather forecasts.
 - `Examples_History.php` Shows how to receive weather history.
 - `Examples_Cache.php` Shows how to implement a cache.
 
-**Notice:** The api is neither maintained by OpenWeatherMap, nor their official php api.
 
 Contribute!
 ===========
-I'm very happy if you open **pull requests** or **issues** to help making this API **more awesome**.
+I'm happy about every **pull request** or **issue** you find and open to help 
+making this API **more awesome**.
+
+You can use [Vagrant](https://vagrantup.com) to kick-start your development.
+Simply run `vagrant up`, `vagrant ssh` and `cd` into `/vagrant` to start 
+developing.
 
 Installation
 ============
 This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
-The recommended way to install this is through [composer](http://getcomposer.org).
-
-Edit your `composer.json` and add:
-
-```json
-{
-    "require": {
-        "cmfcmf/openweathermap-php-api": "~2.0"
-    }
-}
-```
-
-And install dependencies:
-
-```bash
-$ curl -sS https://getcomposer.org/installer | php
-$ php composer.phar install
-```
-
+The recommended way to install and use this is through [Composer](http://getcomposer.org).
+Execute `composer require "cmfcmf/openweathermap-php-api": "~2.0"` in your
+project root.
 
 Example call
 ============
@@ -78,9 +69,11 @@ echo $weather->temperature;
 
 License
 =======
-MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE) distributed with this source code for further information regarding copyright and licensing.
+MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
+distributed with this source code for further information regarding copyright and licensing.
 
-**Please check out the following links to read about the usage policies and the license of OpenWeatherMap before using the service.**
-- [OpenWeatherMap.org](http://www.OpenWeatherMap.org)
-- [OpenWeatherMap.org/terms](http://www.OpenWeatherMap.org/terms)
-- [OpenWeatherMap.org/appid](http://www.OpenWeatherMap.org/appid)
+**Please check out the following official links to read about the terms, pricing 
+and license of OpenWeatherMap before using the service.**
+- [OpenWeatherMap.org](http://OpenWeatherMap.org)
+- [OpenWeatherMap.org/terms](http://OpenWeatherMap.org/terms)
+- [OpenWeatherMap.org/appid](http://OpenWeatherMap.org/appid)
