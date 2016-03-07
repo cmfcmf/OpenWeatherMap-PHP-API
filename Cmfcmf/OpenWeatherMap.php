@@ -132,9 +132,9 @@ class OpenWeatherMap
          $this->apiKey = $appid;
      }
 
-     /**
-      * Returns the API Key.
-      *
+	/**
+	  * Returns the API Key.
+	  *
 	  * @return string
 	  *
 	  * @api
