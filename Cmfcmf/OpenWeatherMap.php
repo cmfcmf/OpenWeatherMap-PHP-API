@@ -606,7 +606,7 @@ class OpenWeatherMap
     
     /**
      * Returns whether or not the last result was fetched from the cache.
-     * 
+     *
      * @return bool true if last result was fetched from cache, otherwise false.
      */
     public function wasCached()
