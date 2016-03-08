@@ -444,7 +444,7 @@ class OpenWeatherMap
             case is_string($query):
                 return 'q='.urlencode($query);
             default:
-                throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
+                throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getWeather() to read about valid formats.');
         }
     }
 

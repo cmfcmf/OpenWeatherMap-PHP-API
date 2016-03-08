@@ -26,8 +26,8 @@ if (file_exists('../vendor/autoload.php')) {
     require '../../../autoload.php';
 }
 
-// Load the app configuration
-$ini = parse_ini_file('../Examples.ini');
+// Load the api key.
+$ini = parse_ini_file('ApiKey.ini');
 $myApiKey = $ini['api_key'];
 
 // Language of data (try your own language here!):
@@ -235,9 +235,3 @@ try {
     echo 'General exception: '.$e->getMessage().' (Code '.$e->getCode().').';
     echo "<br />\n";
 }
-
-// Example 15: Using an api key:
-echo "<br /><br />\n\n\nEXAMPLE 15<hr />\n\n\n";
-$weather = $owm->getWeather('Berlin', $units, $lang, $myApiKey);
-echo $weather->temperature."\n";
-echo "<br />\n";
