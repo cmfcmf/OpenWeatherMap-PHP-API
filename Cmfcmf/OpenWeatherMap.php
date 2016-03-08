@@ -34,8 +34,8 @@ use Cmfcmf\OpenWeatherMap\WeatherHistory;
 class OpenWeatherMap
 {
     /**
-     * The copyright notice. This is no official text, this hint was created
-     * following to http://openweathermap.org/copyright.
+     * The copyright notice. This is no official text, it was created by
+     * following the guidelines at http://openweathermap.org/copyright.
      *
      * @var string $copyright
      */
@@ -62,9 +62,9 @@ class OpenWeatherMap
     private $weatherHistoryUrl = 'http://api.openweathermap.org/data/2.5/history/city?';
 
     /**
-     * @var AbstractCache|bool $cacheClass The cache class.
+     * @var AbstractCache|bool $cache The cache to use.
      */
-    private $cacheClass = false;
+    private $cache = false;
 
     /**
      * @var int
@@ -89,20 +89,30 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param null|FetcherInterface $fetcher    The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                          CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                          FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param bool|string           $cacheClass If set to false, caching is disabled. Otherwise this must be a class
-     *                                          extending AbstractCache. Defaults to false.
-     * @param int                   $seconds    How long weather data shall be cached. Default 10 minutes.
+     * @param string                $apiKey  The OpenWeatherMap API key. Required and only optional for BC.
+     * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
+     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
+     *                                       FileGetContentsFetcher() using 'file_get_contents()'.
+     * @param bool|string           $cache   If set to false, caching is disabled. Otherwise this must be a class
+     *                                       extending AbstractCache. Defaults to false.
+     * @param int $seconds                   How long weather data shall be cached. Default 10 minutes.
      *
      * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
      *
      * @api
      */
-    public function __construct($fetcher = null, $cacheClass = false, $seconds = 600)
+    public function __construct($apiKey = '', $fetcher = null, $cache = false, $seconds = 600)
     {
-        if ($cacheClass !== false && !($cacheClass instanceof AbstractCache)) {
+        if (!is_string($apiKey) || empty($apiKey)) {
+            // BC
+            $seconds = $cache !== false ? $cache : 600;
+            $cache = $fetcher !== null ? $fetcher : false;
+            $fetcher = $apiKey !== '' ? $apiKey : null;
+        } else {
+            $this->apiKey = $apiKey;
+        }
+
+        if ($cache !== false && !($cache instanceof AbstractCache)) {
             throw new \Exception('The cache class must implement the FetcherInterface!');
         }
         if (!is_numeric($seconds)) {
@@ -112,37 +122,37 @@ class OpenWeatherMap
             $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
         }
         if ($seconds == 0) {
-            $cacheClass = false;
+            $cache = false;
         }
 
-        $this->cacheClass = $cacheClass;
+        $this->cache = $cache;
         $this->seconds = $seconds;
         $this->fetcher = $fetcher;
     }
 
-     /**
-      * Sets the API Key.
-      *
-      * @param string API key for the OpenWeatherMap account making the connection.
-      *
-      * @api
-      */
-     public function setApiKey($appid)
-     {
-         $this->apiKey = $appid;
-     }
+    /**
+     * Sets the API Key.
+     *
+     * @param string $apiKey API key for the OpenWeatherMap account.
+     *
+     * @api
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
 
-     /**
-      * Returns the API Key.
-      *
-      * @return string
-      *
-      * @api
-      */
-     public function getApiKey()
-     {
-         return $this->apiKey;
-     }
+    /**
+     * Returns the API Key.
+     *
+     * @return string
+     *
+     * @api
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
 
     /**
      * Returns the current weather at the place you specified as an object.
@@ -161,25 +171,6 @@ class OpenWeatherMap
      * - Use the city name: $query must be a string containing the city name.
      * - Use the city id: $query must be an integer containing the city id.
      * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
      *
      * @api
      */
@@ -245,21 +236,13 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
         }
 
-        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, empty($appid) ? $this->apiKey : $appid), true);
+        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, $appid), true);
 
         if ($xml['cod'] != 200) {
             throw new OWMException($xml['message'], $xml['cod']);
         }
 
         return new WeatherHistory($xml, $query);
-    }
-
-    /**
-     * @deprecated Use {@link self::getRawWeatherData()} instead.
-     */
-    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
-    {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
     }
 
     /**
@@ -362,20 +345,17 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
         }
 
-        $queryUrl = $this->weatherHistoryUrl.$this->buildQueryUrlParameter($query)."&start={$start->format('U')}";
-
+        $url = $this->buildUrl($query, $units, $lang, $appid, 'json', $this->weatherHistoryUrl);
+        $url .= "&type=$type&start={$start->format('U')}";
         if ($endOrCount instanceof \DateTime) {
-            $queryUrl .= "&end={$endOrCount->format('U')}";
+            $url .= "&end={$endOrCount->format('U')}";
         } elseif (is_numeric($endOrCount) && $endOrCount > 0) {
-            $queryUrl .= "&cnt=$endOrCount";
+            $url .= "&cnt=$endOrCount";
         } else {
             throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');
         }
-        $queryUrl .= "&type=$type&units=$units&lang=$lang&APPID=";
 
-        $queryUrl .= empty($appid) ? $this->apiKey : $appid;
-
-        return $this->cacheOrFetchResult($queryUrl);
+        return $this->cacheOrFetchResult($url);
     }
 
     /**
@@ -389,6 +369,14 @@ class OpenWeatherMap
     }
 
     /**
+     * @deprecated Use {@link self::getRawWeatherData()} instead.
+     */
+    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
+    }
+
+    /**
      * Fetches the result or delivers a cached version of the result.
      *
      * @param string $url
@@ -397,9 +385,9 @@ class OpenWeatherMap
      */
     private function cacheOrFetchResult($url)
     {
-        if ($this->cacheClass !== false) {
+        if ($this->cache !== false) {
             /** @var AbstractCache $cache */
-            $cache = $this->cacheClass;
+            $cache = $this->cache;
             $cache->setSeconds($this->seconds);
             if ($cache->isCached($url)) {
                 $this->wasCached = true;
