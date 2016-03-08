@@ -25,7 +25,7 @@ use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
 // Must point to composer's autoload file.
-require('vendor/autoload.php');
+require 'vendor/autoload.php';
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -33,8 +33,9 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Get OpenWeatherMap object. Don't use caching (take a look into Examples/Cache.php to see how it works).
-$owm = new OpenWeatherMap();
+// Create OpenWeatherMap object. 
+// Don't use caching (take a look into Examples/Cache.php to see how it works).
+$owm = new OpenWeatherMap('YOUR-API-KEY');
 
 try {
     $weather = $owm->getWeather('Berlin', $units, $lang);
