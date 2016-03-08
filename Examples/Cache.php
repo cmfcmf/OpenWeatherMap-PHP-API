@@ -81,6 +81,10 @@ class ExampleCache extends AbstractCache
     }
 }
 
+// Load the api key.
+$ini = parse_ini_file('ApiKey.ini');
+$myApiKey = $ini['api_key'];
+
 // Language of data (try your own language here!):
 $lang = 'de';
 
@@ -88,7 +92,7 @@ $lang = 'de';
 $units = 'metric';
 
 // Example 1: Use your own cache implementation. Cache for 10 seconds only in this example.
-$owm = new OpenWeatherMap(null, new ExampleCache(), 10);
+$owm = new OpenWeatherMap($myApiKey, null, new ExampleCache(), 10);
 
 $weather = $owm->getWeather('Berlin', $units, $lang);
 echo "EXAMPLE 1<hr />\n\n\n";
