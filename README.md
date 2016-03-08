@@ -49,7 +49,8 @@ echo $weather->temperature;
 ```
 
 For more example code and instructions on how to use this library, please take 
-a look into  the `Examples` folder.
+a look into  the `Examples` folder. Make sure to get an API Key from 
+http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
 - `CurrentWeather.php` Shows how to receive the current weather.
 - `WeatherForecast.php` Shows how to receive weather forecasts.
 - `WeatherHistory.php` Shows how to receive weather history.
