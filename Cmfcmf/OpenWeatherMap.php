@@ -155,7 +155,7 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the current weather at the place you specified as an object.
+     * Returns the current weather at the place you specified.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
@@ -183,7 +183,8 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the current weather at the place you specified as an object.
+     * Returns the forecast for the place you specified. DANGER: Might return
+     * fewer results than requested due to a bug in the OpenWeatherMap API!
      *
      * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
@@ -213,7 +214,7 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the weather history for the place you specified as an object.
+     * Returns the weather history for the place you specified.
      *
      * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
      * @param \DateTime        $start
