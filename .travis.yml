@@ -16,6 +16,7 @@ install:
   - composer install --dev
 
 script: phpunit --coverage-text --coverage-clover=coverage.clover
+script: phpunit --coverage-text --coverage-clover=coverageInteg.clover -c integTests.xml integTests/
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
