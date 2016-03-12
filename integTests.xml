@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--suppress XmlUnboundNsPrefix -->
+<phpunit bootstrap="./integTests/bootstrap.php" colors="true">
+
+    <testsuites>
+        <testsuite name="cmfcmf/openweathermap-php-api test suite">
+            <directory suffix="Test.php">./integTests</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory suffix="Test.php">./</directory>
+                <directory suffix="Interface.php">./</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
