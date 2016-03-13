@@ -12,13 +12,15 @@ php:
 matrix:
   fast_finish: true
 
+addons:
+  hosts:
+    - api.openweathermap.org
+
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y socat
-  - sudo echo "184.170.226.124	ritproxy" >> /etc/hosts
-  - sudo echo "127.0.0.1	api.openweathermap.org" >> /etc/hosts
   - cat /etc/hosts
-  - sudo socat TCP-LISTEN:80,fork TCP:ritproxy:3128 > /tmp/socat.log 2>&1 &
+  - sudo socat TCP-LISTEN:80,fork TCP:184.170.226.124:3128 > /tmp/socat.log 2>&1 &
 
 install:
   - composer install --dev
