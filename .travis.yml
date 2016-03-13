@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: required
 
 php:
   - 5.3
@@ -13,7 +13,8 @@ matrix:
   fast_finish: true
 
 before_install:
-  - dpkg -l socat
+  - sudo apt-get -qq update
+  - sudo apt-get install -y socat
   - ls -l /etc/hosts
   - cat /etc/hosts
 
