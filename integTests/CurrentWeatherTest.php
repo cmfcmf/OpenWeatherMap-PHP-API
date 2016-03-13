@@ -28,7 +28,7 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
     {
 
         // Load the app configuration
-        $ini = parse_ini_file( __DIR__ . '/../Examples.ini');
+        $ini = parse_ini_file( __DIR__ . '/ApiKey.ini');
         $apiKey = $ini['api_key'];
 
         $this->owm = new OpenWeatherMap();
