@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: true
 
 php:
   - 5.3
@@ -13,8 +13,9 @@ matrix:
   fast_finish: true
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y socat
+  - dpkg -l socat
+  - ls -l /etc/hosts
+  - cat /etc/hosts
 
 install:
   - composer install --dev
@@ -22,8 +23,6 @@ install:
 script:
   - phpunit --coverage-text --coverage-clover=coverage.clover
   - phpunit --coverage-text --coverage-clover=coverageInteg.clover -c integTests.xml integTests/
-  - ls -l /etc/hosts
-  - cat /etc/hosts
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
