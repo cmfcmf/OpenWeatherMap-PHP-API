@@ -34,6 +34,14 @@ use Cmfcmf\OpenWeatherMap\WeatherHistory;
 class OpenWeatherMap
 {
     /**
+     * The copyright notice. This is no official text, it was created by
+     * following the guidelines at http://openweathermap.org/copyright.
+     *
+     * @var string $copyright
+     */
+    const COPYRIGHT = "Weather data from <a href=\"http://www.openweathermap.org\">OpenWeatherMap.org</a>";
+
+    /**
      * @var string The basic api url to fetch weather data from.
      */
     private $weatherUrl = 'http://api.openweathermap.org/data/2.5/weather?';
@@ -54,16 +62,9 @@ class OpenWeatherMap
     private $weatherHistoryUrl = 'http://api.openweathermap.org/data/2.5/history/city?';
 
     /**
-     * The copyright notice. This is no official text, this hint was created regarding to http://openweathermap.org/copyright.
-     *
-     * @var string
+     * @var AbstractCache|bool $cache The cache to use.
      */
-    const COPYRIGHT = 'Weather data from <a href="http://www.openweathermap.org">OpenWeatherMap.org</a>';
-
-    /**
-     * @var \Cmfcmf\OpenWeatherMap\AbstractCache|bool The cache class.
-     */
-    private $cacheClass = false;
+    private $cache = false;
 
     /**
      * @var int
@@ -88,21 +89,30 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param null|string           $appid      The API key. Defaults to null.
-     * @param null|FetcherInterface $fetcher    The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                          CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                          FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param bool|string           $cacheClass If set to false, caching is disabled. Otherwise this must be a class
-     *                                          extending AbstractCache. Defaults to false.
-     * @param int                   $seconds    How long weather data shall be cached. Default 10 minutes.
+     * @param string                $apiKey  The OpenWeatherMap API key. Required and only optional for BC.
+     * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
+     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
+     *                                       FileGetContentsFetcher() using 'file_get_contents()'.
+     * @param bool|string           $cache   If set to false, caching is disabled. Otherwise this must be a class
+     *                                       extending AbstractCache. Defaults to false.
+     * @param int $seconds                   How long weather data shall be cached. Default 10 minutes.
      *
      * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
      *
      * @api
      */
-    public function __construct($fetcher = null, $cacheClass = false, $seconds = 600)
+    public function __construct($apiKey = '', $fetcher = null, $cache = false, $seconds = 600)
     {
-        if ($cacheClass !== false && !($cacheClass instanceof AbstractCache)) {
+        if (!is_string($apiKey) || empty($apiKey)) {
+            // BC
+            $seconds = $cache !== false ? $cache : 600;
+            $cache = $fetcher !== null ? $fetcher : false;
+            $fetcher = $apiKey !== '' ? $apiKey : null;
+        } else {
+            $this->apiKey = $apiKey;
+        }
+
+        if ($cache !== false && !($cache instanceof AbstractCache)) {
             throw new \Exception('The cache class must implement the FetcherInterface!');
         }
         if (!is_numeric($seconds)) {
@@ -112,10 +122,10 @@ class OpenWeatherMap
             $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
         }
         if ($seconds == 0) {
-            $cacheClass = false;
+            $cache = false;
         }
 
-        $this->cacheClass = $cacheClass;
+        $this->cache = $cache;
         $this->seconds = $seconds;
         $this->fetcher = $fetcher;
     }
@@ -145,11 +155,11 @@ class OpenWeatherMap
      }
 
     /**
-     * Returns the current weather at the place you specified as an object.
+     * Returns the current weather at the place you specified.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see below.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
@@ -162,160 +172,62 @@ class OpenWeatherMap
      * - Use the city id: $query must be an integer containing the city id.
      * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
      *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
-     *
      * @api
      */
     public function getWeather($query, $units = 'imperial', $lang = 'en', $appid = '')
     {
-        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
-        libxml_use_internal_errors(true);
-        libxml_clear_errors();
-
         $answer = $this->getRawWeatherData($query, $units, $lang, $appid, 'xml');
-
-        try {
-            $xml = new \SimpleXMLElement($answer);
-        } catch (\Exception $e) {
-            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
-            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
-            $error = json_decode($answer, true);
-            if (isset($error['message'])) {
-                throw new OWMException($error['message'], $error['cod']);
-            } else {
-                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: '.$answer);
-            }
-        }
+        $xml = $this->parseXML($answer);
 
         return new CurrentWeather($xml, $units);
     }
 
     /**
-     * Returns the current weather at the place you specified as an object.
+     * Returns the forecast for the place you specified. DANGER: Might return
+     * fewer results than requested due to a bug in the OpenWeatherMap API!
      *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 16.
      *
-     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return WeatherForecast The WeatherForecast object.
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * @return WeatherForecast
      *
      * @api
      */
     public function getWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
     {
-        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
-        libxml_use_internal_errors(true);
-        libxml_clear_errors();
-
         if ($days <= 5) {
             $answer = $this->getRawHourlyForecastData($query, $units, $lang, $appid, 'xml');
         } elseif ($days <= 16) {
             $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
         } else {
-            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be lower than 17.');
+            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
         }
-
-        try {
-            $xml = new \SimpleXMLElement($answer);
-        } catch (\Exception $e) {
-            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
-            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
-            $error = json_decode($answer, true);
-            if (isset($error['message'])) {
-                throw new OWMException($error['message'], $error['cod']);
-            } else {
-                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: '.$answer);
-            }
-        }
+        $xml = $this->parseXML($answer);
 
         return new WeatherForecast($xml, $units, $days);
     }
 
     /**
-     * Returns the weather history for the place you specified as an object.
+     * Returns the weather history for the place you specified.
      *
-     * @param array|int|string $query      The place to get weather information for. For possible values see below.
+     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
      * @param \DateTime        $start
      * @param int              $endOrCount
-     * @param string           $type
+     * @param string           $type       Can either be 'tick', 'hour' or 'day'.
      * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return WeatherHistory The WeatherHistory object.
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * @return WeatherHistory
      *
      * @api
      */
@@ -325,7 +237,7 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
         }
 
-        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, empty($appid) ? $this->apiKey : $appid), true);
+        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, $appid), true);
 
         if ($xml['cod'] != 200) {
             throw new OWMException($xml['message'], $xml['cod']);
@@ -335,49 +247,17 @@ class OpenWeatherMap
     }
 
     /**
-     * @deprecated Use {@link self::getRawWeatherData()} instead.
-     */
-    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
-    {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
-    }
-
-    /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the current weather.
      *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
-     * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * Warning: If an error occurs, OpenWeatherMap ALWAYS returns json data.
      *
      * @api
      */
@@ -391,39 +271,15 @@ class OpenWeatherMap
     /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the hourly forecast.
      *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
-     * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * Warning: If an error occurs, OpenWeatherMap ALWAYS returns json data.
      *
      * @api
      */
@@ -437,9 +293,9 @@ class OpenWeatherMap
     /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the daily forecast.
      *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
      * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
      * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default)
      * @param int              $cnt   How many days of forecast shall be returned? Maximum (and default): 16
@@ -448,48 +304,24 @@ class OpenWeatherMap
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
-     * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * Warning: If an error occurs, OpenWeatherMap ALWAYS returns json data.
      *
      * @api
      */
     public function getRawDailyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 16)
     {
         if ($cnt > 16) {
-            throw new \InvalidArgumentException('$cnt must be 16 or below!');
+            throw new \InvalidArgumentException('$cnt must be 16 or lower!');
         }
-        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl)."&cnt=$cnt";
+        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
 
         return $this->cacheOrFetchResult($url);
     }
 
     /**
-     * Directly returns the xml/json/html string returned by OpenWeatherMap for the daily forecast.
+     * Directly returns the xml/json/html string returned by OpenWeatherMap for the weather history.
      *
-     * @param array|int|string $query      The place to get weather information for. For possible values see below.
+     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
      * @param \DateTime        $start      The \DateTime object of the date to get the first weather information from.
      * @param \DateTime|int    $endOrCount Can be either a \DateTime object representing the end of the period to
      *                                     receive weather history data for or an integer counting the number of
@@ -497,38 +329,14 @@ class OpenWeatherMap
      * @param string           $type       The period of the weather history requested. Can be either be either "tick",
      *                                     "hour" or "day".
      * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see below.
+     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
      * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
      *
      * @throws \InvalidArgumentException
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
-     * Warning If an error occurred, OpenWeatherMap returns data in json format ALWAYS
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the city name: $query must be a string containing the city name.
-     * - Use the city id: $query must be an integer containing the city id.
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * Available languages are (as of 17. July 2013):
-     * - English - en
-     * - Russian - ru
-     * - Italian - it
-     * - Spanish - sp
-     * - Ukrainian - ua
-     * - German - de
-     * - Portuguese - pt
-     * - Romanian - ro
-     * - Polish - pl
-     * - Finnish - fi
-     * - Dutch - nl
-     * - French - fr
-     * - Bulgarian - bg
-     * - Swedish - se
-     * - Chinese Traditional - zh_tw
-     * - Chinese Simplified - zh_cn
-     * - Turkish - tr
+     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
      *
      * @api
      */
@@ -538,41 +346,52 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
         }
 
-        $queryUrl = $this->weatherHistoryUrl.$this->buildQueryUrlParameter($query)."&start={$start->format('U')}";
-
+        $url = $this->buildUrl($query, $units, $lang, $appid, 'json', $this->weatherHistoryUrl);
+        $url .= "&type=$type&start={$start->format('U')}";
         if ($endOrCount instanceof \DateTime) {
-            $queryUrl .= "&end={$endOrCount->format('U')}";
+            $url .= "&end={$endOrCount->format('U')}";
         } elseif (is_numeric($endOrCount) && $endOrCount > 0) {
-            $queryUrl .= "&cnt=$endOrCount";
+            $url .= "&cnt=$endOrCount";
         } else {
             throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');
         }
-        $queryUrl .= "&type=$type&units=$units&lang=$lang&APPID=";
 
-        $queryUrl .= empty($appid) ? $this->apiKey : $appid;
+        return $this->cacheOrFetchResult($url);
+    }
 
-        return $this->cacheOrFetchResult($queryUrl);
+    /**
+     * Returns whether or not the last result was fetched from the cache.
+     *
+     * @return bool true if last result was fetched from cache, false otherwise.
+     */
+    public function wasCached()
+    {
+        return $this->wasCached;
+    }
+
+    /**
+     * @deprecated Use {@link self::getRawWeatherData()} instead.
+     */
+    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
+    {
+        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
     }
 
     /**
      * Fetches the result or delivers a cached version of the result.
      *
-     * @param $url
+     * @param string $url
      *
      * @return string
-     *
-     * @internal
      */
     private function cacheOrFetchResult($url)
     {
-        if ($this->cacheClass !== false) {
-            /** @var \Cmfcmf\OpenWeatherMap\AbstractCache $cache */
-            $cache = $this->cacheClass;
+        if ($this->cache !== false) {
+            /** @var AbstractCache $cache */
+            $cache = $this->cache;
             $cache->setSeconds($this->seconds);
-            $this->wasCached = false;
             if ($cache->isCached($url)) {
                 $this->wasCached = true;
-
                 return $cache->getCached($url);
             }
             $result = $this->fetcher->fetch($url);
@@ -580,6 +399,7 @@ class OpenWeatherMap
         } else {
             $result = $this->fetcher->fetch($url);
         }
+        $this->wasCached = false;
 
         return $result;
     }
@@ -595,8 +415,6 @@ class OpenWeatherMap
      * @param string $url   The url to prepend.
      *
      * @return bool|string The fetched url, false on failure.
-     *
-     * @internal
      */
     private function buildUrl($query, $units, $lang, $appid, $mode, $url)
     {
@@ -611,13 +429,11 @@ class OpenWeatherMap
     /**
      * Builds the query string for the url.
      *
-     * @param $query
+     * @param mixed $query
      *
      * @return string The built query string for the url.
      *
      * @throws \InvalidArgumentException If the query parameter is invalid.
-     *
-     * @internal
      */
     private function buildQueryUrlParameter($query)
     {
@@ -629,17 +445,32 @@ class OpenWeatherMap
             case is_string($query):
                 return 'q='.urlencode($query);
             default:
-                throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getRawData() to read about valid formats.');
+                throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getWeather() to read about valid formats.');
         }
     }
 
     /**
-     * Returns whether or not the last result was fetched from the cache.
+     * @param string $answer The content returned by OpenWeatherMap.
      *
-     * @return bool true if last result was fetched from cache, otherwise false.
+     * @return \SimpleXMLElement
+     * @throws OWMException If the content isn't valid XML.
      */
-    public function wasCached()
+    private function parseXML($answer)
     {
-        return $this->wasCached;
+        // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
+        libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        try {
+            return new \SimpleXMLElement($answer);
+        } catch (\Exception $e) {
+            // Invalid xml format. This happens in case OpenWeatherMap returns an error.
+            // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
+            $error = json_decode($answer, true);
+            if (isset($error['message'])) {
+                throw new OWMException($error['message'], $error['cod']);
+            } else {
+                throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
+            }
+        }
     }
 }
