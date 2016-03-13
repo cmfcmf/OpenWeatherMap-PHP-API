@@ -12,12 +12,18 @@ php:
 matrix:
   fast_finish: true
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y socat
+
 install:
   - composer install --dev
 
 script:
   - phpunit --coverage-text --coverage-clover=coverage.clover
   - phpunit --coverage-text --coverage-clover=coverageInteg.clover -c integTests.xml integTests/
+  - ls -l /etc/hosts
+  - cat /etc/hosts
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
