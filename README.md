@@ -5,14 +5,14 @@ A php API to retrieve and parse global weather data from
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
 
-[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
-[![Code Coverage](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/?branch=master)
+[![Build Status](https://travis-ci.org/aseriy/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/aseriy/OpenWeatherMap-PHP-Api)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/aseriy/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/aseriy/OpenWeatherMap-PHP-Api/)
+[![Code Coverage](https://scrutinizer-ci.com/g/aseriy/OpenWeatherMap-PHP-Api/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/aseriy/OpenWeatherMap-PHP-Api/?branch=master)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 
 Installation
 ============
-This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
+This library can be found on [Packagist](https://packagist.org/packages/aseriy/openweathermap-php-api).
 The recommended way to install and use this is through [Composer](http://getcomposer.org).
 Execute `composer require "cmfcmf/openweathermap-php-api": "~2.0"` in your
 project root.
