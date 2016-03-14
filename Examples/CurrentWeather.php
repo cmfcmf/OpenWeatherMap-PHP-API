@@ -241,4 +241,3 @@ echo "<br /><br />\n\n\nEXAMPLE 15<hr />\n\n\n";
 $weather = $owm->getWeather('Berlin', $units, $lang, $myApiKey);
 echo $weather->temperature."\n";
 echo "<br />\n";
-
