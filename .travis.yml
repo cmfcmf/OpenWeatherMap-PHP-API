@@ -1,5 +1,5 @@
 language: php
-sudo: false
+sudo: required
 
 php:
   - 5.3
@@ -12,10 +12,21 @@ php:
 matrix:
   fast_finish: true
 
+addons:
+  hosts:
+    - api.openweathermap.org
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y socat
+  - cat /etc/hosts
+  - sudo socat TCP-LISTEN:80,fork TCP:184.170.226.124:3128 > /tmp/socat.log 2>&1 &
+
 install:
   - composer install --dev
 
-script: phpunit --coverage-text --coverage-clover=coverage.clover
+script:
+  - phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
