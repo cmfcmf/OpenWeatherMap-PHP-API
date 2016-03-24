@@ -235,4 +235,3 @@ try {
     echo 'General exception: '.$e->getMessage().' (Code '.$e->getCode().').';
     echo "<br />\n";
 }
-
