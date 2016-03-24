@@ -130,29 +130,29 @@ class OpenWeatherMap
         $this->fetcher = $fetcher;
     }
 
-     /**
-      * Sets the API Key.
-      *
-      * @param	string	API key for the OpenWeatherMap account making the connection.
-      *
-      * @api
-      */
-     public function setApiKey($appid)
-     {
-         $this->apiKey = $appid;
-     }
+    /**
+     * Sets the API Key.
+     *
+     * @param string $apiKey API key for the OpenWeatherMap account.
+     *
+     * @api
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+    }
 
     /**
-      * Returns the API Key.
-      *
-      * @return string
-      *
-      * @api
-      */
-     public function getApiKey()
-     {
-         return $this->apiKey;
-     }
+     * Returns the API Key.
+     *
+     * @return string
+     *
+     * @api
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
 
     /**
      * Returns the current weather at the place you specified.
@@ -474,3 +474,4 @@ class OpenWeatherMap
         }
     }
 }
+

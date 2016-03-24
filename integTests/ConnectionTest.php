@@ -1,15 +1,18 @@
 <?php
 /**
- * Copyright Alex Seriy 2016
+ * OpenWeatherMap-PHP-API — A php api to parse weather data from http://www.OpenWeatherMap.org .
  *
- * This work is contributed to ********* under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * @license MIT
  *
- * @license GNU/LGPv3 (or at your option any later version).
- * @package OpenWeatherMap-PHP-Api
- *
- * Please see the NOTICE file distributed with this source code for further
+ * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
+ *
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap before using this class:
+ *
+ * @see http://www.OpenWeatherMap.org
+ * @see http://www.OpenWeatherMap.org/terms
+ * @see http://openweathermap.org/appid
  */
 
 namespace Cmfcmf\OpenWeatherMap\IntegTests;
