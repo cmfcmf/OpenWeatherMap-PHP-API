@@ -29,8 +29,6 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-
-        // Load the app configuration
         $ini = parse_ini_file(__DIR__ . '/ApiKey.ini');
         $apiKey = $ini['api_key'];
 
@@ -38,9 +36,8 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->owm->setApiKey($apiKey);
     }
 
-    public function testByCity()
+    public function testByCityMetric()
     {
-        // Default units (imperial) and language (English)
         $forecast = $this->owm->getWeatherForecast('Berlin', 'metric', 'de', '', 10);
 
         $now = new \DateTime();
@@ -76,5 +73,44 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('10.93', $forecast_arr[7]->temperature->getValue());
         $this->assertEmpty($forecast_arr[8]->temperature->getDescription());
         $this->assertEquals('8.02 &deg;C', $forecast_arr[9]->temperature->getFormatted());
+    }
+
+    public function testByCityImperial()
+    {
+        $forecast = $this->owm->getWeatherForecast('New York', 'imperial', 'en', '', 10);
+
+        $now = new \DateTime();
+        $this->assertEquals($now->format('m-d-Y H:i'), $forecast->lastUpdate->format('m-d-Y H:i'));
+
+        $this->assertEquals('New York', $forecast->city->name);
+        $this->assertEquals('10:53:25', $forecast->sun->rise->format("H:i:s"));
+        $this->assertEquals('23:11:57', $forecast->sun->set->format("H:i:s"));
+
+        $this->assertEquals(10, iterator_count($forecast));
+
+        $forecast_arr = iterator_to_array($forecast);
+
+        $this->assertEquals('48.88 F', $forecast_arr[0]->temperature);
+        $this->assertEquals('55.56 F', $forecast_arr[1]->temperature);
+        $this->assertEquals('57.08 F', $forecast_arr[2]->temperature->now);
+        $this->assertEquals('50.85 F', $forecast_arr[3]->temperature);
+        $this->assertEquals('47.79 F', $forecast_arr[4]->temperature);
+        $this->assertEquals('46.21 F', $forecast_arr[5]->temperature);
+        $this->assertEquals('47.73 F', $forecast_arr[6]->temperature);
+        $this->assertEquals('43.52 F', $forecast_arr[7]->temperature->now);
+        $this->assertEquals('34.79 F', $forecast_arr[8]->temperature);
+        $this->assertEquals('30.35 F', $forecast_arr[9]->temperature);
+
+        $this->assertEquals('47.75 F', $forecast_arr[0]->temperature->min);
+        $this->assertEquals('64.53 F', $forecast_arr[1]->temperature->max);
+        $this->assertEquals('69.4 F', $forecast_arr[2]->temperature->day);
+        $this->assertEquals('58.71 F', $forecast_arr[3]->temperature->morning);
+        $this->assertEquals('49.5 F', $forecast_arr[4]->temperature->evening);
+        $this->assertEquals('43.63 F', $forecast_arr[5]->temperature->night);
+
+        $this->assertEquals('F', $forecast_arr[6]->temperature->getUnit());
+        $this->assertEquals('43.52', $forecast_arr[7]->temperature->getValue());
+        $this->assertEmpty($forecast_arr[8]->temperature->getDescription());
+        $this->assertEquals('30.35 F', $forecast_arr[9]->temperature->getFormatted());
     }
 }
