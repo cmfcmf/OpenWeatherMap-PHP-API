@@ -138,5 +138,4 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('5.41 m/s', $forecast_arr[0]->wind->speed);
         $this->assertEquals('61 ENE', $forecast_arr[1]->wind->direction);
     }
-
 }
