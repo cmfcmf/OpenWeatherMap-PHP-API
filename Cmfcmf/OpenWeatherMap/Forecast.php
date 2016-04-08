@@ -54,7 +54,7 @@ class Forecast extends CurrentWeather
             $temperatureUnit = 'F';
         }
 
-        $xml->temperature['value'] = ($xml->temperature['max'] + $xml->temperature['min']) / 2;
+        $xml->temperature['value'] = round((floatval($xml->temperature['max']) + floatval($xml->temperature['min'])) / 2, 2);
 
         $this->temperature = new Temperature(new Unit($xml->temperature['value'], $temperatureUnit), new Unit($xml->temperature['min'], $temperatureUnit), new Unit($xml->temperature['max'], $temperatureUnit), new Unit($xml->temperature['day'], $temperatureUnit), new Unit($xml->temperature['morn'], $temperatureUnit), new Unit($xml->temperature['eve'], $temperatureUnit), new Unit($xml->temperature['night'], $temperatureUnit));
         $this->humidity = new Unit($xml->humidity['value'], $xml->humidity['unit']);
