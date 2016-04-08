@@ -36,7 +36,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->owm->setApiKey($apiKey);
     }
 
-    public function testByCityMetric()
+    public function testTemperatureMetric()
     {
         $forecast = $this->owm->getWeatherForecast('Berlin', 'metric', 'de', '', 10);
 
@@ -75,7 +75,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('8.02 &deg;C', $forecast_arr[9]->temperature->getFormatted());
     }
 
-    public function testByCityImperial()
+    public function testTemperatureImperial()
     {
         $forecast = $this->owm->getWeatherForecast('New York', 'imperial', 'en', '', 10);
 
@@ -113,4 +113,30 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($forecast_arr[8]->temperature->getDescription());
         $this->assertEquals('30.35 F', $forecast_arr[9]->temperature->getFormatted());
     }
+
+    public function testWindMetric()
+    {
+        $forecast = $this->owm->getWeatherForecast('Moscow', 'metric', 'ru', '', 9);
+
+        $this->assertEquals('Moscow', $forecast->city->name);
+        $this->assertEquals('RU', $forecast->city->country);
+        /*
+        This assertion fails right now because the Daily Forecase XML provides
+        the city ID as 'geobaseid' attribute, not as 'id' in Current Weather.
+        $this->assertEquals(524901, $forecast->city->id);
+         */
+        $this->assertEquals('37.615555', $forecast->city->lon);
+        $this->assertEquals('55.75222', $forecast->city->lat);
+
+        $this->assertEquals('03:22:56', $forecast->sun->rise->format("H:i:s"));
+        $this->assertEquals('15:50:08', $forecast->sun->set->format("H:i:s"));
+
+        $this->assertEquals(9, iterator_count($forecast));
+
+        $forecast_arr = iterator_to_array($forecast);
+
+        $this->assertEquals('5.41 m/s', $forecast_arr[0]->wind->speed);
+        $this->assertEquals('61 ENE', $forecast_arr[1]->wind->direction);
+    }
+
 }
