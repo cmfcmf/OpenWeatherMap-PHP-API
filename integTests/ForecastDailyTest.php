@@ -120,11 +120,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Moscow', $forecast->city->name);
         $this->assertEquals('RU', $forecast->city->country);
-        /*
-        This assertion fails right now because the Daily Forecase XML provides
-        the city ID as 'geobaseid' attribute, not as 'id' in Current Weather.
         $this->assertEquals(524901, $forecast->city->id);
-         */
         $this->assertEquals('37.615555', $forecast->city->lon);
         $this->assertEquals('55.75222', $forecast->city->lat);
 
