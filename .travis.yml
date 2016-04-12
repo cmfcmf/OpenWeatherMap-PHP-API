@@ -23,7 +23,7 @@ before_install:
   - sudo socat TCP-LISTEN:80,fork TCP:184.170.226.124:3128 > /tmp/socat.log 2>&1 &
 
 install:
-  - composer install --dev
+  - composer install
 
 script:
   - phpunit --coverage-text --coverage-clover=coverage.clover
