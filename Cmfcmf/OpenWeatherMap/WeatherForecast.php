@@ -75,7 +75,8 @@ class WeatherForecast implements \Iterator
     public function __construct($xml, $units, $days)
     {
         $this->city = new City($xml->location->location['geobaseid'], $xml->location->name, $xml->location->location['longitude'], $xml->location->location['latitude'], $xml->location->country);
-        $this->sun = new Sun(new \DateTime($xml->sun['rise']), new \DateTime($xml->sun['set']));
+        $utctz = new \DateTimeZone('UTC');
+        $this->sun = new Sun(new \DateTime($xml->sun['rise'], $utctz), new \DateTime($xml->sun['set'], $utctz));
         $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
 
         $today = new \DateTime();
@@ -88,8 +89,10 @@ class WeatherForecast implements \Iterator
                 // forecasts. The best we can do is to ignore them.
                 continue;
             }
+            $time->sun = $xml->sun;
             $forecast = new Forecast($time, $units);
             $forecast->city = $this->city;
+            $forecast->sun = $this->sun;
             $this->forecasts[] = $forecast;
 
             $counter++;
