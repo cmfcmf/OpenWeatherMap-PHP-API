@@ -45,7 +45,7 @@ class Forecast extends CurrentWeather
      * @internal
      */
     public function __construct(\SimpleXMLElement $xml, $units)
-    {        
+    {
         if ($units == 'metric') {
             $temperatureUnit = "&deg;C";
         } else {
