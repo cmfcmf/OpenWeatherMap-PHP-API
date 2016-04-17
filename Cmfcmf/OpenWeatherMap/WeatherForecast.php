@@ -89,7 +89,6 @@ class WeatherForecast implements \Iterator
                 // forecasts. The best we can do is to ignore them.
                 continue;
             }
-            $time->sun = $xml->sun;
             $forecast = new Forecast($time, $units);
             $forecast->city = $this->city;
             $forecast->sun = $this->sun;
