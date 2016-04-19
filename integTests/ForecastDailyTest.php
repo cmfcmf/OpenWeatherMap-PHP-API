@@ -18,12 +18,11 @@
 namespace Cmfcmf\OpenWeatherMap\IntegTests;
 
 use Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
 class ForecastDailyTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \OpenWeatherMap
+     * @var OpenWeatherMap
      */
     protected $owm;
 
@@ -32,8 +31,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $ini = parse_ini_file(__DIR__ . '/ApiKey.ini');
         $apiKey = $ini['api_key'];
 
-        $this->owm = new OpenWeatherMap();
-        $this->owm->setApiKey($apiKey);
+        $this->owm = new OpenWeatherMap($apiKey);
     }
 
     public function testTemperatureMetric()
@@ -116,22 +114,18 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
 
     public function testWindMetric()
     {
-        $forecast = $this->owm->getWeatherForecast('Moscow', 'metric', 'ru', '', 9);
+        $forecast = $this->owm->getWeatherForecast('Moscow', 'metric', 'ru', '', 7);
 
         $this->assertEquals('Moscow', $forecast->city->name);
         $this->assertEquals('RU', $forecast->city->country);
-        /*
-        This assertion fails right now because the Daily Forecase XML provides
-        the city ID as 'geobaseid' attribute, not as 'id' in Current Weather.
         $this->assertEquals(524901, $forecast->city->id);
-         */
         $this->assertEquals('37.615555', $forecast->city->lon);
         $this->assertEquals('55.75222', $forecast->city->lat);
 
         $this->assertEquals('03:22:56', $forecast->sun->rise->format("H:i:s"));
         $this->assertEquals('15:50:08', $forecast->sun->set->format("H:i:s"));
 
-        $this->assertEquals(9, iterator_count($forecast));
+        $this->assertEquals(7, iterator_count($forecast));
 
         $forecast_arr = iterator_to_array($forecast);
 

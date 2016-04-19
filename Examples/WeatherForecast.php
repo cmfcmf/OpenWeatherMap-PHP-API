@@ -17,18 +17,7 @@
 
 use Cmfcmf\OpenWeatherMap;
 
-if (file_exists('../vendor/autoload.php')) {
-    // Library is not part of a project. "composer install" was executed directly on this library's composer file.
-    require('../vendor/autoload.php');
-} else {
-    // Library is part of a project.
-    /** @noinspection PhpIncludeInspection */
-    require('../../../autoload.php');
-}
-
-// Load the api key.
-$ini = parse_ini_file('ApiKey.ini');
-$myApiKey = $ini['api_key'];
+require_once __DIR__ . '/bootstrap.php';
 
 // Language of data (try your own language here!):
 $lang = 'de';
@@ -47,7 +36,7 @@ echo "City: " . $forecast->city->name;
 echo "<br />\n";
 echo "LastUpdate: " . $forecast->lastUpdate->format('d.m.Y H:i');
 echo "<br />\n";
-echo "Sunrise : " . $forecast->sun->rise->format("H:i:s") . " Sunset : " . $forecast->sun->set->format("H:i:s");
+echo "Sunrise : " . $forecast->sun->rise->format("H:i:s (e)") . " Sunset : " . $forecast->sun->set->format("H:i:s (e)");
 echo "<br />\n";
 echo "<br />\n";
 
@@ -57,6 +46,8 @@ foreach ($forecast as $weather) {
     echo "Weather forecast at " . $weather->time->day->format('d.m.Y') . " from " . $weather->time->from->format('H:i') . " to " . $weather->time->to->format('H:i');
     echo "<br />\n";
     echo $weather->temperature;
+    echo "<br />\n";
+    echo "Sun rise: " . $weather->sun->rise->format('d.m.Y H:i (e)');
     echo "<br />\n";
     echo "---";
     echo "<br />\n";
@@ -69,5 +60,8 @@ echo "EXAMPLE 2<hr />\n\n\n";
 foreach ($forecast as $weather) {
     echo "Weather forecast at " . $weather->time->day->format('d.m.Y') . " from " . $weather->time->from->format('H:i') . " to " . $weather->time->to->format('H:i') . "<br />";
     echo $weather->temperature . "<br />\n";
+    echo "<br />\n";
+    echo "Sun rise: " . $weather->sun->rise->format('d.m.Y H:i (e)');
+    echo "<br />\n";
     echo "---<br />\n";
 }

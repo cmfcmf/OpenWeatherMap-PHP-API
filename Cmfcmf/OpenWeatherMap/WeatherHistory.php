@@ -18,6 +18,7 @@
 namespace Cmfcmf\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Util\City;
 
 /**
  * Class WeatherHistory.
@@ -62,9 +63,17 @@ class WeatherHistory implements \Iterator
             $population = null;
         }
 
-        $this->city = new OpenWeatherMap\Util\City($weatherHistory['city_id'], (is_string($query)) ? $query : null, (isset($query['lon'])) ? $query['lon'] : null, (isset($query['lat'])) ? $query['lat'] : null, $country, $population);
+        $this->city = new City(
+            $weatherHistory['city_id'],
+            (is_string($query)) ? $query : null,
+            (isset($query['lon'])) ? $query['lon'] : null,
+            (isset($query['lat'])) ? $query['lat'] : null,
+            $country,
+            $population
+        );
         $this->calctime = $weatherHistory['calctime'];
 
+        $utctz = new \DateTimeZone('UTC');
         foreach ($weatherHistory['list'] as $history) {
             if (isset($history['rain'])) {
                 $units = array_keys($history['rain']);
@@ -72,7 +81,22 @@ class WeatherHistory implements \Iterator
                 $units = array(0 => null);
             }
 
-            $this->histories[] = new History($this->city, $history['weather'][0], array('now' => $history['main']['temp'], 'min' => $history['main']['temp_min'], 'max' => $history['main']['temp_max']), $history['main']['pressure'], $history['main']['humidity'], $history['clouds']['all'], isset($history['rain']) ? array('val' => $history['rain'][($units[0])], 'unit' => $units[0]) : null, $history['wind'], \DateTime::createFromFormat('U', $history['dt']));
+            $this->histories[] = new History(
+                $this->city,
+                $history['weather'][0],
+                array(
+                    'now' => $history['main']['temp'],
+                    'min' => $history['main']['temp_min'],
+                    'max' => $history['main']['temp_max']
+                ),
+                $history['main']['pressure'],
+                $history['main']['humidity'],
+                $history['clouds']['all'],
+                isset($history['rain']) ? array(
+                    'val' => $history['rain'][($units[0])],
+                    'unit' => $units[0]) : null,
+                $history['wind'],
+                \DateTime::createFromFormat('U', $history['dt'], $utctz));
         }
     }
 

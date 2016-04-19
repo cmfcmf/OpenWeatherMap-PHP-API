@@ -18,14 +18,7 @@
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\AbstractCache;
 
-if (file_exists('../vendor/autoload.php')) {
-    // Library is not part of a project. "composer install" was executed directly on this library's composer file.
-    require('../vendor/autoload.php');
-} else {
-    // Library is part of a project.
-    /** @noinspection PhpIncludeInspection */
-    require('../../../autoload.php');
-}
+require_once __DIR__ . '/bootstrap.php';
 
 /**
  * Example cache implementation.
@@ -80,10 +73,6 @@ class ExampleCache extends AbstractCache
         file_put_contents($this->urlToPath($url), $content);
     }
 }
-
-// Load the api key.
-$ini = parse_ini_file('ApiKey.ini');
-$myApiKey = $ini['api_key'];
 
 // Language of data (try your own language here!):
 $lang = 'de';
