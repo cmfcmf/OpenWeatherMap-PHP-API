@@ -14,8 +14,9 @@ Installation
 ============
 This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
 The recommended way to install and use this is through [Composer](http://getcomposer.org).
-Execute `composer require "cmfcmf/openweathermap-php-api": "~2.0"` in your
-project root.
+
+    composer require "cmfcmf/openweathermap-php-api"
+
 
 Example call
 ============

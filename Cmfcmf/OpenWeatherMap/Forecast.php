@@ -46,8 +46,6 @@ class Forecast extends CurrentWeather
      */
     public function __construct(\SimpleXMLElement $xml, $units)
     {
-        $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
-
         if ($units == 'metric') {
             $temperatureUnit = "&deg;C";
         } else {
@@ -70,7 +68,6 @@ class Forecast extends CurrentWeather
         $this->wind = new Wind(new Unit($xml->windSpeed['mps'], $windSpeedUnit, $xml->windSpeed['name']), new Unit($xml->windDirection['deg'], $xml->windDirection['code'], $xml->windDirection['name']));
         $this->clouds = new Unit($xml->clouds['all'], $xml->clouds['unit'], $xml->clouds['value']);
         $this->precipitation = new Unit($xml->precipitation['value'], null, $xml->precipitation['type']);
-        $this->sun = new Sun(new \DateTime($xml->city->sun['rise']), new \DateTime($xml->city->sun['set']));
         $this->weather = new WeatherObj($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
         $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
 

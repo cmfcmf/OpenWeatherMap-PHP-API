@@ -23,13 +23,12 @@ use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \OpenWeatherMap
+     * @var OpenWeatherMap
      */
     protected $owm;
 
     protected function setUp()
     {
-
         // Load the app configuration
         $ini = parse_ini_file(__DIR__ . '/ApiKey.ini');
         $apiKey = $ini['api_key'];
@@ -64,7 +63,7 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
     {
         // City doesn't exist
         try {
-            $weather = $this->owm->getWeather('InvalidCity');
+            $this->owm->getWeather('InvalidCity');
         } catch (OWMException $e) {
             $this->assertEquals(404, $e->getCode());
             $this->assertEquals('Error: Not found city', $e->getMessage());
