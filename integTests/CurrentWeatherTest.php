@@ -73,7 +73,7 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
 
     public function testByCityCountry()
     {
-        $weather = $this->owm->getWeather('London,ON');
+        $weather = $this->owm->getWeather('London,CA');
 
         // Geo coordinates
         $this->assertEquals('-81.23', $weather->city->lon);
@@ -92,6 +92,6 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
     public function testByCoordinates()
     {
         $weather = $this->owm->getWeather(array('lon' => 37.62, 'lat' => 55.75));
-        $this->assertEquals($weather->city->country, 'RU');
+        $this->assertEquals('RU', $weather->city->country);
     }
 }
