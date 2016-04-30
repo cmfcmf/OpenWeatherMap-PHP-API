@@ -114,7 +114,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
 
     public function testWindMetric()
     {
-        $forecast = $this->owm->getWeatherForecast('Moscow', 'metric', 'ru', '', 9);
+        $forecast = $this->owm->getWeatherForecast('Moscow', 'metric', 'ru', '', 7);
 
         $this->assertEquals('Moscow', $forecast->city->name);
         $this->assertEquals('RU', $forecast->city->country);
@@ -125,7 +125,7 @@ class ForecastDailyTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('03:22:56', $forecast->sun->rise->format("H:i:s"));
         $this->assertEquals('15:50:08', $forecast->sun->set->format("H:i:s"));
 
-        $this->assertEquals(9, iterator_count($forecast));
+        $this->assertEquals(7, iterator_count($forecast));
 
         $forecast_arr = iterator_to_array($forecast);
 
