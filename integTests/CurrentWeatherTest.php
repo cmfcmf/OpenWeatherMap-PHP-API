@@ -91,6 +91,6 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
     public function testByCoordinates()
     {
         $weather = $this->owm->getWeather(array('lon' => 37.62, 'lat' => 55.75));
-        $this->assertEquals($weather->city->country, 'RU');
+        $this->assertEquals('RU', $weather->city->country);
     }
 }
