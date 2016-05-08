@@ -25,7 +25,7 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
     /**
      * @var OpenWeatherMap
      */
-	protected $apiKey;
+    protected $apiKey;
     protected $owm;
 
     protected function setUp()
@@ -95,25 +95,25 @@ class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('RU', $weather->city->country);
     }
 
-	public function testCurrentBulkCheck()
-	{
-		// Download the test data set
-		$testDataUrl =
-			"https://raw.githubusercontent.com/aseriy/OpenWeatherMap-VirtSrvc/master/testdata/" .
-			"$this->apiKey/current/00.json";
-		$testDataJson = file_get_contents($testDataUrl);
-		$testData = json_decode($testDataJson, true);
+    public function testCurrentBulkCheck()
+    {
+        // Download the test data set
+        $testDataUrl =
+            "https://raw.githubusercontent.com/aseriy/OpenWeatherMap-VirtSrvc/master/testdata/" .
+            "$this->apiKey/current/00.json";
+        $testDataJson = file_get_contents($testDataUrl);
+        $testData = json_decode($testDataJson, true);
 
-		foreach ($testData as $c) {
-			$weather = $this->owm->getWeather($c["city_id"], $c["units"], 'en');
-	        $this->assertEquals($c["city_name"], $weather->city->name, "city name");
-	        $this->assertEquals($c["country"], $weather->city->country, "country in " . $c["city_name"]);
-	        $this->assertEquals($c["temp"], $weather->temperature->getValue(), "temperature in " . $c["city_name"]);
-	        $this->assertEquals($c["temp_min"], $weather->temperature->min->getValue(), "minimum temperature in " . $c["city_name"]);
-	        $this->assertEquals($c["temp_max"], $weather->temperature->max->getValue(), "maximum temperature in " . $c["city_name"]);
-	        $this->assertEquals($c["wind_speed"], $weather->wind->speed->getValue(), "wind speed in " . $c["city_name"]);
-	        $this->assertEquals($c["pressure"], $weather->pressure->getValue(), "pressure in " . $c["city_name"]);
-	        $this->assertEquals($c["humidity"], $weather->humidity->getValue(), "humidity in " . $c["city_name"]);
-		}
-	}	
+        foreach ($testData as $c) {
+            $weather = $this->owm->getWeather($c["city_id"], $c["units"], 'en');
+            $this->assertEquals($c["city_name"], $weather->city->name, "city name");
+            $this->assertEquals($c["country"], $weather->city->country, "country in " . $c["city_name"]);
+            $this->assertEquals($c["temp"], $weather->temperature->getValue(), "temperature in " . $c["city_name"]);
+            $this->assertEquals($c["temp_min"], $weather->temperature->min->getValue(), "minimum temperature in " . $c["city_name"]);
+            $this->assertEquals($c["temp_max"], $weather->temperature->max->getValue(), "maximum temperature in " . $c["city_name"]);
+            $this->assertEquals($c["wind_speed"], $weather->wind->speed->getValue(), "wind speed in " . $c["city_name"]);
+            $this->assertEquals($c["pressure"], $weather->pressure->getValue(), "pressure in " . $c["city_name"]);
+            $this->assertEquals($c["humidity"], $weather->humidity->getValue(), "humidity in " . $c["city_name"]);
+        }
+    }
 }
