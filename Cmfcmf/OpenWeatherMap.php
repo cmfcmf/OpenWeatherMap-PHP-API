@@ -232,7 +232,7 @@ class OpenWeatherMap
      */
     public function getDailyWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
     {
-        if($days > 16) {
+        if ($days > 16) {
             throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
         }
 
