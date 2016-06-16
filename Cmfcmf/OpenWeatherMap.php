@@ -214,6 +214,34 @@ class OpenWeatherMap
     }
 
     /**
+     * Returns the DAILY forecast for the place you specified. DANGER: Might return
+     * fewer results than requested due to a bug in the OpenWeatherMap API!
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param int              $days  For how much days you want to get a forecast. Default 1, maximum: 16.
+     *
+     * @throws OpenWeatherMap\Exception If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return WeatherForecast
+     *
+     * @api
+     */
+    public function getDailyWeatherForecast($query, $units = 'imperial', $lang = 'en', $appid = '', $days = 1)
+    {
+        if ($days > 16) {
+            throw new \InvalidArgumentException('Error: forecasts are only available for the next 16 days. $days must be 16 or lower.');
+        }
+
+        $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
+        $xml = $this->parseXML($answer);
+        return new WeatherForecast($xml, $units, $days);
+    }
+
+    /**
      * Returns the weather history for the place you specified.
      *
      * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
