@@ -1,5 +1,5 @@
 language: php
-sudo: required
+#sudo: required
 
 php:
   - 5.3
@@ -12,15 +12,15 @@ php:
 matrix:
   fast_finish: true
 
-addons:
-  hosts:
-    - api.openweathermap.org
+#addons:
+#  hosts:
+#    - api.openweathermap.org
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y socat
-  - cat /etc/hosts
-  - sudo socat TCP-LISTEN:80,fork TCP:${RTCP_HOST}:${RTCP_PORT} > /tmp/socat.log 2>&1 &
+#before_install:
+#  - sudo apt-get -qq update
+#  - sudo apt-get install -y socat
+#  - cat /etc/hosts
+#  - sudo socat TCP-LISTEN:80,fork TCP:${RTCP_HOST}:${RTCP_PORT} > /tmp/socat.log 2>&1 &
 
 install:
   - composer install
