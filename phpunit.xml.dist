@@ -7,9 +7,9 @@
         <testsuite name="cmfcmf/openweathermap-php-api unit test suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
-        <testsuite name="cmfcmf/openweathermap-php-api integration test suite">
+        <!-- <testsuite name="cmfcmf/openweathermap-php-api integration test suite">
             <directory suffix="Test.php">./integTests</directory>
-        </testsuite>
+        </testsuite> -->
     </testsuites>
 
     <filter>
