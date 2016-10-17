@@ -568,5 +568,4 @@ class OpenWeatherMap
 
         return $json;
     }
-
 }
