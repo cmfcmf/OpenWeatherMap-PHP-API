@@ -87,31 +87,51 @@ class CurrentWeather
     /**
      * Create a new weather object.
      *
-     * @param \SimpleXMLElement $xml
-     * @param string            $units
+     * @param mixed  $data
+     * @param string $units
      *
      * @internal
      */
-    public function __construct(\SimpleXMLElement $xml, $units)
+    public function __construct($data, $units)
     {
-        $this->city = new City($xml->city['id'], $xml->city['name'], $xml->city->coord['lon'], $xml->city->coord['lat'], $xml->city->country);
-        $this->temperature = new Temperature(new Unit($xml->temperature['value'], $xml->temperature['unit']), new Unit($xml->temperature['min'], $xml->temperature['unit']), new Unit($xml->temperature['max'], $xml->temperature['unit']));
-        $this->humidity = new Unit($xml->humidity['value'], $xml->humidity['unit']);
-        $this->pressure = new Unit($xml->pressure['value'], $xml->pressure['unit']);
-
-        // This is kind of a hack, because the units are missing in the xml document.
+        // This is kind of a hack, because the units are missing in the document.
         if ($units == 'metric') {
             $windSpeedUnit = 'm/s';
         } else {
             $windSpeedUnit = 'mph';
         }
-        $this->wind = new Wind(new Unit($xml->wind->speed['value'], $windSpeedUnit, $xml->wind->speed['name']), new Unit($xml->wind->direction['value'], $xml->wind->direction['code'], $xml->wind->direction['name']));
 
-        $this->clouds = new Unit($xml->clouds['value'], null, $xml->clouds['name']);
-        $this->precipitation = new Unit($xml->precipitation['value'], $xml->precipitation['unit'], $xml->precipitation['mode']);
         $utctz = new \DateTimeZone('UTC');
-        $this->sun = new Sun(new \DateTime($xml->city->sun['rise'], $utctz), new \DateTime($xml->city->sun['set'], $utctz));
-        $this->weather = new WeatherObj($xml->weather['number'], $xml->weather['value'], $xml->weather['icon']);
-        $this->lastUpdate = new \DateTime($xml->lastupdate['value'], $utctz);
+
+        if ($data instanceof \SimpleXMLElement) {
+            $this->city = new City($data->city['id'], $data->city['name'], $data->city->coord['lon'], $data->city->coord['lat'], $data->city->country);
+            $this->temperature = new Temperature(new Unit($data->temperature['value'], $data->temperature['unit']), new Unit($data->temperature['min'], $data->temperature['unit']), new Unit($data->temperature['max'], $data->temperature['unit']));
+            $this->humidity = new Unit($data->humidity['value'], $data->humidity['unit']);
+            $this->pressure = new Unit($data->pressure['value'], $data->pressure['unit']);
+            $this->wind = new Wind(new Unit($data->wind->speed['value'], $windSpeedUnit, $data->wind->speed['name']), new Unit($data->wind->direction['value'], $data->wind->direction['code'], $data->wind->direction['name']));
+            $this->clouds = new Unit($data->clouds['value'], null, $data->clouds['name']);
+            $this->precipitation = new Unit($data->precipitation['value'], $data->precipitation['unit'], $data->precipitation['mode']);
+            $this->sun = new Sun(new \DateTime($data->city->sun['rise'], $utctz), new \DateTime($data->city->sun['set'], $utctz));
+            $this->weather = new WeatherObj($data->weather['number'], $data->weather['value'], $data->weather['icon']);
+            $this->lastUpdate = new \DateTime($data->lastupdate['value'], $utctz);
+        } else {
+            $this->city = new City($data->id, $data->name, $data->coord->lon, $data->coord->lat, $data->sys->country);
+            $this->temperature = new Temperature(new Unit($data->main->temp, $units), new Unit($data->main->temp_min, $units), new Unit($data->main->temp_max, $units));
+            $this->humidity = new Unit($data->main->humidity, '%');
+            $this->pressure = new Unit($data->main->pressure, 'hPa');
+            $this->wind = new Wind(new Unit($data->wind->speed, $windSpeedUnit), new Unit($data->wind->deg));
+            $this->clouds = new Unit($data->clouds->all, '%');
+
+            // the rain field is not always present in the JSON response
+            // and sometimes it contains the field '1h', sometimes the field '3h'
+            $rain = isset($data->rain) ? (array) $data->rain : [];
+            $rainUnit = !empty($rain) ? key($rain) : '';
+            $rainValue = !empty($rain) ? current($rain) : 0.0;
+            $this->precipitation = new Unit($rainValue, $rainUnit);
+
+            $this->sun = new Sun(\DateTime::createFromFormat('U', $data->sys->sunrise, $utctz), \DateTime::createFromFormat('U', $data->sys->sunset, $utctz));
+            $this->weather = new WeatherObj($data->weather[0]->id, $data->weather[0]->description, $data->weather[0]->icon);
+            $this->lastUpdate = \DateTime::createFromFormat('U', $data->dt, $utctz);
+        }
     }
 }

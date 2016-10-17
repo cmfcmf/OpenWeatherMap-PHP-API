@@ -19,6 +19,7 @@ namespace Cmfcmf;
 
 use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
+use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
 use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
@@ -45,6 +46,11 @@ class OpenWeatherMap
      * @var string The basic api url to fetch weather data from.
      */
     private $weatherUrl = 'http://api.openweathermap.org/data/2.5/weather?';
+
+    /**
+     * @var string The basic api url to fetch weather group data from.
+     */
+    private $weatherGroupUrl = 'http://api.openweathermap.org/data/2.5/group?';
 
     /**
      * @var string The basic api url to fetch weekly forecast data from.
@@ -183,6 +189,29 @@ class OpenWeatherMap
     }
 
     /**
+     * Returns the current weather for a group of city ids.
+     *
+     * @param array  $ids   The city ids to get weather information for
+     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
+     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return Array Array of CurrentWeather objects.
+     *
+     * @api
+     */
+    public function getWeatherGroup($ids, $units = 'imperial', $lang = 'en', $appid = '')
+    {
+        $answer = $this->getRawWeatherGroupData($ids, $units, $lang, $appid);
+        $json = $this->parseJson($answer);
+
+        return new CurrentWeatherGroup($json, $units);
+    }
+
+    /**
      * Returns the forecast for the place you specified. DANGER: Might return
      * fewer results than requested due to a bug in the OpenWeatherMap API!
      *
@@ -292,6 +321,26 @@ class OpenWeatherMap
     public function getRawWeatherData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherUrl);
+
+        return $this->cacheOrFetchResult($url);
+    }
+
+    /**
+     * Directly returns the JSON string returned by OpenWeatherMap for the group of current weather.
+     * Only a JSON response format is supported for this webservice.
+     *
+     * @param array  $ids   The city ids to get weather information for
+     * @param string $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
+     * @param string $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     *
+     * @return string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * @api
+     */
+    public function getRawWeatherGroupData($ids, $units = 'imperial', $lang = 'en', $appid = '')
+    {
+        $url = $this->buildUrl($ids, $units, $lang, $appid, 'json', $this->weatherGroupUrl);
 
         return $this->cacheOrFetchResult($url);
     }
@@ -468,6 +517,8 @@ class OpenWeatherMap
         switch ($query) {
             case is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon']):
                 return "lat={$query['lat']}&lon={$query['lon']}";
+            case is_array($query) && is_numeric($query[0]):
+                return 'id='.implode(',', $query);
             case is_numeric($query):
                 return "id=$query";
             case is_string($query):
@@ -501,4 +552,21 @@ class OpenWeatherMap
             }
         }
     }
+
+    /**
+     * @param string $answer The content returned by OpenWeatherMap.
+     *
+     * @return \stdClass
+     * @throws OWMException If the content isn't valid JSON.
+     */
+    private function parseJson($answer)
+    {
+        $json = json_decode($answer);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error_msg());
+        }
+
+        return $json;
+    }
+
 }
