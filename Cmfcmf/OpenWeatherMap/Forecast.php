@@ -17,9 +17,6 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Util\City;
-use Cmfcmf\OpenWeatherMap\Util\Sun;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 use Cmfcmf\OpenWeatherMap\Util\Time;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
