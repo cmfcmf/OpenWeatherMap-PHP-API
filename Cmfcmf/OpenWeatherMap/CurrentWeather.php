@@ -114,7 +114,6 @@ class CurrentWeather
             $this->sun = new Sun(new \DateTime($data->city->sun['rise'], $utctz), new \DateTime($data->city->sun['set'], $utctz));
             $this->weather = new WeatherObj($data->weather['number'], $data->weather['value'], $data->weather['icon']);
             $this->lastUpdate = new \DateTime($data->lastupdate['value'], $utctz);
-
         } else {
             $this->city = new City($data->id, $data->name, $data->coord->lon, $data->coord->lat, $data->sys->country);
             $this->temperature = new Temperature(new Unit($data->main->temp, $units), new Unit($data->main->temp_min, $units), new Unit($data->main->temp_max, $units));
@@ -135,5 +134,4 @@ class CurrentWeather
             $this->lastUpdate = \DateTime::createFromFormat('U', $data->dt, $utctz);
         }
     }
-
 }

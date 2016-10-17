@@ -336,8 +336,6 @@ class OpenWeatherMap
      *
      * @return string Returns false on failure and the fetched data in the format you specified on success.
      *
-     * Warning: If an error occurs, OpenWeatherMap ALWAYS returns json data.
-     *
      * @api
      */
     public function getRawWeatherGroupData($ids, $units = 'imperial', $lang = 'en', $appid = '')
@@ -564,9 +562,7 @@ class OpenWeatherMap
     private function parseJson($answer)
     {
         $json = json_decode($answer);
-
-        if (json_last_error() !== JSON_ERROR_NONE)
-        {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error_msg());
         }
 
