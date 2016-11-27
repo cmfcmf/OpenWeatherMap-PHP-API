@@ -171,32 +171,39 @@ echo "<br /><br />\n\n\nEXAMPLE 9<hr />\n\n\n";
 echo 'Precipation: '.$weather->precipitation->getDescription().' ('.$weather->precipitation.')';
 echo "<br />\n";
 
-// Example 10: Show copyright notice. WARNING: This is no offical text. This hint was created regarding to http://www.http://openweathermap.org/copyright .
+// Example 10: Show copyright notice. WARNING: This is no official text. This hint was created by looking at http://www.http://openweathermap.org/copyright .
 echo "<br /><br />\n\n\nEXAMPLE 10<hr />\n\n\n";
 
 echo $owm::COPYRIGHT;
 echo "<br />\n";
 
-// Example 11: Get raw xml data.
+// Example 11: Retrieve weather icons.
 echo "<br /><br />\n\n\nEXAMPLE 11<hr />\n\n\n";
+$weather = $owm->getWeather('Berlin');
+echo $weather->weather->icon;
+echo "<br />\n";
+echo $weather->weather->getIconUrl();
+
+// Example 12: Get raw xml data.
+echo "<br /><br />\n\n\nEXAMPLE 12<hr />\n\n\n";
 
 echo '<pre><code>'.htmlspecialchars($owm->getRawWeatherData('Berlin', $units, $lang, null, 'xml')).'</code></pre>';
 echo "<br />\n";
 
-// Example 12: Get raw json data.
-echo "<br /><br />\n\n\nEXAMPLE 12<hr />\n\n\n";
+// Example 13: Get raw json data.
+echo "<br /><br />\n\n\nEXAMPLE 13<hr />\n\n\n";
 
 echo '<code>'.htmlspecialchars($owm->getRawWeatherData('Berlin', $units, $lang, null, 'json')).'</code>';
 echo "<br />\n";
 
-// Example 13: Get raw html data.
-echo "<br /><br />\n\n\nEXAMPLE 13<hr />\n\n\n";
+// Example 14: Get raw html data.
+echo "<br /><br />\n\n\nEXAMPLE 14<hr />\n\n\n";
 
 echo $owm->getRawWeatherData('Berlin', $units, $lang, null, 'html');
 echo "<br />\n";
 
-// Example 14: Error handling.
-echo "<br /><br />\n\n\nEXAMPLE 14<hr />\n\n\n";
+// Example 15: Error handling.
+echo "<br /><br />\n\n\nEXAMPLE 15<hr />\n\n\n";
 
 // Try wrong city name.
 try {
