@@ -65,7 +65,7 @@ class OpenWeatherMap
     /**
      * @var string The basic api url to fetch history weather data from.
      */
-    private $weatherHistoryUrl = 'http://api.openweathermap.org/data/2.5/history/city?';
+    private $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
