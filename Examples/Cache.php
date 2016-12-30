@@ -27,9 +27,11 @@ require_once __DIR__ . '/bootstrap.php';
  */
 class ExampleCache extends AbstractCache
 {
+    protected $tmp;
+
     private function urlToPath($url)
     {
-        $tmp = sys_get_temp_dir();
+        $tmp = $this->tmp;
         $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
         if (!is_dir($dir)) {
             mkdir($dir);
@@ -72,6 +74,18 @@ class ExampleCache extends AbstractCache
     {
         file_put_contents($this->urlToPath($url), $content);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function setTempPath($path)
+    {
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
+        
+        $this->tmp = $path;
+    }
 }
 
 // Language of data (try your own language here!):
@@ -81,7 +95,9 @@ $lang = 'de';
 $units = 'metric';
 
 // Example 1: Use your own cache implementation. Cache for 10 seconds only in this example.
-$owm = new OpenWeatherMap($myApiKey, null, new ExampleCache(), 10);
+$cache = new ExampleCache();
+$cache->setTempPath(__DIR__.'/temps');
+$owm = new OpenWeatherMap($myApiKey, null, $cache, 10);
 
 $weather = $owm->getWeather('Berlin', $units, $lang);
 echo "EXAMPLE 1<hr />\n\n\n";

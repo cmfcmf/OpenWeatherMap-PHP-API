@@ -545,8 +545,8 @@ class OpenWeatherMap
             // Invalid xml format. This happens in case OpenWeatherMap returns an error.
             // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
             $error = json_decode($answer, true);
-            if (isset($error['message'])) {
-                throw new OWMException($error['message'], $error['cod']);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error());
             } else {
                 throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
             }
@@ -563,7 +563,7 @@ class OpenWeatherMap
     {
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error_msg());
+            throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error());
         }
 
         return $json;

@@ -58,6 +58,15 @@ abstract class AbstractCache
     abstract public function setCached($url, $content);
 
     /**
+     * Specify the cached weather data file path.
+     *
+     * @param string $path     The cached file path.
+     *
+     * @return void.
+     */
+    abstract public function setTempPath($path);
+
+    /**
      * Set after how much seconds the cache shall expire.
      *
      * @param int $seconds
