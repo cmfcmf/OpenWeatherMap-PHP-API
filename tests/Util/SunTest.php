@@ -43,12 +43,6 @@ class SunTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($set, $this->sun->set);
     }
 
-
-    private function givenThereIsASunObject($rise, $set)
-    {
-        $this->sun = new Sun($rise, $set);
-    }
-
     /**
      * @expectedException \LogicException
      */
@@ -58,5 +52,10 @@ class SunTest extends \PHPUnit_Framework_TestCase
         $set = new \DateTime('2014-01-01 7:00:00');
 
         $this->givenThereIsASunObject($rise, $set);
+    }
+
+    private function givenThereIsASunObject($rise, $set)
+    {
+        $this->sun = new Sun($rise, $set);
     }
 }

@@ -119,10 +119,10 @@ class OpenWeatherMap
         }
 
         if ($cache !== false && !($cache instanceof AbstractCache)) {
-            throw new \Exception('The cache class must implement the FetcherInterface!');
+            throw new \InvalidArgumentException('The cache class must implement the FetcherInterface!');
         }
         if (!is_numeric($seconds)) {
-            throw new \Exception('$seconds must be numeric.');
+            throw new \InvalidArgumentException('$seconds must be numeric.');
         }
         if (!isset($fetcher)) {
             $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
@@ -545,8 +545,8 @@ class OpenWeatherMap
             // Invalid xml format. This happens in case OpenWeatherMap returns an error.
             // OpenWeatherMap always uses json for errors, even if one specifies xml as format.
             $error = json_decode($answer, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error());
+            if (isset($error['message'])) {
+                throw new OWMException($error['message'], isset($error['cod']) ? $error['cod'] : 0);
             } else {
                 throw new OWMException('Unknown fatal error: OpenWeatherMap returned the following json object: ' . $answer);
             }
@@ -563,9 +563,28 @@ class OpenWeatherMap
     {
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new OWMException('OpenWeatherMap returned an invalid json object: ' . json_last_error());
+            throw new OWMException('OpenWeatherMap returned an invalid json object. JSON error was: ' . $this->json_last_error_msg());
         }
 
         return $json;
+    }
+
+    private function json_last_error_msg()
+    {
+        if (function_exists('json_last_error_msg')) {
+            return json_last_error_msg();
+        }
+
+        static $ERRORS = array(
+            JSON_ERROR_NONE => 'No error',
+            JSON_ERROR_DEPTH => 'Maximum stack depth exceeded',
+            JSON_ERROR_STATE_MISMATCH => 'State mismatch (invalid or malformed JSON)',
+            JSON_ERROR_CTRL_CHAR => 'Control character error, possibly incorrectly encoded',
+            JSON_ERROR_SYNTAX => 'Syntax error',
+            JSON_ERROR_UTF8 => 'Malformed UTF-8 characters, possibly incorrectly encoded'
+        );
+
+        $error = json_last_error();
+        return isset($ERRORS[$error]) ? $ERRORS[$error] : 'Unknown error';
     }
 }
