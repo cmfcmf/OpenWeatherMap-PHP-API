@@ -35,7 +35,7 @@ class TestFetcher implements FetcherInterface
         $format = strpos($url, 'json') !== false ? 'json' : 'xml';
         if (strpos($url, 'forecast') !== false) {
             return $this->forecast($format);
-        } else if (strpos($url, 'group') !== false) {
+        } elseif (strpos($url, 'group') !== false) {
             return $this->group($format);
         } else {
             return $this->currentWeather($format);

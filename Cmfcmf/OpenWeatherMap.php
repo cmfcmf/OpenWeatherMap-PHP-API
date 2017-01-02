@@ -569,7 +569,8 @@ class OpenWeatherMap
         return $json;
     }
 
-    private function json_last_error_msg() {
+    private function json_last_error_msg()
+    {
         if (function_exists('json_last_error_msg')) {
             return json_last_error_msg();
         }
