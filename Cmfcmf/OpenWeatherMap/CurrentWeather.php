@@ -17,12 +17,11 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
-use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
+use Cmfcmf\OpenWeatherMap\Util\Weather;
 use Cmfcmf\OpenWeatherMap\Util\Wind;
 
 /**
@@ -112,7 +111,7 @@ class CurrentWeather
             $this->clouds = new Unit($data->clouds['value'], null, $data->clouds['name']);
             $this->precipitation = new Unit($data->precipitation['value'], $data->precipitation['unit'], $data->precipitation['mode']);
             $this->sun = new Sun(new \DateTime($data->city->sun['rise'], $utctz), new \DateTime($data->city->sun['set'], $utctz));
-            $this->weather = new WeatherObj($data->weather['number'], $data->weather['value'], $data->weather['icon']);
+            $this->weather = new Weather($data->weather['number'], $data->weather['value'], $data->weather['icon']);
             $this->lastUpdate = new \DateTime($data->lastupdate['value'], $utctz);
         } else {
             $this->city = new City($data->id, $data->name, $data->coord->lon, $data->coord->lat, $data->sys->country);
@@ -130,7 +129,7 @@ class CurrentWeather
             $this->precipitation = new Unit($rainValue, $rainUnit);
 
             $this->sun = new Sun(\DateTime::createFromFormat('U', $data->sys->sunrise, $utctz), \DateTime::createFromFormat('U', $data->sys->sunset, $utctz));
-            $this->weather = new WeatherObj($data->weather[0]->id, $data->weather[0]->description, $data->weather[0]->icon);
+            $this->weather = new Weather($data->weather[0]->id, $data->weather[0]->description, $data->weather[0]->icon);
             $this->lastUpdate = \DateTime::createFromFormat('U', $data->dt, $utctz);
         }
     }
