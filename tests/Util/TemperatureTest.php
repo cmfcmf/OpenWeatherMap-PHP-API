@@ -59,10 +59,11 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
 
     public function testGetValue()
     {
-        $expectValue = $this->nowTemp;
+        $expectValue = round($this->nowTemp, 2);
         $temp = $this->temperature;
         $value = $temp->getValue();
 
+        $this->assertSame($expectValue, $value);
         $this->assertInternalType('double', $value);
     }
 

@@ -14,6 +14,7 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
+use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 use \Cmfcmf\OpenWeatherMap\WeatherHistory;
 
 class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
@@ -23,44 +24,7 @@ class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->fakeJson = '{
-            "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
-            "cnt":10,
-            "list":[{
-                "dt":1406080800,
-                "temp":{
-                    "day":297.77,
-                    "min":293.52,
-                    "max":297.77,
-                    "night":293.52,
-                    "eve":297.77,
-                    "morn":297.77
-                },
-                "pressure":925.04,
-                "humidity":76,
-                "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                "clouds":{"all":90},
-                "wind":{"speed":5.71,"deg":229.501}
-            },{
-                "dt":1406080800,
-                "temp":{
-                    "day":297.77,
-                    "min":293.52,
-                    "max":297.77,
-                    "night":293.52,
-                    "eve":297.77,
-                    "morn":297.77
-                },
-                "pressure":925.04,
-                "humidity":76,
-                "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                "clouds":{"all":90},
-                "wind":{"speed":5.71,"deg":229.501}
-            }]
-        }';
-        $this->fakeJson = json_decode($this->fakeJson, true);
+        $this->fakeJson = json_decode(FakeData::WEATHER_HISTORY_JSON, true);
         $this->history = new WeatherHistory($this->fakeJson, 'Berlin');
     }
 

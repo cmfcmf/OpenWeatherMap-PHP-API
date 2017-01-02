@@ -15,6 +15,7 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use \Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
+use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 
 class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,48 +24,7 @@ class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->fakeJson = '{
-            "list":[{
-                "id":1851632,
-                "dt":1406106000,
-                "coord":{"lon":138.933334,"lat":34.966671},
-                "sys":{"type":3,"id":168940,"message":0.0297,"country":"US","sunrise":1427723751,"sunset":1427768967},
-                "name":"Shuzenji",
-                "main":{
-                    "temp":298.77,
-                    "temp_min":298.77,
-                    "temp_max":298.774,
-                    "pressure":1005.93,
-                    "sea_level":1018.18,
-                    "grnd_level":1005.93,
-                    "humidity":87
-                },
-                "weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04d"}],
-                "clouds":{"all":88},
-                "wind":{"speed":5.71,"deg":229.501},
-                "dt_txt":"2014-07-23 09:00:00"
-            },{
-                "id":1851632,
-                "dt":1406106000,
-                "coord":{"lon":138.933334,"lat":34.966671},
-                "sys":{"type":3,"id":168940,"message":0.0297,"country":"US","sunrise":1427723751,"sunset":1427768967},
-                "name":"Shuzenji",
-                "main":{
-                    "temp":298.77,
-                    "temp_min":298.77,
-                    "temp_max":298.774,
-                    "pressure":1005.93,
-                    "sea_level":1018.18,
-                    "grnd_level":1005.93,
-                    "humidity":87
-                },
-                "weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04d"}],
-                "clouds":{"all":88},
-                "wind":{"speed":5.71,"deg":229.501},
-                "dt_txt":"2014-07-23 09:00:00"
-            }]
-        }';
-        $this->fakeJson = json_decode($this->fakeJson);
+        $this->fakeJson = json_decode(FakeData::WEATHER_GROUP_JSON);
         $this->currentWeatherGroup = new CurrentWeatherGroup($this->fakeJson, 'metric');
     }
 
