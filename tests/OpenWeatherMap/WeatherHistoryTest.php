@@ -109,11 +109,6 @@ class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
             "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
             "cnt":10,
             "list":[{
-                "city":{
-                    "country": "Berlin", 
-                    "population": "10,000"
-                }
-                },{
                     "dt":1406080800,
                     "temp":{
                         "day":297.77,
@@ -146,11 +141,6 @@ class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
             "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
             "cnt":10,
             "list":[{
-                "city":{
-                    "country": "Berlin", 
-                    "population": "10,000"
-                }
-                },{
                     "dt":1406080800,
                     "temp":{
                         "day":297.77,
