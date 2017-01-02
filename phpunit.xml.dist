@@ -1,25 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--suppress XmlUnboundNsPrefix -->
-<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+<phpunit
+    backupGlobals="false"
+    backupStaticAttributes="false"
+    bootstrap="./tests/bootstrap.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    charset="UTF-8"
+    processIsolation="false">
 
     <testsuites>
-        <testsuite name="cmfcmf/openweathermap-php-api unit test suite">
-            <directory suffix="Test.php">./tests</directory>
+        <testsuite name="Test Suite">
+            <directory suffix=".php">./tests/</directory>
         </testsuite>
-        <!-- <testsuite name="cmfcmf/openweathermap-php-api integration test suite">
-            <directory suffix="Test.php">./integTests</directory>
-        </testsuite> -->
     </testsuites>
 
     <filter>
         <whitelist>
-            <directory>./</directory>
+            <directory suffix=".php">./Cmfcmf/</directory>
             <exclude>
-                <directory suffix="Test.php">./</directory>
-                <directory suffix="Interface.php">./</directory>
-                <directory>./vendor</directory>
+                <directory suffix=".php">./Examples/</directory>
             </exclude>
         </whitelist>
     </filter>
+
+    <logging>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
+
 </phpunit>
