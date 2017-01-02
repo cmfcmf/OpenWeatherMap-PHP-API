@@ -38,7 +38,7 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
 
     public function testGetIconUrl()
     {
-        $expectIconLink = 'http://openweathermap.org/img/w/11d.png';
+        $expectIconLink = '//openweathermap.org/img/w/11d.png';
         $weather = $this->weather;
         $iconLink = $weather->getIconUrl();
 
