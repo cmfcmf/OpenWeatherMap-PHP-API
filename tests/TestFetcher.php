@@ -35,7 +35,7 @@ class TestFetcher implements FetcherInterface
         $format = strpos($url, 'json') !== false ? 'json' : 'xml';
         if (strpos($url, 'forecast') !== false) {
             return $this->forecast($format);
-        } else if (strpos($url, 'group') !== false) {
+        } elseif (strpos($url, 'group') !== false) {
             return $this->group($format);
         } else {
             return $this->currentWeather($format);
@@ -85,7 +85,6 @@ XML;
             return <<<JSON
 {"cnt":1,"list":[{"coord":{"lon":13.41,"lat":52.52},"sys":{"type":1,"id":4892,"message":0.2862,"country":"DE","sunrise":1483341411,"sunset":1483369490},"weather":[{"id":500,"main":"Rain","description":"light rain","icon":"10d"}],"main":{"temp":36.48,"pressure":1014,"humidity":86,"temp_min":35.6,"temp_max":37.4},"visibility":8000,"wind":{"speed":9.17,"deg":300},"clouds":{"all":75},"dt":1483362571,"id":2950159,"name":"Berlin"}]}
 JSON;
-
         }
     }
 }
