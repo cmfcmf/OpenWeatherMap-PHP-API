@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 use Cmfcmf\OpenWeatherMap\Util\Time;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
-use Cmfcmf\OpenWeatherMap\Util\Weather as WeatherObj;
+use Cmfcmf\OpenWeatherMap\Util\Weather;
 use Cmfcmf\OpenWeatherMap\Util\Wind;
 
 /**
@@ -65,7 +65,7 @@ class Forecast extends CurrentWeather
         $this->wind = new Wind(new Unit($xml->windSpeed['mps'], $windSpeedUnit, $xml->windSpeed['name']), new Unit($xml->windDirection['deg'], $xml->windDirection['code'], $xml->windDirection['name']));
         $this->clouds = new Unit($xml->clouds['all'], $xml->clouds['unit'], $xml->clouds['value']);
         $this->precipitation = new Unit($xml->precipitation['value'], null, $xml->precipitation['type']);
-        $this->weather = new WeatherObj($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
+        $this->weather = new Weather($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
         $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
 
         if (isset($xml['from'])) {

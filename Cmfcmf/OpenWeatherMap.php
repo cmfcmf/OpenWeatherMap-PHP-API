@@ -40,7 +40,7 @@ class OpenWeatherMap
      *
      * @var string $copyright
      */
-    const COPYRIGHT = "Weather data from <a href=\"http://www.openweathermap.org\">OpenWeatherMap.org</a>";
+    const COPYRIGHT = "Weather data from <a href=\"http://openweathermap.org\">OpenWeatherMap.org</a>";
 
     /**
      * @var string The basic api url to fetch weather data from.
@@ -199,7 +199,7 @@ class OpenWeatherMap
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return Array Array of CurrentWeather objects.
+     * @return CurrentWeatherGroup
      *
      * @api
      */
