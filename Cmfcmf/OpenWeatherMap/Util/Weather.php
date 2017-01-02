@@ -77,7 +77,7 @@ class Weather
      */
     public function getIconUrl()
     {
-        return str_replace("%s", $this->icon, self::$iconUrl);
+        return sprintf(self::$iconUrl, $this->icon);
     }
 
     /**

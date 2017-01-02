@@ -1,33 +1,37 @@
 language: php
-#sudo: required
+
+sudo: false
 
 php:
   - 5.3
   - 5.4
   - 5.5
   - 5.6
-  - 7
+  - 7.0
+  - 7.1
+  - nightly
   - hhvm
 
 matrix:
   fast_finish: true
+  allow_failures:
+    - php: nightly
 
-#addons:
-#  hosts:
-#    - api.openweathermap.org
-
-#before_install:
-#  - sudo apt-get -qq update
-#  - sudo apt-get install -y socat
-#  - cat /etc/hosts
-#  - sudo socat TCP-LISTEN:80,fork TCP:${RTCP_HOST}:${RTCP_PORT} > /tmp/socat.log 2>&1 &
+before_install:
+  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
 
 install:
-  - composer install
+  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then INI_FILE=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; else INI_FILE=/etc/hhvm/php.ini; fi
+  - echo date.timezone = Europe/Berlin >> $INI_FILE
+  - echo memory_limit = -1 >> $INI_FILE
+  - composer update
 
 script:
-  - phpunit --coverage-text --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
-after_script:
-    - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+after_success:
+  # Scrutinizer
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
+  # CodeCov
+  - bash <(curl -s https://codecov.io/bash)
