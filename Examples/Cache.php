@@ -29,10 +29,14 @@ class ExampleCache extends AbstractCache
 {
     protected $tmp;
 
+    public function __construct()
+    {
+        $this->tmp = sys_get_temp_dir();
+    }
+
     private function urlToPath($url)
     {
-        $tmp = $this->tmp;
-        $dir = $tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
+        $dir = $this->tmp . DIRECTORY_SEPARATOR . "OpenWeatherMapPHPAPI";
         if (!is_dir($dir)) {
             mkdir($dir);
         }
