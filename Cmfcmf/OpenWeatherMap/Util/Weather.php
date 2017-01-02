@@ -42,7 +42,7 @@ class Weather
      *
      * @see self::getIconUrl() to see how it is used.
      */
-    private $iconUrl = "http://openweathermap.org/img/w/%s.png";
+    private static $iconUrl = "//openweathermap.org/img/w/%s.png";
 
     /**
      * Create a new weather object.
@@ -77,6 +77,17 @@ class Weather
      */
     public function getIconUrl()
     {
-        return str_replace("%s", $this->icon, $this->iconUrl);
+        return str_replace("%s", $this->icon, self::$iconUrl);
+    }
+
+    /**
+     * Change the url template for icon urls. Please note: This will change the url template for
+     * all instances of this library.
+     *
+     * @param string $iconUrl The url template to build the icon urls.
+     */
+    public static function setIconUrlTemplate($iconUrl)
+    {
+        self::$iconUrl = $iconUrl;
     }
 }
