@@ -19,9 +19,24 @@ use \Cmfcmf\OpenWeatherMap\Util\Temperature;
 
 class TemperatureTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var string
+     */
     protected $unit = 'Berlin';
+
+    /**
+     * @var Temperature
+     */
     protected $temperature;
+
+    /**
+     * @var string
+     */
     protected $nowTemp = '298.77';
+
+    /**
+     * @var string
+     */
     protected $description = 'This is a description';
 
     protected function setUp()
@@ -40,8 +55,7 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
     {
         $expectStr = $this->nowTemp;
         $expectStr .= ' ' . $this->unit;
-        $temp = $this->temperature;
-        $str = $temp->__toString();
+        $str = $this->temperature->__toString();
 
         $this->assertSame($expectStr, $str);
         $this->assertInternalType('string', $str);
@@ -50,8 +64,7 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
     public function testGetUnit()
     {
         $expectUnit = $this->unit;
-        $temp = $this->temperature;
-        $unit = $temp->getUnit();
+        $unit = $this->temperature->getUnit();
 
         $this->assertSame($expectUnit, $unit);
         $this->assertInternalType('string', $unit);
@@ -59,18 +72,17 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
 
     public function testGetValue()
     {
-        $expectValue = $this->nowTemp;
-        $temp = $this->temperature;
-        $value = $temp->getValue();
+        $expectValue = round($this->nowTemp, 2);
+        $value = $this->temperature->getValue();
 
+        $this->assertSame($expectValue, $value);
         $this->assertInternalType('double', $value);
     }
 
     public function testGetDescription()
     {
         $expectDescription = $this->description;
-        $temp = $this->temperature;
-        $description = $temp->getDescription();
+        $description = $this->temperature->getDescription();
 
         $this->assertSame($expectDescription, $description);
         $this->assertInternalType('string', $description);
@@ -80,8 +92,7 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
     {
         $expectFormattedString = $this->nowTemp;
         $expectFormattedString .= ' ' . $this->unit;
-        $temp = $this->temperature;
-        $formattedString = $temp->getFormatted();
+        $formattedString = $this->temperature->getFormatted();
 
         $this->assertSame($expectFormattedString, $formattedString);
         $this->assertInternalType('string', $formattedString);

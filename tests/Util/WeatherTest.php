@@ -18,8 +18,19 @@ use \Cmfcmf\OpenWeatherMap\Util\Weather;
 
 class WeatherTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var Weather
+     */
     protected $weather;
+
+    /**
+     * @var string
+     */
     protected $description = 'thunderstorm with light rain';
+
+    /**
+     * @var string
+     */
     protected $iconName = '11d';
 
     protected function setUp()
@@ -30,8 +41,7 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
     public function test__toString()
     {
         $expectDescription = $this->description;
-        $weather = $this->weather;
-        $description = $weather->__toString();
+        $description = $this->weather->__toString();
 
         $this->assertSame($expectDescription, $description);
     }

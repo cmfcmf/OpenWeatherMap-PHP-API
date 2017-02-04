@@ -15,76 +15,58 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use \Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
 
 class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var apiKey
-     * @var weather
+     * @var string
      */
     protected $apiKey;
-    protected $weather;
+
+    /**
+     * @var OpenWeatherMap
+     */
+    protected $owm;
 
     protected function setUp()
     {
-        $ini = parse_ini_file(__DIR__ . '/../ApiKey.ini');
-        $apiKey = $ini['api_key'];
-        $this->apiKey = $apiKey;
-        $this->weather = new OpenWeatherMap($this->apiKey, null, false, 600);
+        $this->apiKey = 'unicorn-rainbow';
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \InvalidArgumentException
      */
     public function testCacheException()
     {
-        try {
-            $exception = new OpenWeatherMap($this->apiKey, null, true, 600);
-        } catch (\Eception $e) {
-            throw $e;
-        }
+        new OpenWeatherMap($this->apiKey, null, true, 600);
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \InvalidArgumentException
      */
-    public function testSecondNotNumbericException()
+    public function testSecondNotNumericException()
     {
-        try {
-            $exception = new OpenWeatherMap($this->apiKey, null, false, 'I am not numberic');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        new OpenWeatherMap($this->apiKey, null, false, 'I am not numeric');
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetWeatherForecastException()
     {
         $days = 20;
-        $weather = $this->weather;
-
-        try {
-            $argException = $weather->getWeatherForecast('Berlin', 'imperial', 'en', '', $days);
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getWeatherForecast('Berlin', 'imperial', 'en', '', $days);
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetDailyWeatherForecastException()
     {
         $days = 20;
-        $weather = $this->weather;
-
-        try {
-            $argException = $weather->getDailyWeatherForecast('Berlin', 'imperial', 'en', '', $days);
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getDailyWeatherForecast('Berlin', 'imperial', 'en', '', $days);
     }
 
     /**
@@ -92,13 +74,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWeatherHistoryException()
     {
-        $weather = $this->weather;
-
-        try {
-            $oWMException = $weather->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), 1, 'hour', 'imperial', 'en', '');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), 1, 'hour', 'imperial', 'en', '');
     }
 
     /**
@@ -106,122 +82,72 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWeatherHistoryWithEndException()
     {
-        $weather = $this->weather;
-
-        try {
-            $oWMException = $weather->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), new \DateTime('NOW'), 'hour', 'imperial', 'en', '');
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), new \DateTime('now'), 'hour', 'imperial', 'en', '');
     }
 
      /**
-      * @expectedException InvalidArgumentException
+      * @expectedException \InvalidArgumentException
       */
     public function testGetWeatherHistoryInvalidArgumentException()
     {
-        $weather = $this->weather;
-
-        try {
-            $argException = $weather->getWeatherHistory('Berlin', new \DateTime('NOW'), 1, 'wrong-type', 'imperial', 'en', '');
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetRawDailyForecastDataInvalidArgumentException()
     {
-        $weather = $this->weather;
-        
-        try {
-            $argException = $weather->getRawDailyForecastData('Berlin', 'imperial', 'en', '', 'xml', 20);
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getRawDailyForecastData('Berlin', 'imperial', 'en', '', 'xml', 20);
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetRawWeatherHistoryException()
     {
-        $weather = $this->weather;
-        
-        try {
-            $argException = $weather->getRawWeatherHistory('Berlin', new \DateTime('NOW'), 1, 'wrong-type', 'imperial', 'en', '');
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testGetRawWeatherHistoryWithEndDateException()
     {
-        $weather = $this->weather;
-        
-        try {
-            $argException = $weather->getRawWeatherHistory('Berlin', new \DateTime('NOW'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
      
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testBuildQueryUrlParameterException()
     {
-        $weather = $this->weather;
-        
-        try {
-            $argException = $weather->getWeather(true, new \DateTime('NOW'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
-        } catch (\InvalidArgumentException $e) {
-            throw $e;
-        }
+        $this->owm->getWeather(true, 'imperial', 'en', '');
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
      */
     public function testParseXMLException()
     {
-        $answer = 'I am not a XML fromat data';
-        $weather = $this->weather;
-        $method = new \ReflectionMethod(
-            $weather, 'parseXML'
-        );
+        $answer = 'I am not XML formatted data';
+        $method = new \ReflectionMethod($this->owm, 'parseXML');
         $method->setAccessible(true);
         
-        try {
-            $method->invoke($weather, $answer);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $method->invoke($this->owm, $answer);
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
      */
     public function testParseXMLWithIsJsonException()
     {
         $answer = array('message' => 'simple json data');
         $answer = json_encode($answer);
-        $weather = $this->weather;
-        $method = new \ReflectionMethod(
-            $weather, 'parseXML'
-        );
+        $method = new \ReflectionMethod($this->owm, 'parseXML');
         $method->setAccessible(true);
 
-        try {
-            $method->invoke($weather, $answer);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $method->invoke($this->owm, $answer);
     }
 
     /**
@@ -229,17 +155,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testParseJsonException()
     {
-        $weather = $this->weather;
         $answer = 'I am not a json format data';
-        $method = new \ReflectionMethod(
-            $weather, 'parseJson'
-        );
+        $method = new \ReflectionMethod($this->owm, 'parseJson');
         $method->setAccessible(true);
         
-        try {
-            $method->invoke($weather, $answer);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        $method->invoke($this->owm, $answer);
     }
 }
