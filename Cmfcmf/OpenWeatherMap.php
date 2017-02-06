@@ -465,7 +465,7 @@ class OpenWeatherMap
     {
         if (!is_array($query)) {
             throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
-        } elseif(count($query) != 2) {
+        } elseif (count($query) != 2) {
             throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
         } else {
             $url = $this->buildUviUrl($query, $appid);
@@ -492,7 +492,7 @@ class OpenWeatherMap
     {
         if (!is_array($query)) {
             throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
-        } elseif(count($query) != 3) {
+        } elseif (count($query) != 3) {
             throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
         } else {
             $url = $this->buildUviUrl($query, $appid);
