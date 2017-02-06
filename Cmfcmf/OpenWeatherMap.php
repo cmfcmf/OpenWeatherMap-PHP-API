@@ -19,6 +19,7 @@ namespace Cmfcmf;
 
 use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
+use Cmfcmf\OpenWeatherMap\CurrentUvi;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
@@ -66,6 +67,16 @@ class OpenWeatherMap
      * @var string The basic api url to fetch history weather data from.
      */
     private $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
+
+    /**
+     * @var string The basic api url to fetch current uv data from.
+     */
+    private $uviUrl = 'http://api.openweathermap.org/v3/uvi/%s,%s/current.json?';
+
+    /**
+     * @var string The basic api url to fetch current uv data from.
+     */
+    private $uviHistoryUrl = 'http://api.openweathermap.org/v3/uvi/%s,%s/%s.json?';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
@@ -437,6 +448,109 @@ class OpenWeatherMap
     }
 
     /**
+     * Directly returns the json string returned by OpenWeatherMap for the UVI data.
+     *
+     * @param array $query     The place to get information as follows: [latitude, longitude, date time]. For possible values see ::getWeather.
+     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
+     *
+     * @api
+     */
+    public function getRawUviData($query, $appid = '')
+    {
+        if (!is_array($query)) {
+            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
+        } elseif (count($query) != 2) {
+            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
+        } else {
+            $url = $this->buildUviUrl($query, $appid);
+        }
+
+        return $this->cacheOrFetchResult($url);
+    }
+
+    /**
+     * Directly returns the json string returned by OpenWeatherMap for the UVI history data.
+     *
+     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
+     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
+     *
+     * @api
+     */
+    public function getRawUviHistory($query, $appid = '')
+    {
+        if (!is_array($query)) {
+            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
+        } elseif (count($query) != 3) {
+            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
+        } else {
+            $url = $this->buildUviUrl($query, $appid);
+        }
+
+        return $this->cacheOrFetchResult($url);
+    }
+
+     /**
+     * Returns the current uvi at the location you specified.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return CurrentUvi The uvi object.
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * @api
+     */
+    public function getUvi($query, $appid = '')
+    {
+        $answer = $this->getRawUviData($query, $appid);
+        $json = $this->parseJson($answer);
+
+        return new CurrentUvi($json);
+    }
+
+    /**
+     * Returns the history uvi at the location you specified.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see below.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $dateTime Your date time, default ''. See http://openweathermap.org/api/uvi for more details about date format.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return CurrentUvi The uvi object.
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * @api
+     */
+    public function getUviHistory($query, $appid = '')
+    {
+        $answer = $this->getRawUviHistory($query, $appid);
+        $json = $this->parseJson($answer);
+
+        return new CurrentUvi($json);
+    }
+
+    /**
      * Returns whether or not the last result was fetched from the cache.
      *
      * @return bool true if last result was fetched from cache, false otherwise.
@@ -501,6 +615,34 @@ class OpenWeatherMap
         $url .= empty($appid) ? $this->apiKey : $appid;
 
         return $url;
+    }
+
+    /**
+     * Build the url to fetch UVI data from.
+     *
+     * @param        $query
+     * @param        $units
+     * @param        $lang
+     * @param        $appid
+     * @param        $mode
+     * @param string $url   The url to prepend.
+     *
+     * @return bool|string The fetched url, false on failure.
+     */
+    private function buildUviUrl($query, $appid)
+    {
+        $queryLength = count($query);
+        switch ($queryLength) {
+            case 2:
+                $queryUrl = sprintf($this->uviUrl, $query[0], $query[1]);
+                break;
+            case 3:
+                $queryUrl = sprintf($this->uviHistoryUrl, $query[0], $query[1], $query[2]);
+                break;
+        }
+        $queryUrl .= 'APPID=';
+
+        return $queryUrl .= empty($appid) ? $this->apiKey : $appid;
     }
 
     /**

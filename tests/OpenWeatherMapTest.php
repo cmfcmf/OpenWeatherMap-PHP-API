@@ -32,14 +32,22 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     protected $owm;
 
     /**
+     * @var OpenWeatherMap
+     */
+    protected $openWeather;
+
+    /**
      * @var ExampleCacheTest
      */
     protected $cache;
 
     protected function setUp()
     {
-        $this->apiKey = 'unicorn-rainbow';
+        $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
+        $myApiKey = $ini['api_key'];
+        $this->apiKey = $myApiKey;
         $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
+        $this->openWeather = new OpenWeatherMap($this->apiKey, null, false, 600);
         $this->cache = new ExampleCacheTest();
     }
 
@@ -120,6 +128,34 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $defaultDay);
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $maxDay);
+    }
+
+    public function testGetUvi()
+    {
+        $weather = $this->openWeather;
+        $locationArray = array('40.7', '-74.2');
+        $result = $weather->getUvi($locationArray);
+
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentUvi', $result);
+    }
+
+    public function testGetUviHistory()
+    {
+        $weather = $this->openWeather;
+        $year = date('Y') . 'Z';
+        $locationArray = array('40.7', '-74.2', $year);
+        $result = $weather->getUviHistory($locationArray);
+
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentUvi', $result);
+    }
+
+    public function testGetUviHistoryWithNull()
+    {
+        $weather = $this->openWeather;
+        $locationArray = array('40.7', '-74.2', 'invalid-date-format');
+        $result = $weather->getUviHistory($locationArray);
+
+        $this->assertNull($result->uvi);
     }
 
     public function testGetDailyWeatherForecast()

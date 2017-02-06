@@ -116,6 +116,24 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
+    
+    /**
+     * @expectedException \InvalidArgumentException
+     * @dataProvider      uviExceptionDataProvider
+     */
+    public function testGetRawUviWithQueryErrorException($query)
+    {
+        $this->owm->getRawUviData($query);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @dataProvider      uviExceptionDataProvider
+     */
+    public function testGetRawUviHistoryWithQueryErrorException($query)
+    {
+        $this->owm->getRawUviHistory($query);
+    }
      
     /**
      * @expectedException \InvalidArgumentException
@@ -160,5 +178,13 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         
         $method->invoke($this->owm, $answer);
+    }
+
+    public function uviExceptionDataProvider()
+    {
+        return array(
+            array('error-query-format'),
+            array(array())
+        );
     }
 }

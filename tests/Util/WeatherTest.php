@@ -54,4 +54,14 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($expectIconLink, $iconLink);
     }
+
+    public function testSetIconUrlTemplate()
+    {
+        $expectIconLink = '//openweathermap.org';
+        $weather = $this->weather;
+        $weather::setIconUrlTemplate($expectIconLink);
+        $resultLink = $weather->getIconUrl();
+
+        $this->assertSame($expectIconLink, $resultLink);
+    }
 }
