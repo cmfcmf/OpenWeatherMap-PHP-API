@@ -53,7 +53,7 @@ class Time
             $day = new \DateTime($from->format('Y-m-d'));
         } else {
             $from = ($from instanceof \DateTime) ? $from : new \DateTime((string)$from);
-            $day = clone $from;
+            $day = $from = new \DateTime($from->format('Y-m-d'));
             $to = clone $from;
             $to = $to->add(new \DateInterval('PT23H59M59S'));
         }
