@@ -17,35 +17,39 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap\Util\Uvi;
+use Cmfcmf\OpenWeatherMap\Util\Location;
 
 /**
- * Weather class used to hold the current weather data.
+ * UVIndex class used to hold the uv index for a given date, time and location.
  */
-class CurrentUvi
+class UVIndex
 {
     /**
-     * The city object.
-     *
-     * @var Util\Uvi
+     * @var \DateTime
      */
-    public $uvi;
+    public $time;
 
     /**
-     * Create a new uvi object.
+     * @var Location
+     */
+    public $location;
+
+    /**
+     * @var float
+     */
+    public $uvIndex;
+
+    /**
+     * Create a new current uv index object.
      *
-     * @param mixed  $data
+     * @param object $data
      *
      * @internal
      */
     public function __construct($data)
     {
-        // generate the object from response JSON.
-        // ($time, $latitude, $longitude, $data)
-        if (empty($data->message) && empty($data->code)) {
-            $this->uvi = new Uvi($data->time, $data->location->latitude, $data->location->longitude, $data->data);
-        } else {
-            $this->uvi = null;
-        }
+        $this->time = new \DateTime($data->time);
+        $this->location = new Location($data->location->longitude, $data->location->latitude);
+        $this->uvIndex = (float)$data->data;
     }
 }

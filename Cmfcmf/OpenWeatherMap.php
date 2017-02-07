@@ -19,7 +19,7 @@ namespace Cmfcmf;
 
 use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
-use Cmfcmf\OpenWeatherMap\CurrentUvi;
+use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
@@ -69,14 +69,9 @@ class OpenWeatherMap
     private $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
 
     /**
-     * @var string The basic api url to fetch current uv data from.
+     * @var string The basic api url to fetch uv index data from.
      */
-    private $uviUrl = 'http://api.openweathermap.org/v3/uvi/%s,%s/current.json?';
-
-    /**
-     * @var string The basic api url to fetch current uv data from.
-     */
-    private $uviHistoryUrl = 'http://api.openweathermap.org/v3/uvi/%s,%s/%s.json?';
+    private $uviUrl = 'http://api.openweathermap.org/v3/uvi';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
@@ -315,6 +310,34 @@ class OpenWeatherMap
     }
 
     /**
+     * Returns the uv index at the location you specified.
+     *
+     * @param float              $lat           The location's latitude.
+     * @param float              $lon           The location's longitude.
+     * @param \DateTimeInterface $dateTime      The date and time to request data for.
+     * @param string             $timePrecision This decides about the timespan OWM will look for the uv index. The tighter
+     *                                          the timespan, the less likely it is to get a result. Can be 'year', 'month',
+     *                                          'day', 'hour', 'minute' or 'second', defaults to 'day'.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return UVIndex The uvi object.
+     *
+     * There are three ways to specify the place to get weather information for:
+     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     *
+     * @api
+     */
+    public function getUVIndex($lat, $lon, $dateTime, $timePrecision = 'day')
+    {
+        $answer = $this->getRawUVIndexData($lat, $lon, $dateTime, $timePrecision);
+        $json = $this->parseJson($answer);
+
+        return new UVIndex($json);
+    }
+
+    /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the current weather.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
@@ -407,7 +430,7 @@ class OpenWeatherMap
     }
 
     /**
-     * Directly returns the xml/json/html string returned by OpenWeatherMap for the weather history.
+     * Directly returns the json string returned by OpenWeatherMap for the weather history.
      *
      * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
      * @param \DateTime        $start      The \DateTime object of the date to get the first weather information from.
@@ -450,104 +473,57 @@ class OpenWeatherMap
     /**
      * Directly returns the json string returned by OpenWeatherMap for the UVI data.
      *
-     * @param array $query     The place to get information as follows: [latitude, longitude, date time]. For possible values see ::getWeather.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param float $lat                   The location's latitude.
+     * @param float $lon                   The location's longitude.
+     * @param \DateTimeInterface $dateTime The date and time to request data for.
+     * @param string $timePrecision        This decides about the timespan OWM will look for the uv index. The tighter
+     *                                     the timespan, the less likely it is to get a result. Can be 'year', 'month',
+     *                                     'day', 'hour', 'minute' or 'second', defaults to 'day'.
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return string Returns false on failure and the fetched data in the format you specified on success.
-     *
-     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
+     * @return bool|string Returns the fetched data.
      *
      * @api
      */
-    public function getRawUviData($query, $appid = '')
+    public function getRawUVIndexData($lat, $lon, $dateTime, $timePrecision = 'day')
     {
-        if (!is_array($query)) {
-            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
-        } elseif (count($query) != 2) {
-            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude]');
-        } else {
-            $url = $this->buildUviUrl($query, $appid);
+        if (!$this->apiKey) {
+            throw new \RuntimeException('Before using this method, you must set the api key using ->setApiKey()');
         }
+        if (!is_float($lat) || !is_float($lon)) {
+            throw new \InvalidArgumentException('$lat and $lon must be floating point numbers');
+        }
+        if (interface_exists('DateTimeInterface') && !$dateTime instanceof \DateTimeInterface || !$dateTime instanceof \DateTime) {
+            throw new \InvalidArgumentException('$dateTime must be an instance of \DateTime or \DateTimeInterface');
+        }
+        $format = '\Z';
+        switch ($timePrecision) {
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'second':
+                $format = ':s' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'minute':
+                $format = ':i' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'hour':
+                $format = '\TH' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'day':
+                $format = '-d' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'month':
+                $format = '-m' . $format;
+            case 'year':
+                $format = 'Y' . $format;
+                break;
+            default:
+                throw new \InvalidArgumentException('$timePrecision is invalid.');
+        }
+        // OWM only accepts UTC timezones.
+        $dateTime->setTimezone(new \DateTimeZone('UTC'));
+
+        $url = sprintf($this->uviUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime->format($format), $this->apiKey);
 
         return $this->cacheOrFetchResult($url);
-    }
-
-    /**
-     * Directly returns the json string returned by OpenWeatherMap for the UVI history data.
-     *
-     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string Returns false on failure and the fetched data in the format you specified on success.
-     *
-     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
-     *
-     * @api
-     */
-    public function getRawUviHistory($query, $appid = '')
-    {
-        if (!is_array($query)) {
-            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
-        } elseif (count($query) != 3) {
-            throw new \InvalidArgumentException('$query must get information is as follows: [latitude, longitude, ISO 8601 date format]');
-        } else {
-            $url = $this->buildUviUrl($query, $appid);
-        }
-
-        return $this->cacheOrFetchResult($url);
-    }
-
-     /**
-     * Returns the current uvi at the location you specified.
-     *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
-     * @throws \InvalidArgumentException If an argument error occurs.
-     *
-     * @return CurrentUvi The uvi object.
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * @api
-     */
-    public function getUvi($query, $appid = '')
-    {
-        $answer = $this->getRawUviData($query, $appid);
-        $json = $this->parseJson($answer);
-
-        return new CurrentUvi($json);
-    }
-
-    /**
-     * Returns the history uvi at the location you specified.
-     *
-     * @param array|int|string $query The place to get weather information for. For possible values see below.
-     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
-     * @param string           $dateTime Your date time, default ''. See http://openweathermap.org/api/uvi for more details about date format.
-     *
-     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
-     * @throws \InvalidArgumentException If an argument error occurs.
-     *
-     * @return CurrentUvi The uvi object.
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
-     *
-     * @api
-     */
-    public function getUviHistory($query, $appid = '')
-    {
-        $answer = $this->getRawUviHistory($query, $appid);
-        $json = $this->parseJson($answer);
-
-        return new CurrentUvi($json);
     }
 
     /**
@@ -618,34 +594,6 @@ class OpenWeatherMap
     }
 
     /**
-     * Build the url to fetch UVI data from.
-     *
-     * @param        $query
-     * @param        $units
-     * @param        $lang
-     * @param        $appid
-     * @param        $mode
-     * @param string $url   The url to prepend.
-     *
-     * @return bool|string The fetched url, false on failure.
-     */
-    private function buildUviUrl($query, $appid)
-    {
-        $queryLength = count($query);
-        switch ($queryLength) {
-            case 2:
-                $queryUrl = sprintf($this->uviUrl, $query[0], $query[1]);
-                break;
-            case 3:
-                $queryUrl = sprintf($this->uviHistoryUrl, $query[0], $query[1], $query[2]);
-                break;
-        }
-        $queryUrl .= 'APPID=';
-
-        return $queryUrl .= empty($appid) ? $this->apiKey : $appid;
-    }
-
-    /**
      * Builds the query string for the url.
      *
      * @param mixed $query
@@ -706,6 +654,9 @@ class OpenWeatherMap
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new OWMException('OpenWeatherMap returned an invalid json object. JSON error was: ' . $this->json_last_error_msg());
+        }
+        if (isset($json->message)) {
+            throw new OWMException('An error occurred: '. $json->message);
         }
 
         return $json;

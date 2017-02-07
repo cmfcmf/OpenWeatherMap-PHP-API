@@ -6,7 +6,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     sudo apt-get update
-    sudo apt-get install -y php5-cli
+    sudo apt-get install -y php5-cli php5-curl
 
     sudo curl --silent https://getcomposer.org/installer | php > /dev/null 2>&1
     sudo mv composer.phar /usr/local/bin/composer

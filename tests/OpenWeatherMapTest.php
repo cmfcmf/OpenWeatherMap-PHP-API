@@ -130,32 +130,21 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $maxDay);
     }
 
-    public function testGetUvi()
+    public function testGetUVIndex()
     {
         $weather = $this->openWeather;
-        $locationArray = array('40.7', '-74.2');
-        $result = $weather->getUvi($locationArray);
+        $result = $weather->getUVIndex(40.7, -74.2, new \DateTime());
 
-        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentUvi', $result);
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
-    public function testGetUviHistory()
+    public function testGetUUVIndexForYear()
     {
         $weather = $this->openWeather;
-        $year = date('Y') . 'Z';
-        $locationArray = array('40.7', '-74.2', $year);
-        $result = $weather->getUviHistory($locationArray);
+        $year = new \DateTime(date('Y'));
+        $result = $weather->getUVIndex(40.7, -74.2, $year, 'year');
 
-        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentUvi', $result);
-    }
-
-    public function testGetUviHistoryWithNull()
-    {
-        $weather = $this->openWeather;
-        $locationArray = array('40.7', '-74.2', 'invalid-date-format');
-        $result = $weather->getUviHistory($locationArray);
-
-        $this->assertNull($result->uvi);
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
     public function testGetDailyWeatherForecast()

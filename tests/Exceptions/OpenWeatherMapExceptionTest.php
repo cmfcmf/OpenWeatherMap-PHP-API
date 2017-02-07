@@ -121,20 +121,11 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @dataProvider      uviExceptionDataProvider
      */
-    public function testGetRawUviWithQueryErrorException($query)
+    public function testGetRawUviWithQueryErrorException($lat, $lon, $dateTime)
     {
-        $this->owm->getRawUviData($query);
+        $this->owm->getRawUVIndexData($lat, $lon, $dateTime);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @dataProvider      uviExceptionDataProvider
-     */
-    public function testGetRawUviHistoryWithQueryErrorException($query)
-    {
-        $this->owm->getRawUviHistory($query);
-    }
-     
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -183,8 +174,9 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     public function uviExceptionDataProvider()
     {
         return array(
-            array('error-query-format'),
-            array(array())
+            array('error-query-format', 'foo', new \DateTime()),
+            array(5.4, 1.2, 'foo'),
+            array(5.4, 12, 'foo'),
         );
     }
 }
