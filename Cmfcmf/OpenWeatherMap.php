@@ -71,7 +71,7 @@ class OpenWeatherMap
     /**
      * @var string The basic api url to fetch uv index data from.
      */
-    private $uviUrl = 'http://api.openweathermap.org/v3/uvi';
+    private $uvIndexUrl = 'http://api.openweathermap.org/v3/uvi';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
@@ -310,7 +310,7 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the uv index at the location you specified.
+     * Returns the uv index at date, time and location you specified.
      *
      * @param float              $lat           The location's latitude.
      * @param float              $lon           The location's longitude.
@@ -323,9 +323,6 @@ class OpenWeatherMap
      * @throws \InvalidArgumentException If an argument error occurs.
      *
      * @return UVIndex The uvi object.
-     *
-     * There are three ways to specify the place to get weather information for:
-     * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
      *
      * @api
      */
@@ -495,33 +492,7 @@ class OpenWeatherMap
         if (interface_exists('DateTimeInterface') && !$dateTime instanceof \DateTimeInterface || !$dateTime instanceof \DateTime) {
             throw new \InvalidArgumentException('$dateTime must be an instance of \DateTime or \DateTimeInterface');
         }
-        $format = '\Z';
-        switch ($timePrecision) {
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'second':
-                $format = ':s' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'minute':
-                $format = ':i' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'hour':
-                $format = '\TH' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'day':
-                $format = '-d' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'month':
-                $format = '-m' . $format;
-            case 'year':
-                $format = 'Y' . $format;
-                break;
-            default:
-                throw new \InvalidArgumentException('$timePrecision is invalid.');
-        }
-        // OWM only accepts UTC timezones.
-        $dateTime->setTimezone(new \DateTimeZone('UTC'));
-
-        $url = sprintf($this->uviUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime->format($format), $this->apiKey);
+        $url = $this->buildUVIndexUrl($lat, $lon, $dateTime, $timePrecision);
 
         return $this->cacheOrFetchResult($url);
     }
@@ -590,6 +561,46 @@ class OpenWeatherMap
         $url = $url."$queryUrl&units=$units&lang=$lang&mode=$mode&APPID=";
         $url .= empty($appid) ? $this->apiKey : $appid;
 
+        return $url;
+    }
+
+    /**
+     * @param float                        $lat
+     * @param float                        $lon
+     * @param \DateTime|\DateTimeImmutable $dateTime
+     * @param string                       $timePrecision
+     *
+     * @return string
+     */
+    private function buildUVIndexUrl($lat, $lon, $dateTime, $timePrecision)
+    {
+        $format = '\Z';
+        switch ($timePrecision) {
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'second':
+                $format = ':s' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'minute':
+                $format = ':i' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'hour':
+                $format = '\TH' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'day':
+                $format = '-d' . $format;
+            /** @noinspection PhpMissingBreakStatementInspection */
+            case 'month':
+                $format = '-m' . $format;
+            case 'year':
+                $format = 'Y' . $format;
+                break;
+            default:
+                throw new \InvalidArgumentException('$timePrecision is invalid.');
+        }
+        // OWM only accepts UTC timezones.
+        $dateTime->setTimezone(new \DateTimeZone('UTC'));
+
+        $url = sprintf($this->uvIndexUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime->format($format), $this->apiKey);
         return $url;
     }
 

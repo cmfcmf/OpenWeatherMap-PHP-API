@@ -17,8 +17,6 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap;
-
 /**
  * Class CurrentWeatherGroup used to hold the current weather data for a group of cities.
  */

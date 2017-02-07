@@ -35,14 +35,14 @@ class Location
     /**
      * Create a new location object.
      *
-     * @param float  $lon        The longitude of the city.
-     * @param float  $lat        The latitude of the city.
+     * @param float  $lat The latitude of the city.
+     * @param float  $lon The longitude of the city.
      *
      * @internal
      */
-    public function __construct($lon = null, $lat = null)
+    public function __construct($lat = null, $lon = null)
     {
-        $this->lon = isset($lon) ? (float)$lon : null;
         $this->lat = isset($lat) ? (float)$lat : null;
+        $this->lon = isset($lon) ? (float)$lon : null;
     }
 }

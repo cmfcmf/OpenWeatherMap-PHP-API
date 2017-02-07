@@ -16,8 +16,6 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use \Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
-use \Cmfcmf\OpenWeatherMap\WeatherHistory;
-use \Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap\ExampleCacheTest;
 
 class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -113,7 +111,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWeatherGroup()
     {
-        $currentWeather = $this->owm->getWeatherGroup('2950159', 'imperial', 'en', '');
+        $currentWeather = $this->owm->getWeatherGroup(array('2950159'), 'imperial', 'en', '');
 
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeatherGroup', $currentWeather);
     }
@@ -157,7 +155,6 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWeatherHistory()
     {
-        // @TODO!!
         $this->markTestSkipped('This getWeatherHistory method ignored because the api key need to have a paid permission.');
     }
 
@@ -193,6 +190,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testAbstractCache()
     {
+        /** @var OpenWeatherMap\AbstractCache $sut */
         $sut = $this->getMockForAbstractClass('\Cmfcmf\OpenWeatherMap\AbstractCache');
         $this->assertNull($sut->setSeconds(10));
     }

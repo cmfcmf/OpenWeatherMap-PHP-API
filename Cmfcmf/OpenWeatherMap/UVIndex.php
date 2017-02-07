@@ -49,7 +49,7 @@ class UVIndex
     public function __construct($data)
     {
         $this->time = new \DateTime($data->time);
-        $this->location = new Location($data->location->longitude, $data->location->latitude);
+        $this->location = new Location($data->location->latitude, $data->location->longitude);
         $this->uvIndex = (float)$data->data;
     }
 }
