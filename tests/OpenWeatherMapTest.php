@@ -15,6 +15,7 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use \Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Exception;
 use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
 
 class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
@@ -130,19 +131,17 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUVIndex()
     {
-        $weather = $this->openWeather;
-        $result = $weather->getUVIndex(40.7, -74.2, new \DateTime());
-
-        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
-    }
-
-    public function testGetUUVIndexForYear()
-    {
-        $weather = $this->openWeather;
-        $year = new \DateTime(date('Y'));
-        $result = $weather->getUVIndex(40.7, -74.2, $year, 'year');
-
-        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+        $owm = $this->openWeather;
+        $precisions = array('year', 'month', 'day', 'hour', 'minute', 'second');
+        foreach ($precisions as $precision) {
+            try {
+                $result = $owm->getUVIndex(40.7, -74.2, new \DateTime(), $precision);
+            } catch (Exception $e) {
+                // OWM might not actually have data for the timespan.
+                $this->assertSame('An error occurred: not found', $e->getMessage());
+            }
+            $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+        }
     }
 
     public function testGetDailyWeatherForecast()

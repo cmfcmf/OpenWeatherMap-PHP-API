@@ -116,14 +116,23 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
-    
+
     /**
      * @expectedException \InvalidArgumentException
      * @dataProvider      uviExceptionDataProvider
      */
-    public function testGetRawUviWithQueryErrorException($lat, $lon, $dateTime)
+    public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime)
     {
         $this->owm->getRawUVIndexData($lat, $lon, $dateTime);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetRawUVIndexWithoutApiKey()
+    {
+        $this->owm->setApiKey(null);
+        $this->owm->getRawUVIndexData(1.1, 1.1, new \DateTime());
     }
 
     /**
