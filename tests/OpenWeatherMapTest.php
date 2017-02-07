@@ -129,6 +129,13 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $maxDay);
     }
 
+    public function testGetCurrentUVIndex()
+    {
+        $owm = $this->openWeather;
+        $result = $owm->getCurrentUVIndex(40.7, -74.2);
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+    }
+
     public function testGetUVIndex()
     {
         $owm = $this->openWeather;

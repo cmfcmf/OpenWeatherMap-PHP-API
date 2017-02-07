@@ -119,11 +119,20 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @dataProvider      uviExceptionDataProvider
+     * @dataProvider      uvIndexExceptionDataProvider
      */
     public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime)
     {
         $this->owm->getRawUVIndexData($lat, $lon, $dateTime);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @dataProvider      currentUVIndexExceptionDataProvider
+     */
+    public function testGetRawCurrentUVIndexWithQueryErrorException($lat, $lon)
+    {
+        $this->owm->getRawCurrentUVIndexData($lat, $lon);
     }
 
     /**
@@ -133,6 +142,15 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $this->owm->setApiKey(null);
         $this->owm->getRawUVIndexData(1.1, 1.1, new \DateTime());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetRawCurrentUVIndexWithoutApiKey()
+    {
+        $this->owm->setApiKey(null);
+        $this->owm->getRawCurrentUVIndexData(1.1, 1.1);
     }
 
     /**
@@ -180,12 +198,21 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->invoke($this->owm, $answer);
     }
 
-    public function uviExceptionDataProvider()
+    public function uvIndexExceptionDataProvider()
     {
         return array(
             array('error-query-format', 'foo', new \DateTime()),
             array(5.4, 1.2, 'foo'),
             array(5.4, 12, 'foo'),
+        );
+    }
+
+    public function currentUVIndexExceptionDataProvider()
+    {
+        return array(
+            array('error-query-format', 'foo'),
+            array(5.4, 12),
+            array(5.4, '1.2'),
         );
     }
 }

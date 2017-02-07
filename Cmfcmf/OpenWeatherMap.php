@@ -310,6 +310,27 @@ class OpenWeatherMap
     }
 
     /**
+     * Returns the current uv index at the location you specified.
+     *
+     * @param float              $lat           The location's latitude.
+     * @param float              $lon           The location's longitude.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return UVIndex The uvi object.
+     *
+     * @api
+     */
+    public function getCurrentUVIndex($lat, $lon)
+    {
+        $answer = $this->getRawCurrentUVIndexData($lat, $lon);
+        $json = $this->parseJson($answer);
+
+        return new UVIndex($json);
+    }
+
+    /**
      * Returns the uv index at date, time and location you specified.
      *
      * @param float              $lat           The location's latitude.
@@ -468,7 +489,30 @@ class OpenWeatherMap
     }
 
     /**
-     * Directly returns the json string returned by OpenWeatherMap for the UVI data.
+     * Directly returns the json string returned by OpenWeatherMap for the current UV index data.
+     *
+     * @param float $lat                   The location's latitude.
+     * @param float $lon                   The location's longitude.
+     *
+     * @return bool|string Returns the fetched data.
+     *
+     * @api
+     */
+    public function getRawCurrentUVIndexData($lat, $lon)
+    {
+        if (!$this->apiKey) {
+            throw new \RuntimeException('Before using this method, you must set the api key using ->setApiKey()');
+        }
+        if (!is_float($lat) || !is_float($lon)) {
+            throw new \InvalidArgumentException('$lat and $lon must be floating point numbers');
+        }
+        $url = $this->buildUVIndexUrl($lat, $lon);
+
+        return $this->cacheOrFetchResult($url);
+    }
+
+    /**
+     * Directly returns the json string returned by OpenWeatherMap for the UV index data.
      *
      * @param float $lat                   The location's latitude.
      * @param float $lon                   The location's longitude.
@@ -572,36 +616,40 @@ class OpenWeatherMap
      *
      * @return string
      */
-    private function buildUVIndexUrl($lat, $lon, $dateTime, $timePrecision)
+    private function buildUVIndexUrl($lat, $lon, $dateTime = null, $timePrecision = null)
     {
-        $format = '\Z';
-        switch ($timePrecision) {
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'second':
-                $format = ':s' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'minute':
-                $format = ':i' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'hour':
-                $format = '\TH' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'day':
-                $format = '-d' . $format;
-            /** @noinspection PhpMissingBreakStatementInspection */
-            case 'month':
-                $format = '-m' . $format;
-            case 'year':
-                $format = 'Y' . $format;
-                break;
-            default:
-                throw new \InvalidArgumentException('$timePrecision is invalid.');
+        if ($dateTime !== null) {
+            $format = '\Z';
+            switch ($timePrecision) {
+                /** @noinspection PhpMissingBreakStatementInspection */
+                case 'second':
+                    $format = ':s' . $format;
+                /** @noinspection PhpMissingBreakStatementInspection */
+                case 'minute':
+                    $format = ':i' . $format;
+                /** @noinspection PhpMissingBreakStatementInspection */
+                case 'hour':
+                    $format = '\TH' . $format;
+                /** @noinspection PhpMissingBreakStatementInspection */
+                case 'day':
+                    $format = '-d' . $format;
+                /** @noinspection PhpMissingBreakStatementInspection */
+                case 'month':
+                    $format = '-m' . $format;
+                case 'year':
+                    $format = 'Y' . $format;
+                    break;
+                default:
+                    throw new \InvalidArgumentException('$timePrecision is invalid.');
+            }
+            // OWM only accepts UTC timezones.
+            $dateTime->setTimezone(new \DateTimeZone('UTC'));
+            $dateTime = $dateTime->format($format);
+        } else {
+            $dateTime = 'current';
         }
-        // OWM only accepts UTC timezones.
-        $dateTime->setTimezone(new \DateTimeZone('UTC'));
 
-        $url = sprintf($this->uvIndexUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime->format($format), $this->apiKey);
-        return $url;
+        return sprintf($this->uvIndexUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime, $this->apiKey);
     }
 
     /**
