@@ -113,7 +113,9 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     public function testGetWeatherGroup()
     {
         $currentWeather = $this->owm->getWeatherGroup(array('2950159'), 'imperial', 'en', '');
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeatherGroup', $currentWeather);
 
+        $currentWeather = $this->owm->getWeatherGroup('2950159', 'imperial', 'en', '');
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeatherGroup', $currentWeather);
     }
 

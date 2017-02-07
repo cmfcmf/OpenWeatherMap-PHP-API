@@ -121,9 +121,9 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @dataProvider      uvIndexExceptionDataProvider
      */
-    public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime)
+    public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime, $precision)
     {
-        $this->owm->getRawUVIndexData($lat, $lon, $dateTime);
+        $this->owm->getRawUVIndexData($lat, $lon, $dateTime, $precision);
     }
 
     /**
@@ -201,9 +201,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     public function uvIndexExceptionDataProvider()
     {
         return array(
-            array('error-query-format', 'foo', new \DateTime()),
-            array(5.4, 1.2, 'foo'),
-            array(5.4, 12, 'foo'),
+            array('error-query-format', 'foo', new \DateTime(), 'year'),
+            array(5.4, 1.2, 'foo', 'month'),
+            array(5.4, 12, 'foo', 'day'),
+            array(5.4, 1.2, 'foo', 'bar'),
         );
     }
 
