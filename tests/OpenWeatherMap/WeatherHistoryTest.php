@@ -74,7 +74,7 @@ class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
     {
         $fakeJson = json_decode(FakeData::WEATHER_HISTORY_WITH_RAIN_JSON, true);
         $history = new WeatherHistory($fakeJson, 'Berlin');
-        
+
         $history->rewind();
         $this->assertTrue($history->valid());
     }

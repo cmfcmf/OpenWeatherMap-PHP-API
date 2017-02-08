@@ -103,7 +103,7 @@ class CurrentWeather
         $utctz = new \DateTimeZone('UTC');
 
         if ($data instanceof \SimpleXMLElement) {
-            $this->city = new City($data->city['id'], $data->city['name'], $data->city->coord['lon'], $data->city->coord['lat'], $data->city->country);
+            $this->city = new City($data->city['id'], $data->city['name'], $data->city->coord['lat'], $data->city->coord['lon'], $data->city->country);
             $this->temperature = new Temperature(new Unit($data->temperature['value'], $data->temperature['unit']), new Unit($data->temperature['min'], $data->temperature['unit']), new Unit($data->temperature['max'], $data->temperature['unit']));
             $this->humidity = new Unit($data->humidity['value'], $data->humidity['unit']);
             $this->pressure = new Unit($data->pressure['value'], $data->pressure['unit']);
@@ -114,7 +114,7 @@ class CurrentWeather
             $this->weather = new Weather($data->weather['number'], $data->weather['value'], $data->weather['icon']);
             $this->lastUpdate = new \DateTime($data->lastupdate['value'], $utctz);
         } else {
-            $this->city = new City($data->id, $data->name, $data->coord->lon, $data->coord->lat, $data->sys->country);
+            $this->city = new City($data->id, $data->name, $data->coord->lat, $data->coord->lon, $data->sys->country);
             $this->temperature = new Temperature(new Unit($data->main->temp, $units), new Unit($data->main->temp_min, $units), new Unit($data->main->temp_max, $units));
             $this->humidity = new Unit($data->main->humidity, '%');
             $this->pressure = new Unit($data->main->pressure, 'hPa');

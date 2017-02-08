@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Util;
 /**
  * The city class representing a city object.
  */
-class City
+class City extends Location
 {
     /**
      * @var int The city id.
@@ -31,16 +31,6 @@ class City
      * @var string The name of the city.
      */
     public $name;
-
-    /**
-     * @var float The longitude of the city.
-     */
-    public $lon;
-
-    /**
-     * @var float The latitude of the city.
-     */
-    public $lat;
 
     /**
      * @var string The abbreviation of the country the city is located in.
@@ -57,20 +47,20 @@ class City
      *
      * @param int    $id         The city id.
      * @param string $name       The name of the city.
-     * @param float  $lon        The longitude of the city.
      * @param float  $lat        The latitude of the city.
+     * @param float  $lon        The longitude of the city.
      * @param string $country    The abbreviation of the country the city is located in
      * @param int    $population The city's population.
      *
      * @internal
      */
-    public function __construct($id, $name = null, $lon = null, $lat = null, $country = null, $population = null)
+    public function __construct($id, $name = null, $lat = null, $lon = null, $country = null, $population = null)
     {
         $this->id = (int)$id;
         $this->name = isset($name) ? (string)$name : null;
-        $this->lon = isset($lon) ? (float)$lon : null;
-        $this->lat = isset($lat) ? (float)$lat : null;
         $this->country = isset($country) ? (string)$country : null;
         $this->population = isset($population) ? (int)$population : null;
+
+        parent::__construct($lat, $lon);
     }
 }

@@ -116,7 +116,43 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     {
         $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
-     
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @dataProvider      uvIndexExceptionDataProvider
+     */
+    public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime, $precision)
+    {
+        $this->owm->getRawUVIndexData($lat, $lon, $dateTime, $precision);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @dataProvider      currentUVIndexExceptionDataProvider
+     */
+    public function testGetRawCurrentUVIndexWithQueryErrorException($lat, $lon)
+    {
+        $this->owm->getRawCurrentUVIndexData($lat, $lon);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetRawUVIndexWithoutApiKey()
+    {
+        $this->owm->setApiKey(null);
+        $this->owm->getRawUVIndexData(1.1, 1.1, new \DateTime());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetRawCurrentUVIndexWithoutApiKey()
+    {
+        $this->owm->setApiKey(null);
+        $this->owm->getRawCurrentUVIndexData(1.1, 1.1);
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -160,5 +196,24 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         
         $method->invoke($this->owm, $answer);
+    }
+
+    public function uvIndexExceptionDataProvider()
+    {
+        return array(
+            array('error-query-format', 'foo', new \DateTime(), 'year'),
+            array(5.4, 1.2, 'foo', 'month'),
+            array(5.4, 12, 'foo', 'day'),
+            array(5.4, 1.2, 'foo', 'bar'),
+        );
+    }
+
+    public function currentUVIndexExceptionDataProvider()
+    {
+        return array(
+            array('error-query-format', 'foo'),
+            array(5.4, 12),
+            array(5.4, '1.2'),
+        );
     }
 }

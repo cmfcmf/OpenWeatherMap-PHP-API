@@ -17,7 +17,6 @@
 
 namespace Cmfcmf\OpenWeatherMap;
 
-use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Util\City;
 
 /**
@@ -66,8 +65,8 @@ class WeatherHistory implements \Iterator
         $this->city = new City(
             $weatherHistory['city_id'],
             (is_string($query)) ? $query : null,
-            (isset($query['lon'])) ? $query['lon'] : null,
             (isset($query['lat'])) ? $query['lat'] : null,
+            (isset($query['lon'])) ? $query['lon'] : null,
             $country,
             $population
         );

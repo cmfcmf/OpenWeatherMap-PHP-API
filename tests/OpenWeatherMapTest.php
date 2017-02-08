@@ -15,9 +15,8 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use \Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Exception;
 use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
-use \Cmfcmf\OpenWeatherMap\WeatherHistory;
-use \Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap\ExampleCacheTest;
 
 class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,14 +31,22 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     protected $owm;
 
     /**
+     * @var OpenWeatherMap
+     */
+    protected $openWeather;
+
+    /**
      * @var ExampleCacheTest
      */
     protected $cache;
 
     protected function setUp()
     {
-        $this->apiKey = 'unicorn-rainbow';
+        $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
+        $myApiKey = $ini['api_key'];
+        $this->apiKey = $myApiKey;
         $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
+        $this->openWeather = new OpenWeatherMap($this->apiKey, null, false, 600);
         $this->cache = new ExampleCacheTest();
     }
 
@@ -105,8 +112,10 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWeatherGroup()
     {
-        $currentWeather = $this->owm->getWeatherGroup('2950159', 'imperial', 'en', '');
+        $currentWeather = $this->owm->getWeatherGroup(array('2950159'), 'imperial', 'en', '');
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeatherGroup', $currentWeather);
 
+        $currentWeather = $this->owm->getWeatherGroup('2950159', 'imperial', 'en', '');
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeatherGroup', $currentWeather);
     }
 
@@ -122,6 +131,28 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $maxDay);
     }
 
+    public function testGetCurrentUVIndex()
+    {
+        $owm = $this->openWeather;
+        $result = $owm->getCurrentUVIndex(40.7, -74.2);
+        $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+    }
+
+    public function testGetUVIndex()
+    {
+        $owm = $this->openWeather;
+        $precisions = array('year', 'month', 'day', 'hour', 'minute', 'second');
+        foreach ($precisions as $precision) {
+            try {
+                $result = $owm->getUVIndex(40.7, -74.2, new \DateTime(), $precision);
+            } catch (Exception $e) {
+                // OWM might not actually have data for the timespan.
+                $this->assertSame('An error occurred: not found', $e->getMessage());
+            }
+            $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+        }
+    }
+
     public function testGetDailyWeatherForecast()
     {
         $days = 16;
@@ -132,7 +163,6 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWeatherHistory()
     {
-        // @TODO!!
         $this->markTestSkipped('This getWeatherHistory method ignored because the api key need to have a paid permission.');
     }
 
@@ -168,6 +198,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testAbstractCache()
     {
+        /** @var OpenWeatherMap\AbstractCache $sut */
         $sut = $this->getMockForAbstractClass('\Cmfcmf\OpenWeatherMap\AbstractCache');
         $this->assertNull($sut->setSeconds(10));
     }
