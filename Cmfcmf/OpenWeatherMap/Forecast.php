@@ -62,7 +62,10 @@ class Forecast extends CurrentWeather
             $windSpeedUnit = 'mps';
         }
 
-        $this->wind = new Wind(new Unit($xml->windSpeed['mps'], $windSpeedUnit, $xml->windSpeed['name']), new Unit($xml->windDirection['deg'], $xml->windDirection['code'], $xml->windDirection['name']));
+        $this->wind = new Wind(
+            new Unit($xml->windSpeed['mps'], $windSpeedUnit, $xml->windSpeed['name']),
+            property_exists($xml, 'windDirection') ? new Unit($xml->windDirection['deg'], $xml->windDirection['code'], $xml->windDirection['name']) : null
+        );
         $this->clouds = new Unit($xml->clouds['all'], $xml->clouds['unit'], $xml->clouds['value']);
         $this->precipitation = new Unit($xml->precipitation['value'], null, $xml->precipitation['type']);
         $this->weather = new Weather($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
