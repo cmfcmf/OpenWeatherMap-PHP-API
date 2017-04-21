@@ -40,7 +40,7 @@ class Wind
      *
      * @internal
      */
-    public function __construct(Unit $speed, Unit $direction)
+    public function __construct(Unit $speed, Unit $direction = null)
     {
         $this->speed = $speed;
         $this->direction = $direction;
