@@ -107,7 +107,10 @@ class CurrentWeather
             $this->temperature = new Temperature(new Unit($data->temperature['value'], $data->temperature['unit']), new Unit($data->temperature['min'], $data->temperature['unit']), new Unit($data->temperature['max'], $data->temperature['unit']));
             $this->humidity = new Unit($data->humidity['value'], $data->humidity['unit']);
             $this->pressure = new Unit($data->pressure['value'], $data->pressure['unit']);
-            $this->wind = new Wind(new Unit($data->wind->speed['value'], $windSpeedUnit, $data->wind->speed['name']), new Unit($data->wind->direction['value'], $data->wind->direction['code'], $data->wind->direction['name']));
+            $this->wind = new Wind(
+                new Unit($data->wind->speed['value'], $windSpeedUnit, $data->wind->speed['name']),
+                property_exists($data->wind, 'direction') ? new Unit($data->wind->direction['value'], $data->wind->direction['code'], $data->wind->direction['name']) : null
+            );
             $this->clouds = new Unit($data->clouds['value'], null, $data->clouds['name']);
             $this->precipitation = new Unit($data->precipitation['value'], $data->precipitation['unit'], $data->precipitation['mode']);
             $this->sun = new Sun(new \DateTime($data->city->sun['rise'], $utctz), new \DateTime($data->city->sun['set'], $utctz));
@@ -118,7 +121,10 @@ class CurrentWeather
             $this->temperature = new Temperature(new Unit($data->main->temp, $units), new Unit($data->main->temp_min, $units), new Unit($data->main->temp_max, $units));
             $this->humidity = new Unit($data->main->humidity, '%');
             $this->pressure = new Unit($data->main->pressure, 'hPa');
-            $this->wind = new Wind(new Unit($data->wind->speed, $windSpeedUnit), new Unit($data->wind->deg));
+            $this->wind = new Wind(
+                new Unit($data->wind->speed, $windSpeedUnit),
+                property_exists($data->wind, 'deg') ? new Unit($data->wind->deg) : null
+            );
             $this->clouds = new Unit($data->clouds->all, '%');
 
             // the rain field is not always present in the JSON response

@@ -98,7 +98,10 @@ class History
         $this->humidity = new Unit($humidity, '%');
         $this->clouds = new Unit($clouds, '%');
         $this->precipitation = new Unit($rain['val'], $rain['unit']);
-        $this->wind = new Wind(new Unit($wind['speed']), new Unit($wind['deg']));
+        $this->wind = new Wind(
+            new Unit($wind['speed']),
+            isset($wind['deg']) ? new Unit($wind['deg']) : null
+        );
         $this->time = $time;
     }
 }
