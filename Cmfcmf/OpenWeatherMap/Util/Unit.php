@@ -27,21 +27,21 @@ class Unit
      *
      * @internal
      */
-    private $value;
+    protected $value;
 
     /**
      * @var string The value's unit.
      *
      * @internal
      */
-    private $unit;
+    protected $unit;
 
     /**
      * @var string The value's description.
      *
      * @internal
      */
-    private $description;
+    protected $description;
 
     /**
      * Create a new unit object.

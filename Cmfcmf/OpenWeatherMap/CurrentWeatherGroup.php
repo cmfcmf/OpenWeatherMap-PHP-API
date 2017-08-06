@@ -29,12 +29,12 @@ class CurrentWeatherGroup implements \Iterator
      *
      * @see CurrentWeather The CurrentWeather class.
      */
-    private $currentWeathers;
+    protected $currentWeathers;
 
     /**
      * @internal
      */
-    private $position = 0;
+    protected $position = 0;
 
     /**
      * Create a new current weathers group object.

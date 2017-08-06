@@ -42,7 +42,7 @@ class Weather
      *
      * @see self::getIconUrl() to see how it is used.
      */
-    private static $iconUrl = "//openweathermap.org/img/w/%s.png";
+    protected static $iconUrl = "//openweathermap.org/img/w/%s.png";
 
     /**
      * Create a new weather object.

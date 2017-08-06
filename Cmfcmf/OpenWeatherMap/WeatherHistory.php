@@ -45,12 +45,12 @@ class WeatherHistory implements \Iterator
      *
      * @see WeatherForecast The WeatherForecast class.
      */
-    private $histories;
+    protected $histories;
 
     /**
      * @internal
      */
-    private $position = 0;
+    protected $position = 0;
 
     public function __construct($weatherHistory, $query)
     {

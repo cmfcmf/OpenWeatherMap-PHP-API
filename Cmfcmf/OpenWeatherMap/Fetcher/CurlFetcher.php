@@ -27,7 +27,7 @@ class CurlFetcher implements FetcherInterface
     /**
      * @var array The Curl options to use.
      */
-    private $curlOptions;
+    protected $curlOptions;
 
     /**
      * Create a new CurlFetcher instance.

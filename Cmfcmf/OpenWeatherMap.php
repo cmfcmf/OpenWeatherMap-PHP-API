@@ -46,57 +46,57 @@ class OpenWeatherMap
     /**
      * @var string The basic api url to fetch weather data from.
      */
-    private $weatherUrl = 'http://api.openweathermap.org/data/2.5/weather?';
+    protected $weatherUrl = 'http://api.openweathermap.org/data/2.5/weather?';
 
     /**
      * @var string The basic api url to fetch weather group data from.
      */
-    private $weatherGroupUrl = 'http://api.openweathermap.org/data/2.5/group?';
+    protected $weatherGroupUrl = 'http://api.openweathermap.org/data/2.5/group?';
 
     /**
      * @var string The basic api url to fetch weekly forecast data from.
      */
-    private $weatherHourlyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?';
+    protected $weatherHourlyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?';
 
     /**
      * @var string The basic api url to fetch daily forecast data from.
      */
-    private $weatherDailyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast/daily?';
+    protected $weatherDailyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast/daily?';
 
     /**
      * @var string The basic api url to fetch history weather data from.
      */
-    private $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
+    protected $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
 
     /**
      * @var string The basic api url to fetch uv index data from.
      */
-    private $uvIndexUrl = 'http://api.openweathermap.org/v3/uvi';
+    protected $uvIndexUrl = 'http://api.openweathermap.org/v3/uvi';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
      */
-    private $cache = false;
+    protected $cache = false;
 
     /**
      * @var int
      */
-    private $seconds;
+    protected $seconds;
 
     /**
      * @var bool
      */
-    private $wasCached = false;
+    protected $wasCached = false;
 
     /**
      * @var FetcherInterface The url fetcher.
      */
-    private $fetcher;
+    protected $fetcher;
 
     /**
      * @var string
      */
-    private $apiKey = '';
+    protected $apiKey = '';
 
     /**
      * Constructs the OpenWeatherMap object.
@@ -566,7 +566,7 @@ class OpenWeatherMap
      *
      * @return string
      */
-    private function cacheOrFetchResult($url)
+    protected function cacheOrFetchResult($url)
     {
         if ($this->cache !== false) {
             /** @var AbstractCache $cache */
@@ -598,7 +598,7 @@ class OpenWeatherMap
      *
      * @return bool|string The fetched url, false on failure.
      */
-    private function buildUrl($query, $units, $lang, $appid, $mode, $url)
+    protected function buildUrl($query, $units, $lang, $appid, $mode, $url)
     {
         $queryUrl = $this->buildQueryUrlParameter($query);
 
@@ -616,7 +616,7 @@ class OpenWeatherMap
      *
      * @return string
      */
-    private function buildUVIndexUrl($lat, $lon, $dateTime = null, $timePrecision = null)
+    protected function buildUVIndexUrl($lat, $lon, $dateTime = null, $timePrecision = null)
     {
         if ($dateTime !== null) {
             $format = '\Z';
@@ -661,7 +661,7 @@ class OpenWeatherMap
      *
      * @throws \InvalidArgumentException If the query parameter is invalid.
      */
-    private function buildQueryUrlParameter($query)
+    protected function buildQueryUrlParameter($query)
     {
         switch ($query) {
             case is_array($query) && isset($query['lat']) && isset($query['lon']) && is_numeric($query['lat']) && is_numeric($query['lon']):
@@ -683,7 +683,7 @@ class OpenWeatherMap
      * @return \SimpleXMLElement
      * @throws OWMException If the content isn't valid XML.
      */
-    private function parseXML($answer)
+    protected function parseXML($answer)
     {
         // Disable default error handling of SimpleXML (Do not throw E_WARNINGs).
         libxml_use_internal_errors(true);
@@ -708,7 +708,7 @@ class OpenWeatherMap
      * @return \stdClass
      * @throws OWMException If the content isn't valid JSON.
      */
-    private function parseJson($answer)
+    protected function parseJson($answer)
     {
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -721,7 +721,7 @@ class OpenWeatherMap
         return $json;
     }
 
-    private function json_last_error_msg()
+    protected function json_last_error_msg()
     {
         if (function_exists('json_last_error_msg')) {
             return json_last_error_msg();
