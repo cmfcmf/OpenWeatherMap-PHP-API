@@ -179,10 +179,13 @@ class OpenWeatherMap
      *
      * @return CurrentWeather The weather object.
      *
-     * There are three ways to specify the place to get weather information for:
+     * There are four ways to specify the place to get weather information for:
      * - Use the city name: $query must be a string containing the city name.
      * - Use the city id: $query must be an integer containing the city id.
      * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
+     * - Use the zip code: $query must be a string, prefixed with "zip:"
+     *
+     * Zip code may specifify country. e.g., "zip:77070" (Houston, TX, US) or "zip:500001,IN" (Hyderabad, India)
      *
      * @api
      */
@@ -670,6 +673,9 @@ class OpenWeatherMap
                 return 'id='.implode(',', $query);
             case is_numeric($query):
                 return "id=$query";
+            case is_string($query) && strpos($query, 'zip:') === 0:
+                $sub_query = str_replace('zip:', '', $query);
+                return 'zip='.urlencode($sub_query);
             case is_string($query):
                 return 'q='.urlencode($query);
             default:
