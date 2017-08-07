@@ -127,6 +127,16 @@ echo $lf;
 echo 'Temperature: '.$weather->temperature;
 echo $lf;
 
+// Example 5.1: Get current temperature from zip code (Hyderabad, India).
+$weather = $owm->getWeather('zip:500001,IN', $units, $lang);
+echo "$lf$lf EXAMPLE 5.1$lf";
+
+echo 'City: '.$weather->city->name;
+echo $lf;
+
+echo 'Temperature: '.$weather->temperature;
+echo $lf;
+
 // Example 6: Get information about a city.
 $weather = $owm->getWeather('Paris', $units, $lang);
 echo "$lf$lf EXAMPLE 6$lf";
