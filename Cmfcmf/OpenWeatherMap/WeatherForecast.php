@@ -55,12 +55,12 @@ class WeatherForecast implements \Iterator
      *
      * @see Forecast The Forecast class.
      */
-    private $forecasts;
+    protected $forecasts;
 
     /**
      * @internal
      */
-    private $position = 0;
+    protected $position = 0;
 
     /**
      * Create a new Forecast object.
