@@ -185,7 +185,7 @@ class OpenWeatherMap
      * - Use the coordinates: $query must be an associative array containing the 'lat' and 'lon' values.
      * - Use the zip code: $query must be a string, prefixed with "zip:"
      *
-     * Zip code may specifify country. e.g., "zip:77070" (Houston, TX, US) or "zip:500001,IN" (Hyderabad, India)
+     * Zip code may specify country. e.g., "zip:77070" (Houston, TX, US) or "zip:500001,IN" (Hyderabad, India)
      *
      * @api
      */
@@ -674,8 +674,8 @@ class OpenWeatherMap
             case is_numeric($query):
                 return "id=$query";
             case is_string($query) && strpos($query, 'zip:') === 0:
-                $sub_query = str_replace('zip:', '', $query);
-                return 'zip='.urlencode($sub_query);
+                $subQuery = str_replace('zip:', '', $query);
+                return 'zip='.urlencode($subQuery);
             case is_string($query):
                 return 'q='.urlencode($query);
             default:
