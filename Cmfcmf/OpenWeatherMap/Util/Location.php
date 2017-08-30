@@ -18,7 +18,7 @@
 namespace Cmfcmf\OpenWeatherMap\Util;
 
 /**
- * The city class representing a city object.
+ * The location class representing a location object.
  */
 class Location
 {
