@@ -81,12 +81,12 @@ class ExampleCacheTest extends AbstractCache
     /**
      * @inheritdoc
      */
-     public function setTempPath($path)
-     {
-         if (!is_dir($path)) {
-             mkdir($path);
-         }
+    public function setTempPath($path)
+    {
+        if (!is_dir($path)) {
+            mkdir($path);
+        }
         
-         $this->tmp = $path;
-     }
+        $this->tmp = $path;
+    }
 }
