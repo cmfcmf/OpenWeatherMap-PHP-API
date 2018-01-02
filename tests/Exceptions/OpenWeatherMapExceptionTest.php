@@ -85,9 +85,9 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), new \DateTime('now'), 'hour', 'imperial', 'en', '');
     }
 
-     /**
-      * @expectedException \InvalidArgumentException
-      */
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testGetWeatherHistoryInvalidArgumentException()
     {
         $this->owm->getWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
