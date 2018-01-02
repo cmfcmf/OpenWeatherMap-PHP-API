@@ -29,7 +29,7 @@ $units = 'metric';
 $owm = new OpenWeatherMap($myApiKey);
 
 // Example 1: Get forecast for the next 10 days for Berlin.
-$forecast = $owm->getWeatherForecast('Berlin', $units, $lang, '', 10);
+$forecast = $owm->getWeatherForecast('Berlin', $units, $lang, '', 5);
 echo "EXAMPLE 1<hr />\n\n\n";
 
 echo "City: " . $forecast->city->name;
