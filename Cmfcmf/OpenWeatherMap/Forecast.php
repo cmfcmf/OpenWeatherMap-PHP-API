@@ -59,7 +59,7 @@ class Forecast extends CurrentWeather
         if ($units == 'metric') {
             $windSpeedUnit = 'm/s';
         } else {
-            $windSpeedUnit = 'mps';
+            $windSpeedUnit = 'mph';
         }
 
         $this->wind = new Wind(

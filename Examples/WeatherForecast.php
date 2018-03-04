@@ -28,7 +28,7 @@ $units = 'metric';
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
 $owm = new OpenWeatherMap($myApiKey);
 
-// Example 1: Get forecast for the next 10 days for Berlin.
+// Example 1: Get forecast for the next 5 days for Berlin.
 $forecast = $owm->getWeatherForecast('Berlin', $units, $lang, '', 5);
 echo "EXAMPLE 1<hr />\n\n\n";
 
