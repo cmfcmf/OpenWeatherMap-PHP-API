@@ -2,13 +2,14 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-    sudo apt-get install -y php5-cli php5-curl
+    apt-get -y -qq update
+    apt-get -y -qq install php-cli php-curl php-xml
 
-    sudo curl --silent https://getcomposer.org/installer | php > /dev/null 2>&1
-    sudo mv composer.phar /usr/local/bin/composer
+    curl --silent https://getcomposer.org/installer | php > /dev/null 2>&1
+    mv composer.phar /usr/local/bin/composer
+    echo "cd /vagrant" >> /home/ubuntu/.bashrc
   SHELL
 end
