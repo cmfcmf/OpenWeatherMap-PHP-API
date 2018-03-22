@@ -63,8 +63,7 @@ I'm happy about every **pull request** or **issue** you find and open to help
 making this API **more awesome**.
 
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
-Simply run `vagrant up`, `vagrant ssh` and `cd` into `/vagrant` to start 
-developing.
+Simply run `vagrant up` and `vagrant ssh` to start a PHP VM.
 
 License
 =======
