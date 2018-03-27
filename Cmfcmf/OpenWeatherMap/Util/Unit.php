@@ -126,4 +126,13 @@ class Unit
             return (string)$this->getValue();
         }
     }
+
+    /**
+    * Return the serialized representation of an unit.
+    *      
+    * @return object The value, the unit and the description.
+    */
+    public function jsonSerialize() {
+        return (object)['value' => $this->value, 'unit' => $this->unit, 'description' => $this->description];
+    }
 }
