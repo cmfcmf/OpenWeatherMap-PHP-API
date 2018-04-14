@@ -43,6 +43,8 @@ class Forecast extends CurrentWeather
      */
     public function __construct(\SimpleXMLElement $xml, $units)
     {
+        $utctz = new \DateTimeZone('UTC');
+
         if ($units == 'metric') {
             $temperatureUnit = "&deg;C";
         } else {
@@ -69,7 +71,7 @@ class Forecast extends CurrentWeather
         $this->clouds = new Unit($xml->clouds['all'], $xml->clouds['unit'], $xml->clouds['value']);
         $this->precipitation = new Unit($xml->precipitation['value'], null, $xml->precipitation['type']);
         $this->weather = new Weather($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
-        $this->lastUpdate = new \DateTime($xml->lastupdate['value']);
+        $this->lastUpdate = new \DateTime($xml->lastupdate['value'], $utctz);
 
         if (isset($xml['from'])) {
             $this->time = new Time($xml['from'], $xml['to']);
