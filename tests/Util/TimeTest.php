@@ -18,13 +18,18 @@ use Cmfcmf\OpenWeatherMap\Util\Time;
 
 class TimeTest extends \PHPUnit_Framework_TestCase
 {
+    private function createDateTime($time)
+    {
+        return new \DateTime($time, new \DateTimeZone('UTC'));
+    }
+
     public function testFromTo()
     {
         $fromS = '2014-01-01 08:00:00';
         $toS = '2014-01-01 20:00:00';
-        $from = new \DateTime($fromS);
-        $to = new \DateTime($toS);
-        $day = new \DateTime('2014-01-01');
+        $from = $this->createDateTime($fromS);
+        $to = $this->createDateTime($toS);
+        $day = $this->createDateTime('2014-01-01');
 
         $time = new Time($from, $to);
         $this->assertSame($from->format('c'), $time->from->format('c'));
@@ -39,9 +44,9 @@ class TimeTest extends \PHPUnit_Framework_TestCase
     public function testFrom()
     {
         $fromS = '2014-01-01 00:00:00';
-        $from = new \DateTime($fromS);
-        $day = new \DateTime('2014-01-01');
-        $to = new \DateTime('2014-01-01 23:59:59');
+        $from = $this->createDateTime($fromS);
+        $day = $this->createDateTime('2014-01-01');
+        $to = $this->createDateTime('2014-01-01 23:59:59');
 
         $time = new Time($from);
         $this->assertSame($from->format('c'), $time->from->format('c'));
