@@ -76,13 +76,13 @@ class WeatherForecast implements \Iterator
         $this->city = new City($xml->location->location['geobaseid'], $xml->location->name, $xml->location->location['latitude'], $xml->location->location['longitude'], $xml->location->country);
         $utctz = new \DateTimeZone('UTC');
         $this->sun = new Sun(new \DateTime($xml->sun['rise'], $utctz), new \DateTime($xml->sun['set'], $utctz));
-        $this->lastUpdate = new \DateTime($xml->meta->lastupdate);
+        $this->lastUpdate = new \DateTime($xml->meta->lastupdate, $utctz);
 
-        $today = new \DateTime();
+        $today = new \DateTime('now', $utctz);
         $today->setTime(0, 0, 0);
         $counter = 0;
         foreach ($xml->forecast->time as $time) {
-            $date = new \DateTime(isset($time['day']) ? $time['day'] : $time['to']);
+            $date = new \DateTime(isset($time['day']) ? $time['day'] : $time['to'], $utctz);
             if ($date < $today) {
                 // Sometimes OpenWeatherMap returns results which aren't real
                 // forecasts. The best we can do is to ignore them.

@@ -47,13 +47,14 @@ class Time
      */
     public function __construct($from, $to = null)
     {
+        $utctz = new \DateTimeZone('UTC');
         if (isset($to)) {
-            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string)$from);
-            $to = ($to instanceof \DateTime) ? $to : new \DateTime((string)$to);
-            $day = new \DateTime($from->format('Y-m-d'));
+            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string)$from, $utctz);
+            $to = ($to instanceof \DateTime) ? $to : new \DateTime((string)$to, $utctz);
+            $day = new \DateTime($from->format('Y-m-d'), $utctz);
         } else {
-            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string)$from);
-            $day = $from = new \DateTime($from->format('Y-m-d'));
+            $from = ($from instanceof \DateTime) ? $from : new \DateTime((string)$from, $utctz);
+            $day = $from = new \DateTime($from->format('Y-m-d'), $utctz);
             $to = clone $from;
             $to = $to->add(new \DateInterval('PT23H59M59S'));
         }
