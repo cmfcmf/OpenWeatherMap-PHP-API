@@ -5,15 +5,18 @@ A php API to retrieve and parse global weather data from
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
 
-[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.png?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
+[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.svg?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
+[![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
+[![release](https://img.shields.io/github/release/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/releases)
 [![codecov](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api/branch/master/graph/badge.svg)](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
+<br>
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 
 Installation
 ============
 This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
-The recommended way to install and use this is through [Composer](http://getcomposer.org).
+The recommended way to install and use it is through [Composer](http://getcomposer.org).
 
     composer require "cmfcmf/openweathermap-php-api"
 
@@ -57,13 +60,21 @@ http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
 - `WeatherHistory.php` Shows how to receive weather history.
 - `Cache.php` Shows how to implement and use a cache.
 
-Contribute!
-===========
+Contributing
+============
 I'm happy about every **pull request** or **issue** you find and open to help 
-making this API **more awesome**.
+make this API **more awesome**.
 
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
-Simply run `vagrant up` and `vagrant ssh` to start a PHP VM.
+Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all 
+dependencies included.
+
+## Support me
+
+If you like my work, I'd really appreciate you buying me a coffee.
+Your donations help me put more time into Open-Source software development.
+
+<a href='https://ko-fi.com/cmfcmf' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 License
 =======
@@ -71,8 +82,6 @@ MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-P
 distributed with this source code for further information regarding copyright and licensing.
 
 **Please check out the following official links to read about the terms, pricing 
-and license of OpenWeatherMap before using the service.**
-- [OpenWeatherMap.org](http://OpenWeatherMap.org)
+and license of OpenWeatherMap before using the service:**
 - [OpenWeatherMap.org/terms](http://OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://OpenWeatherMap.org/appid)
-
