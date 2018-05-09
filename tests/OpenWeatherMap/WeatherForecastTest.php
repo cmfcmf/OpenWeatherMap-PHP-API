@@ -55,19 +55,12 @@ class WeatherForecastTest extends \PHPUnit_Framework_TestCase
 
     public function testNext()
     {
-        $this->forecast->rewind();
         $this->forecast->next();
-        $result = $this->forecast->valid();
-
-        $this->assertFalse($result);
+        $this->assertTrue($this->forecast->valid());
     }
 
     public function testValid()
     {
-        $this->forecast->rewind();
-        $this->forecast->next();
-        $result = $this->forecast->valid();
-
-        $this->assertFalse($result);
+        $this->assertTrue($this->forecast->valid());
     }
 }

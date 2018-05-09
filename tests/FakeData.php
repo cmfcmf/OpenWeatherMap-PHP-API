@@ -65,7 +65,7 @@ class FakeData
         </meta>
         <sun rise="2016-12-28T07:17:18" set="2016-12-28T14:59:55"></sun>
         <forecast>
-            <time day="2016-12-20">
+            <time day="' . date('Y-m-d', time() + 0) . '">
                 <symbol number="500" name="light rain" var="10d"></symbol>
                 <precipitation value="0.25" type="rain"></precipitation>
                 <windDirection deg="315" code="NW" name="Northwest"></windDirection>
@@ -75,7 +75,7 @@ class FakeData
                 <humidity value="97" unit="%"></humidity>
                 <clouds value="overcast clouds" all="92" unit="%"></clouds>
             </time>
-            <time day="' . date('Y-m-d') . '">
+            <time day="' . date('Y-m-d', time() + 3600) . '">
                 <symbol number="500" name="light rain" var="10d"></symbol>
                 <precipitation value="0.24" type="rain"></precipitation>
                 <windDirection deg="253" code="WSW" name="West-southwest"></windDirection>
