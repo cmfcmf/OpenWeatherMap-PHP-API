@@ -41,37 +41,37 @@ class OpenWeatherMap
      *
      * @var string $copyright
      */
-    const COPYRIGHT = "Weather data from <a href=\"http://openweathermap.org\">OpenWeatherMap.org</a>";
+    const COPYRIGHT = "Weather data from <a href=\"https://openweathermap.org\">OpenWeatherMap.org</a>";
 
     /**
      * @var string The basic api url to fetch weather data from.
      */
-    private $weatherUrl = 'http://api.openweathermap.org/data/2.5/weather?';
+    private $weatherUrl = 'https://api.openweathermap.org/data/2.5/weather?';
 
     /**
      * @var string The basic api url to fetch weather group data from.
      */
-    private $weatherGroupUrl = 'http://api.openweathermap.org/data/2.5/group?';
+    private $weatherGroupUrl = 'https://api.openweathermap.org/data/2.5/group?';
 
     /**
      * @var string The basic api url to fetch weekly forecast data from.
      */
-    private $weatherHourlyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast?';
+    private $weatherHourlyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?';
 
     /**
      * @var string The basic api url to fetch daily forecast data from.
      */
-    private $weatherDailyForecastUrl = 'http://api.openweathermap.org/data/2.5/forecast/daily?';
+    private $weatherDailyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast/daily?';
 
     /**
      * @var string The basic api url to fetch history weather data from.
      */
-    private $weatherHistoryUrl = 'http://history.openweathermap.org/data/2.5/history/city?';
+    private $weatherHistoryUrl = 'https://history.openweathermap.org/data/2.5/history/city?';
 
     /**
      * @var string The basic api url to fetch uv index data from.
      */
-    private $uvIndexUrl = 'http://api.openweathermap.org/v3/uvi';
+    private $uvIndexUrl = 'https://api.openweathermap.org/v3/uvi';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
