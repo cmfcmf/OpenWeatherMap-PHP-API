@@ -71,7 +71,7 @@ class OpenWeatherMap
     /**
      * @var string The basic api url to fetch uv index data from.
      */
-    private $uvIndexUrl = 'https://api.openweathermap.org/v3/uvi';
+    private $uvIndexUrl = 'https://api.openweathermap.org/data/2.5/uvi';
 
     /**
      * @var AbstractCache|bool $cache The cache to use.
@@ -327,21 +327,18 @@ class OpenWeatherMap
      */
     public function getCurrentUVIndex($lat, $lon)
     {
-        $answer = $this->getRawCurrentUVIndexData($lat, $lon);
+        $answer = $this->getRawUVIndexData('current', $lat, $lon);
         $json = $this->parseJson($answer);
 
         return new UVIndex($json);
     }
 
     /**
-     * Returns the uv index at date, time and location you specified.
+     * Returns the current uv index at the location you specified.
      *
      * @param float              $lat           The location's latitude.
      * @param float              $lon           The location's longitude.
-     * @param \DateTimeInterface $dateTime      The date and time to request data for.
-     * @param string             $timePrecision This decides about the timespan OWM will look for the uv index. The tighter
-     *                                          the timespan, the less likely it is to get a result. Can be 'year', 'month',
-     *                                          'day', 'hour', 'minute' or 'second', defaults to 'day'.
+     * @param int                $cnt           Number of returned days.
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
@@ -350,12 +347,44 @@ class OpenWeatherMap
      *
      * @api
      */
-    public function getUVIndex($lat, $lon, $dateTime, $timePrecision = 'day')
+    public function getForecastUVIndex($lat, $lon, $cnt)
     {
-        $answer = $this->getRawUVIndexData($lat, $lon, $dateTime, $timePrecision);
-        $json = $this->parseJson($answer);
+        $answer = $this->getRawUVIndexData('forecast', $lat, $lon, $cnt);
+        $data = $this->parseJson($answer);
 
-        return new UVIndex($json);
+        $mapData = function ($entry) {
+            return new UVIndex($entry);
+        };
+
+        return array_map($mapData, $data);
+    }
+
+    /**
+     * Returns the current uv index at the location you specified.
+     *
+     * @param float              $lat           The location's latitude.
+     * @param float              $lon           The location's longitude.
+     * @param int                $cnt           Number of returned days.
+     * @param \DateTime          $start         Starting point of time period.
+     * @param \DateTime          $end           Final point of time period.
+     *
+     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
+     * @throws \InvalidArgumentException If an argument error occurs.
+     *
+     * @return UVIndex The uvi object.
+     *
+     * @api
+     */
+    public function getHistoryUVIndex($lat, $lon, $cnt, $start, $end)
+    {
+        $answer = $this->getRawUVIndexData('history', $lat, $lon, $cnt, $start, $end);
+        $data = $this->parseJson($answer);
+
+        $mapData = function ($entry) {
+            return new UVIndex($entry);
+        };
+
+        return array_map($mapData, $data);
     }
 
     /**
@@ -492,54 +521,35 @@ class OpenWeatherMap
     }
 
     /**
-     * Directly returns the json string returned by OpenWeatherMap for the current UV index data.
-     *
-     * @param float $lat                   The location's latitude.
-     * @param float $lon                   The location's longitude.
-     *
-     * @return bool|string Returns the fetched data.
-     *
-     * @api
-     */
-    public function getRawCurrentUVIndexData($lat, $lon)
-    {
-        if (!$this->apiKey) {
-            throw new \RuntimeException('Before using this method, you must set the api key using ->setApiKey()');
-        }
-        if (!is_float($lat) || !is_float($lon)) {
-            throw new \InvalidArgumentException('$lat and $lon must be floating point numbers');
-        }
-        $url = $this->buildUVIndexUrl($lat, $lon);
-
-        return $this->cacheOrFetchResult($url);
-    }
-
-    /**
      * Directly returns the json string returned by OpenWeatherMap for the UV index data.
      *
-     * @param float $lat                   The location's latitude.
-     * @param float $lon                   The location's longitude.
-     * @param \DateTimeInterface $dateTime The date and time to request data for.
-     * @param string $timePrecision        This decides about the timespan OWM will look for the uv index. The tighter
-     *                                     the timespan, the less likely it is to get a result. Can be 'year', 'month',
-     *                                     'day', 'hour', 'minute' or 'second', defaults to 'day'.
+     * @param string             $mode          The type of requested data.
+     * @param float              $lat           The location's latitude.
+     * @param float              $lon           The location's longitude.
+     * @param int                $cnt           Number of returned days.
+     * @param \DateTime          $start         Starting point of time period.
+     * @param \DateTime          $end           Final point of time period.
      *
      * @return bool|string Returns the fetched data.
      *
      * @api
      */
-    public function getRawUVIndexData($lat, $lon, $dateTime, $timePrecision = 'day')
+    public function getRawUVIndexData($mode, $lat, $lon, $cnt = null, $start = null, $end = null)
     {
-        if (!$this->apiKey) {
-            throw new \RuntimeException('Before using this method, you must set the api key using ->setApiKey()');
-        }
         if (!is_float($lat) || !is_float($lon)) {
             throw new \InvalidArgumentException('$lat and $lon must be floating point numbers');
         }
-        if (interface_exists('DateTimeInterface') && !$dateTime instanceof \DateTimeInterface || !$dateTime instanceof \DateTime) {
-            throw new \InvalidArgumentException('$dateTime must be an instance of \DateTime or \DateTimeInterface');
+        if (isset($cnt) && !is_int($cnt)) {
+            throw new \InvalidArgumentException('$cnt must be an int');
         }
-        $url = $this->buildUVIndexUrl($lat, $lon, $dateTime, $timePrecision);
+        if (isset($start) && !$start instanceof \DateTime) {
+            throw new \InvalidArgumentException('$start must be an instance of \DateTime');
+        }
+        if (isset($end) && !$end instanceof \DateTime) {
+            throw new \InvalidArgumentException('$end must be an instance of \DateTime');
+        }
+
+        $url = $this->buildUVIndexUrl($mode, $lat, $lon, $cnt, $start, $end);
 
         return $this->cacheOrFetchResult($url);
     }
@@ -575,10 +585,12 @@ class OpenWeatherMap
             /** @var AbstractCache $cache */
             $cache = $this->cache;
             $cache->setSeconds($this->seconds);
+
             if ($cache->isCached($url)) {
                 $this->wasCached = true;
                 return $cache->getCached($url);
             }
+
             $result = $this->fetcher->fetch($url);
             $cache->setCached($url, $result);
         } else {
@@ -612,47 +624,48 @@ class OpenWeatherMap
     }
 
     /**
-     * @param float                        $lat
-     * @param float                        $lon
-     * @param \DateTime|\DateTimeImmutable $dateTime
-     * @param string                       $timePrecision
+     * @param string             $mode          The type of requested data.
+     * @param float              $lat           The location's latitude.
+     * @param float              $lon           The location's longitude.
+     * @param int                $cnt           Number of returned days.
+     * @param \DateTime          $start         Starting point of time period.
+     * @param \DateTime          $end           Final point of time period.
      *
      * @return string
      */
-    private function buildUVIndexUrl($lat, $lon, $dateTime = null, $timePrecision = null)
+    private function buildUVIndexUrl($mode, $lat, $lon, $cnt = null, \DateTime $start = null, \DateTime $end = null)
     {
-        if ($dateTime !== null) {
-            $format = '\Z';
-            switch ($timePrecision) {
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'second':
-                    $format = ':s' . $format;
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'minute':
-                    $format = ':i' . $format;
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'hour':
-                    $format = '\TH' . $format;
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'day':
-                    $format = '-d' . $format;
-                /** @noinspection PhpMissingBreakStatementInspection */
-                case 'month':
-                    $format = '-m' . $format;
-                case 'year':
-                    $format = 'Y' . $format;
-                    break;
-                default:
-                    throw new \InvalidArgumentException('$timePrecision is invalid.');
-            }
-            // OWM only accepts UTC timezones.
-            $dateTime->setTimezone(new \DateTimeZone('UTC'));
-            $dateTime = $dateTime->format($format);
-        } else {
-            $dateTime = 'current';
+        switch ($mode) {
+            case 'history':
+                $requestMode = '/history';
+                break;
+            case 'forecast':
+                $requestMode = '/forecast';
+                break;
+            case 'current':
+            default:
+                $requestMode = '';
         }
 
-        return sprintf($this->uvIndexUrl . '/%s,%s/%s.json?appid=%s', $lat, $lon, $dateTime, $this->apiKey);
+        $params = [
+            'appid' => $this->apiKey,
+            'lat' => $lat,
+            'lon' => $lon,
+        ];
+
+        if (!is_int($cnt)) {
+            $params['cnt'] = $cnt;
+        }
+
+        if (!is_int($start)) {
+            $params['start'] = $start;
+        }
+
+        if (!is_int($end)) {
+            $params['end'] = $end;
+        }
+
+        return sprintf($this->uvIndexUrl . '%s?%s', $requestMode, http_build_query($params));
     }
 
     /**

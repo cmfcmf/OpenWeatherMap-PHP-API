@@ -49,8 +49,8 @@ class UVIndex
     public function __construct($data)
     {
         $utctz = new \DateTimeZone('UTC');
-        $this->time = new \DateTime($data->time, $utctz);
-        $this->location = new Location($data->location->latitude, $data->location->longitude);
-        $this->uvIndex = (float)$data->data;
+        $this->time = new \DateTime($data->date_iso, $utctz);
+        $this->location = new Location($data->lat, $data->lon);
+        $this->uvIndex = (float)$data->value;
     }
 }
