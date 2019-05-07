@@ -647,11 +647,11 @@ class OpenWeatherMap
                 $requestMode = '';
         }
 
-        $params = [
+        $params = array(
             'appid' => $this->apiKey,
             'lat' => $lat,
             'lon' => $lon,
-        ];
+        );
 
         if (!is_int($cnt)) {
             $params['cnt'] = $cnt;
