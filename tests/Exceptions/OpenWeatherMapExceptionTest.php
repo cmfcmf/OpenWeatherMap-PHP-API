@@ -127,15 +127,6 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
-     */
-    public function testGetRawUVIndexWithoutApiKey()
-    {
-        $this->owm->setApiKey(null);
-        $this->owm->getRawUVIndexData('current', 1.1, 1.1);
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testBuildQueryUrlParameterException()
@@ -186,10 +177,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     public function uvIndexExceptionDataProvider()
     {
         return array(
-            array('error-query-format', 5.4, 1.2, null, null, null),
-            array('current', 5.4, 1.2, 5, null, null),
-            array('forecast', 5.4, 12.0, null, new \DateTime(), null),
-            array('history', 5.4, 1.2, null, new \DateTime(), new \DateTime('0-0-0')),
+            array('current', 5.4, 1, 5, null, null),
+            array('forecast', 5.4, 1.2, '5', null, null),
+            array('forecast', 5.4, 12.0, null, '2000-1-1', null),
+            array('history', 5.4, 1.2, null, new \DateTime(), '2000-1-1'),
         );
     }
 }
