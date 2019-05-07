@@ -141,31 +141,29 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     public function testGetForecastUVIndex()
     {
         $owm = $this->openWeather;
-        foreach ($precisions as $precision) {
-            try {
-                $result = $owm->getForecastUVIndex(40.7, -74.2, 5);
-            } catch (Exception $e) {
-                // OWM might not actually have data for the timespan.
-                $this->assertSame('An error occurred: not found', $e->getMessage());
-            }
-            $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+        
+        try {
+            $result = $owm->getForecastUVIndex(40.7, -74.2, 5);
+        } catch (Exception $e) {
+            // OWM might not actually have data for the timespan.
+            $this->assertSame('An error occurred: not found', $e->getMessage());
         }
+        $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
     public function testGetHistoryUVIndex()
     {
         $owm = $this->openWeather;
-        foreach ($precisions as $precision) {
-            try {
-                $start = new \DateTime('1969-08-15');
-                $end = new \DateTime('1969-08-18');
-                $result = $owm->getForecastUVIndex(40.7, -74.2, null, $start, $end);
-            } catch (Exception $e) {
-                // OWM might not actually have data for the timespan.
-                $this->assertSame('An error occurred: not found', $e->getMessage());
-            }
-            $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+
+        try {
+            $start = new \DateTime('1969-08-15');
+            $end = new \DateTime('1969-08-18');
+            $result = $owm->getForecastUVIndex(40.7, -74.2, null, $start, $end);
+        } catch (Exception $e) {
+            // OWM might not actually have data for the timespan.
+            $this->assertSame('An error occurred: not found', $e->getMessage());
         }
+        $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
     public function testGetDailyWeatherForecast()
