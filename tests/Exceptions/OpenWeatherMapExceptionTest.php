@@ -121,18 +121,9 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      * @dataProvider      uvIndexExceptionDataProvider
      */
-    public function testGetRawUVIndexWithQueryErrorException($lat, $lon, $dateTime, $precision)
+    public function testGetRawUVIndexWithQueryErrorException($mode, $lat, $lon, $cnt, $start, $end)
     {
-        $this->owm->getRawUVIndexData($lat, $lon, $dateTime, $precision);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @dataProvider      currentUVIndexExceptionDataProvider
-     */
-    public function testGetRawCurrentUVIndexWithQueryErrorException($lat, $lon)
-    {
-        $this->owm->getRawCurrentUVIndexData($lat, $lon);
+        $this->owm->getRawUVIndexData($mode, $lat, $lon, $cnt, $start, $end);
     }
 
     /**
@@ -141,16 +132,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     public function testGetRawUVIndexWithoutApiKey()
     {
         $this->owm->setApiKey(null);
-        $this->owm->getRawUVIndexData(1.1, 1.1, new \DateTime());
-    }
-
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testGetRawCurrentUVIndexWithoutApiKey()
-    {
-        $this->owm->setApiKey(null);
-        $this->owm->getRawCurrentUVIndexData(1.1, 1.1);
+        $this->owm->getRawUVIndexData('current', 1.1, 1.1);
     }
 
     /**
@@ -198,22 +180,16 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->invoke($this->owm, $answer);
     }
 
+    /**
+     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
+     */
     public function uvIndexExceptionDataProvider()
     {
         return array(
-            array('error-query-format', 'foo', new \DateTime(), 'year'),
-            array(5.4, 1.2, 'foo', 'month'),
-            array(5.4, 12, 'foo', 'day'),
-            array(5.4, 1.2, 'foo', 'bar'),
-        );
-    }
-
-    public function currentUVIndexExceptionDataProvider()
-    {
-        return array(
-            array('error-query-format', 'foo'),
-            array(5.4, 12),
-            array(5.4, '1.2'),
+            array('error-query-format', 5.4, 1.2),
+            array('current', 5.4, 1.2, 'foo'),
+            array('forecast', 5.4, 12, null, new \DateTime()),
+            array('history', 5.4, 1.2, null, new \DateTime(), \DateTime('0-0-0')),
         );
     }
 }

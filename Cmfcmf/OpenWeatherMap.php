@@ -343,7 +343,7 @@ class OpenWeatherMap
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return UVIndex The uvi object.
+     * @return array of UVIndex The uvi object.
      *
      * @api
      */
@@ -371,7 +371,7 @@ class OpenWeatherMap
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return UVIndex The uvi object.
+     * @return array of UVIndex The uvi object.
      *
      * @api
      */
