@@ -315,13 +315,13 @@ class OpenWeatherMap
     /**
      * Returns the current uv index at the location you specified.
      *
-     * @param float              $lat           The location's latitude.
-     * @param float              $lon           The location's longitude.
+     * @param float $lat The location's latitude.
+     * @param float $lon The location's longitude.
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return UVIndex The uvi object.
+     * @return UVIndex
      *
      * @api
      */
@@ -334,57 +334,54 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the current uv index at the location you specified.
+     * Returns a forecast of the uv index at the specified location.
+     * The optional $cnt parameter determines the number of days to forecase.
+     * The maximum supported number of days is 8.
      *
-     * @param float              $lat           The location's latitude.
-     * @param float              $lon           The location's longitude.
-     * @param int                $cnt           Number of returned days.
+     * @param float $lat The location's latitude.
+     * @param float $lon The location's longitude.
+     * @param int   $cnt Number of returned days (default to 8).
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return array of UVIndex The uvi object.
+     * @return UVIndex[]
      *
      * @api
      */
-    public function getForecastUVIndex($lat, $lon, $cnt)
+    public function getForecastUVIndex($lat, $lon, $cnt = 8)
     {
         $answer = $this->getRawUVIndexData('forecast', $lat, $lon, $cnt);
         $data = $this->parseJson($answer);
 
-        $mapData = function ($entry) {
+        return array_map(function ($entry) {
             return new UVIndex($entry);
-        };
-
-        return array_map($mapData, $data);
+        }, $data);
     }
 
     /**
-     * Returns the current uv index at the location you specified.
+     * Returns the historic uv index at the specified location.
      *
-     * @param float              $lat           The location's latitude.
-     * @param float              $lon           The location's longitude.
-     * @param int                $cnt           Number of returned days.
-     * @param \DateTime          $start         Starting point of time period.
-     * @param \DateTime          $end           Final point of time period.
+     * @param float     $lat   The location's latitude.
+     * @param float     $lon   The location's longitude.
+     * @param \DateTime $start Starting point of time period.
+     * @param \DateTime $end   Final point of time period.
      *
      * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
      * @throws \InvalidArgumentException If an argument error occurs.
      *
-     * @return array of UVIndex The uvi object.
+     * @return UVIndex[]
      *
      * @api
      */
-    public function getHistoryUVIndex($lat, $lon, $cnt, $start, $end)
+    public function getHistoricUVIndex($lat, $lon, $start, $end)
     {
-        $answer = $this->getRawUVIndexData('history', $lat, $lon, $cnt, $start, $end);
+        $answer = $this->getRawUVIndexData('historic', $lat, $lon, null, $start, $end);
         $data = $this->parseJson($answer);
 
-        $mapData = function ($entry) {
+        return array_map(function ($entry) {
             return new UVIndex($entry);
-        };
-
-        return array_map($mapData, $data);
+        }, $data);
     }
 
     /**
@@ -523,12 +520,12 @@ class OpenWeatherMap
     /**
      * Directly returns the json string returned by OpenWeatherMap for the UV index data.
      *
-     * @param string             $mode          The type of requested data.
-     * @param float              $lat           The location's latitude.
-     * @param float              $lon           The location's longitude.
-     * @param int                $cnt           Number of returned days.
-     * @param \DateTime          $start         Starting point of time period.
-     * @param \DateTime          $end           Final point of time period.
+     * @param string    $mode  The type of requested data (['historic', 'forecast', 'current']).
+     * @param float     $lat   The location's latitude.
+     * @param float     $lon   The location's longitude.
+     * @param int       $cnt   Number of returned days (only allowed for 'forecast' data).
+     * @param \DateTime $start Starting point of time period (only allowed and required for 'historic' data).
+     * @param \DateTime $end   Final point of time period (only allowed and required for 'historic' data).
      *
      * @return bool|string Returns the fetched data.
      *
@@ -536,11 +533,14 @@ class OpenWeatherMap
      */
     public function getRawUVIndexData($mode, $lat, $lon, $cnt = null, $start = null, $end = null)
     {
+        if (!in_array($mode, ['current', 'forecast', 'historic'], true)) {
+            throw new \InvalidArgumentException("$mode must be one of 'historic', 'forecast', 'current'.");
+        }
         if (!is_float($lat) || !is_float($lon)) {
             throw new \InvalidArgumentException('$lat and $lon must be floating point numbers');
         }
-        if (isset($cnt) && !is_int($cnt)) {
-            throw new \InvalidArgumentException('$cnt must be an int');
+        if (isset($cnt) && (!is_int($cnt) || $cnt > 8 || $cnt < 1)) {
+            throw new \InvalidArgumentException('$cnt must be an int between 1 and 8');
         }
         if (isset($start) && !$start instanceof \DateTime) {
             throw new \InvalidArgumentException('$start must be an instance of \DateTime');
@@ -548,9 +548,15 @@ class OpenWeatherMap
         if (isset($end) && !$end instanceof \DateTime) {
             throw new \InvalidArgumentException('$end must be an instance of \DateTime');
         }
+        if ($mode === 'current' && (isset($start) || isset($end) || isset($cnt))) {
+            throw new \InvalidArgumentException('Neither $start, $end, nor $cnt must be set for current data.');
+        } else if ($mode === 'forecast' && (isset($start) || isset($end) || !isset($cnt))) {
+            throw new \InvalidArgumentException('$cnt needs to be set and both $start and $end must not be set for forecast data.');
+        } else if ($mode === 'historic' && (!isset($start) || !isset($end) || isset($cnt))) {
+            throw new \InvalidArgumentException('Both $start and $end need to be set and $cnt must not be set for historic data.');
+        }
 
         $url = $this->buildUVIndexUrl($mode, $lat, $lon, $cnt, $start, $end);
-
         return $this->cacheOrFetchResult($url);
     }
 
@@ -635,34 +641,27 @@ class OpenWeatherMap
      */
     private function buildUVIndexUrl($mode, $lat, $lon, $cnt = null, \DateTime $start = null, \DateTime $end = null)
     {
-        switch ($mode) {
-            case 'history':
-                $requestMode = '/history';
-                break;
-            case 'forecast':
-                $requestMode = '/forecast';
-                break;
-            case 'current':
-            default:
-                $requestMode = '';
-        }
-
         $params = array(
             'appid' => $this->apiKey,
             'lat' => $lat,
             'lon' => $lon,
         );
 
-        if (!is_int($cnt)) {
-            $params['cnt'] = $cnt;
-        }
-
-        if (!is_int($start)) {
-            $params['start'] = $start;
-        }
-
-        if (!is_int($end)) {
-            $params['end'] = $end;
+        switch ($mode) {
+            case 'historic':
+                $requestMode = '/history';
+                $params['start'] = $start->format('U');
+                $params['end'] = $end->format('U');
+                break;
+            case 'forecast':
+                $requestMode = '/forecast';
+                $params['cnt'] = $cnt;
+                break;
+            case 'current':
+                $requestMode = '';
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid mode $mode for uv index url");
         }
 
         return sprintf($this->uvIndexUrl . '%s?%s', $requestMode, http_build_query($params));
