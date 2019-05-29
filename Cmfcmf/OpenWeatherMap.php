@@ -550,9 +550,9 @@ class OpenWeatherMap
         }
         if ($mode === 'current' && (isset($start) || isset($end) || isset($cnt))) {
             throw new \InvalidArgumentException('Neither $start, $end, nor $cnt must be set for current data.');
-        } else if ($mode === 'forecast' && (isset($start) || isset($end) || !isset($cnt))) {
+        } elseif ($mode === 'forecast' && (isset($start) || isset($end) || !isset($cnt))) {
             throw new \InvalidArgumentException('$cnt needs to be set and both $start and $end must not be set for forecast data.');
-        } else if ($mode === 'historic' && (!isset($start) || !isset($end) || isset($cnt))) {
+        } elseif ($mode === 'historic' && (!isset($start) || !isset($end) || isset($cnt))) {
             throw new \InvalidArgumentException('Both $start and $end need to be set and $cnt must not be set for historic data.');
         }
 
