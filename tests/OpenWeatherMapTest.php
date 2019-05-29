@@ -138,19 +138,32 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
-    public function testGetUVIndex()
+    public function testGetForecastUVIndex()
     {
         $owm = $this->openWeather;
-        $precisions = array('year', 'month', 'day', 'hour', 'minute', 'second');
-        foreach ($precisions as $precision) {
-            try {
-                $result = $owm->getUVIndex(40.7, -74.2, new \DateTime(), $precision);
-            } catch (Exception $e) {
-                // OWM might not actually have data for the timespan.
-                $this->assertSame('An error occurred: not found', $e->getMessage());
-            }
-            $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+        
+        try {
+            $result = $owm->getForecastUVIndex(40.7, -74.2, 5);
+        } catch (Exception $e) {
+            // OWM might not actually have data for the timespan.
+            $this->assertSame('An error occurred: not found', $e->getMessage());
         }
+        $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+    }
+
+    public function testGetHistoryUVIndex()
+    {
+        $owm = $this->openWeather;
+
+        try {
+            $start = new \DateTime('1969-08-15');
+            $end = new \DateTime('1969-08-18');
+            $result = $owm->getHistoricUVIndex(40.7, -74.2, $start, $end);
+        } catch (Exception $e) {
+            // OWM might not actually have data for the timespan.
+            $this->assertSame('An error occurred: not found', $e->getMessage());
+        }
+        $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
     public function testGetDailyWeatherForecast()
