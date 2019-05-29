@@ -26,7 +26,9 @@ before_install:
   - echo memory_limit = -1 >> $INI_FILE
 
 install:
-  - composer install
+  # Use composer update instead of composer install to install a working set of
+  # dependencies on all PHP versions.
+  - composer update
 
 script:
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
