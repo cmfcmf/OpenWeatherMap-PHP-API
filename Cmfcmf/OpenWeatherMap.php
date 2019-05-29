@@ -730,7 +730,8 @@ class OpenWeatherMap
     {
         $json = json_decode($answer);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new OWMException('OpenWeatherMap returned an invalid json object. JSON error was: ' . $this->json_last_error_msg());
+            throw new OWMException('OpenWeatherMap returned an invalid json object. JSON error was: "' .
+                $this->json_last_error_msg() . '". The retrieved json was: ' . $answer);
         }
         if (isset($json->message)) {
             throw new OWMException('An error occurred: '. $json->message);
