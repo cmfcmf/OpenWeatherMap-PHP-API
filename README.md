@@ -58,6 +58,7 @@ http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
 - `CurrentWeather.php` Shows how to receive the current weather.
 - `WeatherForecast.php` Shows how to receive weather forecasts.
 - `WeatherHistory.php` Shows how to receive weather history.
+- `UVIndex.php` Shows how to receive uv index data.
 - `Cache.php` Shows how to implement and use a cache.
 
 Contributing
@@ -65,16 +66,29 @@ Contributing
 I'm happy about every **pull request** or **issue** you find and open to help 
 make this API **more awesome**.
 
+## Vagrant
+
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
 Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all 
 dependencies included.
 
-## Support me
+## Docker
 
-If you like my work, I'd really appreciate you buying me a coffee.
-Your donations help me put more time into Open-Source software development.
+You can also use Docker to start developing this library. First install dependencies:
 
-<a href='https://ko-fi.com/cmfcmf' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi1.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+    docker run --rm --interactive --tty \
+        --volume $PWD:/app \
+        --user $(id -u):$(id -g) \
+        composer install
+
+And then execute an example:
+
+    docker run --rm --interactive --tty \
+        --volume $PWD:/app -w /app \
+        php bash
+
+    > php Examples/CurrentWeather.php
+
 
 License
 =======
