@@ -158,7 +158,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         try {
             $start = new \DateTime('1969-08-15');
             $end = new \DateTime('1969-08-18');
-            $result = $owm->getForecastUVIndex(40.7, -74.2, null, $start, $end);
+            $result = $owm->getHistoricUVIndex(40.7, -74.2, $start, $end);
         } catch (Exception $e) {
             // OWM might not actually have data for the timespan.
             $this->assertSame('An error occurred: not found', $e->getMessage());

@@ -179,8 +179,12 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         return array(
             array('current', 5.4, 1, 5, null, null),
             array('forecast', 5.4, 1.2, '5', null, null),
+            array('forecast', 5.4, 1.2, 0, null, null),
+            array('forecast', 5.4, 1.2, 9, null, null),
+            array('forecast', 5.4, 1.2, 5, new \DateTime(), new \DateTime()),
             array('forecast', 5.4, 12.0, null, '2000-1-1', null),
-            array('history', 5.4, 1.2, null, new \DateTime(), '2000-1-1'),
+            array('historic', 5.4, 1.2, null, new \DateTime(), '2000-1-1'),
+            array('historic', 5.4, 1.2, 5, new \DateTime(), new \DateTime()),
         );
     }
 }
