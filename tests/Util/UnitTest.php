@@ -114,7 +114,7 @@ class UnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->givenThereIsAUnitWithUnit("fahrenheit");
 
-        $this->assertSame("F", $this->unit->getUnit());
+        $this->assertSame("°F", $this->unit->getUnit());
     }
 
     private function givenThereIsAUnitWithUnit($unit)

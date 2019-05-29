@@ -85,7 +85,7 @@ class Unit
         if ($this->unit == 'celsius' || $this->unit == 'metric') {
             return "°C";
         } elseif ($this->unit == 'fahrenheit') {
-            return 'F';
+            return '°F';
         } else {
             return $this->unit;
         }
