@@ -61,15 +61,6 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         @rmdir(__DIR__.'/temps');
     }
 
-    public function testApiKeyIsEmpty()
-    {
-        $expectApiKey = '';
-        $weather = new OpenWeatherMap($expectApiKey, null, false, 600);
-        $apiKey = $weather->getApiKey();
-
-        $this->assertSame($expectApiKey, $apiKey);
-    }
-
     public function testApiKeyNotNull()
     {
         $weather = $this->owm;

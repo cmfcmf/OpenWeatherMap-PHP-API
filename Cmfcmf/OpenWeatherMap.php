@@ -101,7 +101,7 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param string                $apiKey  The OpenWeatherMap API key. Required and only optional for BC.
+     * @param string                $apiKey  The OpenWeatherMap API key. Required.
      * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
      *                                       CurlFetcher() if cURL is available. Otherwise defaults to
      *                                       FileGetContentsFetcher() using 'file_get_contents()'.
@@ -113,16 +113,13 @@ class OpenWeatherMap
      *
      * @api
      */
-    public function __construct($apiKey = '', $fetcher = null, $cache = false, $seconds = 600)
+    public function __construct($apiKey, $fetcher = null, $cache = false, $seconds = 600)
     {
         if (!is_string($apiKey) || empty($apiKey)) {
-            // BC
-            $seconds = $cache !== false ? $cache : 600;
-            $cache = $fetcher !== null ? $fetcher : false;
-            $fetcher = $apiKey !== '' ? $apiKey : null;
-        } else {
-            $this->apiKey = $apiKey;
+            throw new \InvalidArgumentException("You must provide an API key.");
         }
+
+        $this->apiKey = $apiKey;
 
         if ($cache !== false && !($cache instanceof AbstractCache)) {
             throw new \InvalidArgumentException('The cache class must implement the FetcherInterface!');
@@ -552,14 +549,6 @@ class OpenWeatherMap
     public function wasCached()
     {
         return $this->wasCached;
-    }
-
-    /**
-     * @deprecated Use {@link self::getRawWeatherData()} instead.
-     */
-    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
-    {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
     }
 
     /**
