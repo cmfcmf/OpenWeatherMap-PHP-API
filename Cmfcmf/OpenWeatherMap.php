@@ -533,7 +533,7 @@ class OpenWeatherMap
      */
     public function getRawUVIndexData($mode, $lat, $lon, $cnt = null, $start = null, $end = null)
     {
-        if (!in_array($mode, ['current', 'forecast', 'historic'], true)) {
+        if (!in_array($mode, array('current', 'forecast', 'historic'), true)) {
             throw new \InvalidArgumentException("$mode must be one of 'historic', 'forecast', 'current'.");
         }
         if (!is_float($lat) || !is_float($lon)) {
