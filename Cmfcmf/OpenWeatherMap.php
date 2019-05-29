@@ -17,7 +17,6 @@
 
 namespace Cmfcmf;
 
-use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
@@ -27,6 +26,7 @@ use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
 use Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Cmfcmf\OpenWeatherMap\WeatherHistory;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * Main class for the OpenWeatherMap-PHP-API. Only use this class.
@@ -74,14 +74,14 @@ class OpenWeatherMap
     private $uvIndexUrl = 'https://api.openweathermap.org/data/2.5/uvi';
 
     /**
-     * @var AbstractCache|bool $cache The cache to use.
+     * @var CacheItemPoolInterface|null $cache The cache to use.
      */
-    private $cache = false;
+    private $cache = null;
 
     /**
      * @var int
      */
-    private $seconds;
+    private $ttl;
 
     /**
      * @var bool
@@ -101,41 +101,36 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param string                $apiKey  The OpenWeatherMap API key. Required.
-     * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                       FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param bool|string           $cache   If set to false, caching is disabled. Otherwise this must be a class
-     *                                       extending AbstractCache. Defaults to false.
-     * @param int $seconds                   How long weather data shall be cached. Default 10 minutes.
-     *
-     * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
+     * @param string                      $apiKey  The OpenWeatherMap API key. Required.
+     * @param null|FetcherInterface       $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
+     *                                             CurlFetcher() if cURL is available. Otherwise defaults to
+     *                                             FileGetContentsFetcher() using 'file_get_contents()'.
+     * @param null|CacheItemPoolInterface $cache   If set to null, caching is disabled. Otherwise this must be
+     *                                             a PSR 16-compatible cache instance.
+     * @param int                         $ttl     How long weather data shall be cached. Defaults to 10 minutes.
+     *                                             Only used if $cache is not null.
      *
      * @api
      */
-    public function __construct($apiKey, $fetcher = null, $cache = false, $seconds = 600)
+    public function __construct($apiKey, $fetcher = null, $cache = null, $ttl = 600)
     {
         if (!is_string($apiKey) || empty($apiKey)) {
             throw new \InvalidArgumentException("You must provide an API key.");
         }
 
-        $this->apiKey = $apiKey;
-
-        if ($cache !== false && !($cache instanceof AbstractCache)) {
-            throw new \InvalidArgumentException('The cache class must implement the FetcherInterface!');
+        if ($cache !== null && !($cache instanceof CacheItemPoolInterface)) {
+            throw new \InvalidArgumentException('The cache class must implement the \Psr\Cache\CacheItemPoolInterface!');
         }
-        if (!is_numeric($seconds)) {
+        if (!is_numeric($ttl)) {
             throw new \InvalidArgumentException('$seconds must be numeric.');
         }
         if (!isset($fetcher)) {
             $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
         }
-        if ($seconds == 0) {
-            $cache = false;
-        }
 
+        $this->apiKey = $apiKey;
         $this->cache = $cache;
-        $this->seconds = $seconds;
+        $this->ttl = $ttl;
         $this->fetcher = $fetcher;
     }
 
@@ -576,18 +571,21 @@ class OpenWeatherMap
      */
     private function cacheOrFetchResult($url)
     {
-        if ($this->cache !== false) {
-            /** @var AbstractCache $cache */
-            $cache = $this->cache;
-            $cache->setSeconds($this->seconds);
-
-            if ($cache->isCached($url)) {
+        if ($this->cache !== null) {
+            $key = str_replace(
+                ["{", "}", "(", ")", "/", "\\", "@", ":"],
+                ["_", "_", "_", "_", "_", "_",  "_", "_"],
+                $url);
+            $item = $this->cache->getItem($key);
+            if ($item->isHit()) {
                 $this->wasCached = true;
-                return $cache->getCached($url);
+                return $item->get();
             }
 
             $result = $this->fetcher->fetch($url);
-            $cache->setCached($url, $result);
+            $item->set($result);
+            $item->expiresAfter($this->ttl);
+            $this->cache->save($item);
         } else {
             $result = $this->fetcher->fetch($url);
         }
@@ -712,7 +710,7 @@ class OpenWeatherMap
     /**
      * @param string $answer The content returned by OpenWeatherMap.
      *
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws OWMException If the content isn't valid JSON.
      */
     private function parseJson($answer)

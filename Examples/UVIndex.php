@@ -15,7 +15,6 @@
  * @see http://openweathermap.org/appid
  */
 use Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -33,8 +32,7 @@ $lang = 'de';
 $units = 'metric';
 
 // Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap();
-$owm->setApiKey($myApiKey);
+$owm = new OpenWeatherMap($myApiKey);
 
 // Example 1: Get current uv index in Berlin.
 $uvIndex = $owm->getCurrentUVIndex(52.520008, 13.404954);

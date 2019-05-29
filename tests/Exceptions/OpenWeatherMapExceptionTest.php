@@ -32,7 +32,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->apiKey = 'unicorn-rainbow';
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher());
     }
 
     /**
@@ -142,7 +142,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $answer = 'I am not XML formatted data';
         $method = new \ReflectionMethod($this->owm, 'parseXML');
         $method->setAccessible(true);
-        
+
         $method->invoke($this->owm, $answer);
     }
 
@@ -167,7 +167,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $answer = 'I am not a json format data';
         $method = new \ReflectionMethod($this->owm, 'parseJson');
         $method->setAccessible(true);
-        
+
         $method->invoke($this->owm, $answer);
     }
 

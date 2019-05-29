@@ -14,9 +14,10 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
-use \Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception;
 use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
+use Cache\Adapter\PHPArray\ArrayCachePool;
 
 class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,42 +37,22 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     protected $openWeather;
 
     /**
-     * @var ExampleCacheTest
+     * @var \Psr\SimpleCache\CacheInterface
      */
     protected $cache;
 
     protected function setUp()
     {
         $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
-        $myApiKey = $ini['api_key'];
-        $this->apiKey = $myApiKey;
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
-        $this->openWeather = new OpenWeatherMap($this->apiKey, null, false, 600);
-        $this->cache = new ExampleCacheTest();
-    }
-
-    protected function tearDown()
-    {
-        $fileList = glob(__DIR__.'/temps/OpenWeatherMapPHPAPI/*');
-        foreach ($fileList as $fileName) {
-            @unlink($fileName);
-        }
-
-        @rmdir(__DIR__.'/temps/OpenWeatherMapPHPAPI');
-        @rmdir(__DIR__.'/temps');
+        $this->apiKey = $ini['api_key'];
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher());
+        $this->openWeather = new OpenWeatherMap($this->apiKey);
+        $this->cache =  new ArrayCachePool();
     }
 
     public function testApiKeyNotNull()
     {
         $weather = $this->owm;
-        $apiKey = $weather->getApiKey();
-
-        $this->assertSame($this->apiKey, $apiKey);
-    }
-
-    public function testSecondIsZero()
-    {
-        $weather = new OpenWeatherMap($this->apiKey, null, false, 0);
         $apiKey = $weather->getApiKey();
 
         $this->assertSame($this->apiKey, $apiKey);
@@ -132,7 +113,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     public function testGetForecastUVIndex()
     {
         $owm = $this->openWeather;
-        
+
         try {
             $result = $owm->getForecastUVIndex(40.7, -74.2, 5);
         } catch (Exception $e) {
@@ -181,13 +162,15 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     public function testCached()
     {
         $cache = $this->cache;
-        $cache->setTempPath(__DIR__.'/temps');
         $weather = new OpenWeatherMap($this->apiKey, new TestFetcher(), $cache, 600);
         $currWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');
+        $this->assertFalse($weather->wasCached());
         $cachedWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');
+        $this->assertTrue($weather->wasCached());
 
         $this->assertInternalType('string', $currWeatherData);
         $this->assertInternalType('string', $cachedWeatherData);
+        $this->assertSame($currWeatherData, $cachedWeatherData);
     }
 
     public function testBuildQueryUrlParameter()
@@ -198,12 +181,5 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeather', $queryWithNumbericArray);
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\CurrentWeather', $queryWithLatLonArray);
-    }
-
-    public function testAbstractCache()
-    {
-        /** @var OpenWeatherMap\AbstractCache $sut */
-        $sut = $this->getMockForAbstractClass('\Cmfcmf\OpenWeatherMap\AbstractCache');
-        $this->assertNull($sut->setSeconds(10));
     }
 }

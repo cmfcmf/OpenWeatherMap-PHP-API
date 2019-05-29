@@ -1,6 +1,6 @@
 OpenWeatherMap PHP API
 ======================
-A php API to retrieve and parse global weather data from 
+A php API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
@@ -37,8 +37,7 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Create OpenWeatherMap object. 
-// Don't use caching (take a look into Examples/Cache.php to see how it works).
+// Create OpenWeatherMap object.
 $owm = new OpenWeatherMap('YOUR-API-KEY');
 
 try {
@@ -52,24 +51,24 @@ try {
 echo $weather->temperature;
 ```
 
-For more example code and instructions on how to use this library, please take 
-a look into  the `Examples` folder. Make sure to get an API Key from 
+For more example code and instructions on how to use this library, please take
+a look into  the `Examples` folder. Make sure to get an API Key from
 http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
+
 - `CurrentWeather.php` Shows how to receive the current weather.
 - `WeatherForecast.php` Shows how to receive weather forecasts.
 - `WeatherHistory.php` Shows how to receive weather history.
 - `UVIndex.php` Shows how to receive uv index data.
-- `Cache.php` Shows how to implement and use a cache.
 
 Contributing
 ============
-I'm happy about every **pull request** or **issue** you find and open to help 
+I'm happy about every **pull request** or **issue** you find and open to help
 make this API **more awesome**.
 
 ## Vagrant
 
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
-Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all 
+Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all
 dependencies included.
 
 ## Docker
@@ -95,7 +94,7 @@ License
 MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 distributed with this source code for further information regarding copyright and licensing.
 
-**Please check out the following official links to read about the terms, pricing 
+**Please check out the following official links to read about the terms, pricing
 and license of OpenWeatherMap before using the service:**
 - [OpenWeatherMap.org/terms](http://OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://OpenWeatherMap.org/appid)
