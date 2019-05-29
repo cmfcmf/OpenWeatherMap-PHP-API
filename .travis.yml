@@ -5,8 +5,8 @@ language: php
 
 matrix:
   include:
-    - php: hhvm
     - php: nightly
+    - php: 7.3
     - php: 7.2
     - php: 7.1
     - php: 7.0
@@ -19,11 +19,15 @@ matrix:
   allow_failures:
     - php: nightly
 
-install:
-  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then phpenv config-rm xdebug.ini || echo "xdebug not available"; fi
-  - if [[ ! $TRAVIS_PHP_VERSION = hhvm* ]]; then INI_FILE=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; else INI_FILE=/etc/hhvm/php.ini; fi
+before_install:
+  - phpenv config-rm xdebug.ini || echo "xdebug not available"
+  - INI_FILE=~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo date.timezone = Europe/Berlin >> $INI_FILE
   - echo memory_limit = -1 >> $INI_FILE
+
+install:
+  # Use composer update instead of composer install to install a working set of
+  # dependencies on all PHP versions.
   - composer update
 
 script:
