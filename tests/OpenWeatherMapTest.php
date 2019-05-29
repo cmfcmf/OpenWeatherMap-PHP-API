@@ -114,7 +114,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     {
         $days = 1;
         $defaultDay = $this->owm->getWeatherForecast('Berlin', 'imperial', 'en', '', $days);
-        
+
         $days = 16;
         $maxDay = $this->owm->getWeatherForecast('Berlin', 'imperial', 'en', '', $days);
 
@@ -172,7 +172,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $weather = new OpenWeatherMap($this->apiKey, new TestFetcher(), $cache, 600);
         $currWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');
         $cachedWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');
-        
+
         $this->assertInternalType('string', $currWeatherData);
         $this->assertInternalType('string', $cachedWeatherData);
     }

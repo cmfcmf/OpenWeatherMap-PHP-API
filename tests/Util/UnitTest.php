@@ -100,14 +100,14 @@ class UnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->givenThereIsAUnitWithUnit("celsius");
 
-        $this->assertSame("&deg;C", $this->unit->getUnit());
+        $this->assertSame("°C", $this->unit->getUnit());
     }
 
     public function testMetricFix()
     {
         $this->givenThereIsAUnitWithUnit("metric");
 
-        $this->assertSame("&deg;C", $this->unit->getUnit());
+        $this->assertSame("°C", $this->unit->getUnit());
     }
 
     public function testFahrenheitFix()

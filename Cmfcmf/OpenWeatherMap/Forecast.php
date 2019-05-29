@@ -46,7 +46,7 @@ class Forecast extends CurrentWeather
         $utctz = new \DateTimeZone('UTC');
 
         if ($units == 'metric') {
-            $temperatureUnit = "&deg;C";
+            $temperatureUnit = "°C";
         } else {
             $temperatureUnit = 'F';
         }
