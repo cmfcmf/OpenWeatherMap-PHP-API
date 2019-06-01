@@ -1,6 +1,7 @@
 <?php
-/**
- * OpenWeatherMap-PHP-API — A php api to parse weather data from http://www.OpenWeatherMap.org .
+
+/*
+ * OpenWeatherMap-PHP-API — A PHP API to parse weather data from https://OpenWeatherMap.org.
  *
  * @license MIT
  *
@@ -8,12 +9,13 @@
  * information regarding copyright and licensing.
  *
  * Please visit the following links to read about the usage policies and the license of
- * OpenWeatherMap before using this class:
+ * OpenWeatherMap data before using this library:
  *
- * @see http://www.OpenWeatherMap.org
- * @see http://www.OpenWeatherMap.org/terms
- * @see http://openweathermap.org/appid
+ * @see https://openweathermap.org/price
+ * @see https://OpenWeatherMap.org/terms
+ * @see https://openweathermap.org/appid
  */
+
 use Cmfcmf\OpenWeatherMap;
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
