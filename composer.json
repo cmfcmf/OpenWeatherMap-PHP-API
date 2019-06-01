@@ -1,8 +1,8 @@
 {
     "name": "cmfcmf/openweathermap-php-api",
-    "description": "A php api to parse weather data from OpenWeatherMap.org. This api tries to normalise and abstract the data and remove inconsistencies.",
+    "description": "A PHP API to parse weather data from OpenWeatherMap.org. This wrapper tries to normalise and abstract the data and remove inconsistencies.",
     "keywords": ["weather", "OpenWeatherMap", "api", "owm", "free"],
-    "homepage": "https://github.com/cmfcmf/OpenWeatherMap-PHP-Api",
+    "homepage": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API",
     "license": "MIT",
     "authors": [
         {
@@ -13,8 +13,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/issues",
-        "source": "https://github.com/cmfcmf/OpenWeatherMap-PHP-Api.git"
+        "issues": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API/issues",
+        "source": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API.git"
     },
     "require": {
         "php": ">=7.0.0",
