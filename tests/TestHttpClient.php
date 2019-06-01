@@ -30,7 +30,8 @@ class TestHttpClient implements ClientInterface
      */
     private $responseFactory;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->responseFactory = new ResponseFactory();
     }
 
