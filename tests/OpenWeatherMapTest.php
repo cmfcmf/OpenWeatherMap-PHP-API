@@ -44,11 +44,17 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
      */
     protected $cache;
 
+    /**
+     * @var TestHttpClient
+     */
+    protected $httpClient;
+
     protected function setUp()
     {
         $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
         $this->apiKey = $ini['api_key'];
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory());
+        $this->httpClient = new TestHttpClient();
+        $this->owm = new OpenWeatherMap($this->apiKey, $this->httpClient, new RequestFactory());
         $this->openWeather = new OpenWeatherMap($this->apiKey, GuzzleAdapter::createWithConfig([]), new RequestFactory());
         $this->cache =  new ArrayCachePool();
     }
@@ -76,6 +82,15 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $apiKey = $weather->getApiKey();
 
         $this->assertSame($this->apiKey, $apiKey);
+    }
+
+    /**
+     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
+     */
+    public function testInvalidData()
+    {
+        $this->httpClient->returnErrorForNextRequest(500);
+        $this->owm->getWeather('Berlin', 'imperial', 'en', '');
     }
 
     public function testGetWeather()

@@ -30,9 +30,15 @@ class TestHttpClient implements ClientInterface
      */
     private $responseFactory;
 
+    /**
+     * @var int
+     */
+    private $errorWithStatusCode;
+
     public function __construct()
     {
         $this->responseFactory = new ResponseFactory();
+        $this->errorWithStatusCode = null;
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
@@ -48,8 +54,14 @@ class TestHttpClient implements ClientInterface
             $content = $this->currentWeather($format);
         }
 
-        $response = $this->responseFactory->createResponse(200);
+        $response = $this->responseFactory->createResponse($this->errorWithStatusCode !== null ? $this->errorWithStatusCode : 200);
+        $this->errorWithStatusCode = null;
         return $response->withBody(Psr7\stream_for($content));
+    }
+
+    public function returnErrorForNextRequest($code)
+    {
+        $this->errorWithStatusCode = $code;
     }
 
     private function currentWeather($format)

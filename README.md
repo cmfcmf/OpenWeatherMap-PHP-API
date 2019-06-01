@@ -1,6 +1,6 @@
 OpenWeatherMap PHP API
 ======================
-A PHP 5.6+ API to retrieve and parse global weather data from
+A PHP 7.0+ API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
@@ -28,10 +28,6 @@ A list of HTTP factory implementations is available at
 2. A [PSR-18](https://www.php-fig.org/psr/psr-18/) compatible HTTP client implementation.
 A list of HTTP client implementations is available at
 [Packagist](https://packagist.org/providers/psr/http-client-implementation).
-
-The following two libraries are possible candidates that work with PHP 5.6:
-- HTTP factory: `http-interop/http-factory-guzzle`
-- HTTP client: `php-http/guzzle6-adapter`
 
 Example call
 ============

@@ -581,10 +581,11 @@ class OpenWeatherMap
             }
         }
 
-        $result = $this->httpClient
-            ->sendRequest($this->httpRequestFactory->createRequest("GET", $url))
-            ->getBody()
-            ->getContents();
+        $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
+        $result = $response->getBody()->getContents();
+        if ($response->getStatusCode() !== 200) {
+            throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content '. $result);
+        }
 
         if ($this->cache !== null) {
             $item->set($result);
