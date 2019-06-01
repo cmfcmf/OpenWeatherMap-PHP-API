@@ -48,7 +48,7 @@ class Forecast extends CurrentWeather
         if ($units == 'metric') {
             $temperatureUnit = "°C";
         } else {
-            $temperatureUnit = 'F';
+            $temperatureUnit = '°F';
         }
 
         $xml->temperature['value'] = round((floatval($xml->temperature['max']) + floatval($xml->temperature['min'])) / 2, 2);

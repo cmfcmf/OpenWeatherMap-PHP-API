@@ -76,7 +76,7 @@ class Unit
      *
      * @return string The value's unit.
      *
-     * This also converts 'celsius' to '°C' and 'fahrenheit' to 'F'.
+     * This also converts 'celsius' to '°C' and 'fahrenheit' to '°F'.
      */
     public function getUnit()
     {
