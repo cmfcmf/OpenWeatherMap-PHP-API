@@ -11,9 +11,9 @@
  * Please visit the following links to read about the usage policies and the license of
  * OpenWeatherMap data before using this library:
  *
- * @see https://openweathermap.org/price
+ * @see https://OpenWeatherMap.org/price
  * @see https://OpenWeatherMap.org/terms
- * @see https://openweathermap.org/appid
+ * @see https://OpenWeatherMap.org/appid
  */
 
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
