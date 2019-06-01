@@ -17,29 +17,38 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests;
 
-use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Http\Factory\Guzzle\ResponseFactory;
+use GuzzleHttp\Psr7;
 
-class TestFetcher implements FetcherInterface
+class TestHttpClient implements ClientInterface
 {
     /**
-     * Fetch contents from the specified url.
-     *
-     * @param string $url The url to be fetched.
-     *
-     * @return string The fetched content.
-     *
-     * @api
+     * @var ResponseFactory
      */
-    public function fetch($url)
+    private $responseFactory;
+
+    public function __construct() {
+        $this->responseFactory = new ResponseFactory();
+    }
+
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
+        $url = $request->getUri();
         $format = strpos($url, 'json') !== false ? 'json' : 'xml';
+        $content = "";
         if (strpos($url, 'forecast') !== false) {
-            return $this->forecast($format);
+            $content = $this->forecast($format);
         } elseif (strpos($url, 'group') !== false) {
-            return $this->group($format);
+            $content = $this->group($format);
         } else {
-            return $this->currentWeather($format);
+            $content = $this->currentWeather($format);
         }
+
+        $response = $this->responseFactory->createResponse(200);
+        return $response->withBody(Psr7\stream_for($content));
     }
 
     private function currentWeather($format)

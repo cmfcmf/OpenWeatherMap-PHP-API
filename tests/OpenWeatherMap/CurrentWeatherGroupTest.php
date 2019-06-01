@@ -11,10 +11,10 @@
  * Please see the NOTICE file distributed with this source code for further
  * information regarding copyright and licensing.
  */
- 
+
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
-use \Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
+use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 
 class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase

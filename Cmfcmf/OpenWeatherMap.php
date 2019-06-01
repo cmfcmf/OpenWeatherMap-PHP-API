@@ -21,12 +21,11 @@ use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
-use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
-use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
-use Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Cmfcmf\OpenWeatherMap\WeatherHistory;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * Main class for the OpenWeatherMap-PHP-API. Only use this class.
@@ -89,9 +88,14 @@ class OpenWeatherMap
     private $wasCached = false;
 
     /**
-     * @var FetcherInterface The url fetcher.
+     * @var ClientInterface
      */
-    private $fetcher;
+    private $httpClient;
+
+    /**
+     * @var RequestFactoryInterface
+     */
+    private $httpRequestFactory;
 
     /**
      * @var string
@@ -101,37 +105,31 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param string                      $apiKey  The OpenWeatherMap API key. Required.
-     * @param null|FetcherInterface       $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                             CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                             FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param null|CacheItemPoolInterface $cache   If set to null, caching is disabled. Otherwise this must be
-     *                                             a PSR 16-compatible cache instance.
-     * @param int                         $ttl     How long weather data shall be cached. Defaults to 10 minutes.
-     *                                             Only used if $cache is not null.
+     * @param string                      $apiKey             The OpenWeatherMap API key. Required.
+     * @param ClientInterface             $httpClient         A PSR-18 compatible HTTP client implementation.
+     * @param RequestFactoryInterface     $httpRequestFactory A PSR-17 compatbile HTTP request factory implementation.
+     * @param null|CacheItemPoolInterface $cache              If set to null, caching is disabled. Otherwise this must be
+     *                                                        a PSR 16-compatible cache instance.
+     * @param int                         $ttl                How long weather data shall be cached. Defaults to 10 minutes.
+     *                                                        Only used if $cache is not null.
      *
      * @api
      */
-    public function __construct($apiKey, $fetcher = null, $cache = null, $ttl = 600)
+    public function __construct($apiKey, $httpClient, $httpRequestFactory, $cache = null, $ttl = 600)
     {
         if (!is_string($apiKey) || empty($apiKey)) {
             throw new \InvalidArgumentException("You must provide an API key.");
         }
 
-        if ($cache !== null && !($cache instanceof CacheItemPoolInterface)) {
-            throw new \InvalidArgumentException('The cache class must implement the \Psr\Cache\CacheItemPoolInterface!');
-        }
         if (!is_numeric($ttl)) {
-            throw new \InvalidArgumentException('$seconds must be numeric.');
-        }
-        if (!isset($fetcher)) {
-            $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
+            throw new \InvalidArgumentException('$ttl must be numeric.');
         }
 
         $this->apiKey = $apiKey;
+        $this->httpClient = $httpClient;
+        $this->httpRequestFactory = $httpRequestFactory;
         $this->cache = $cache;
         $this->ttl = $ttl;
-        $this->fetcher = $fetcher;
     }
 
     /**
@@ -581,13 +579,17 @@ class OpenWeatherMap
                 $this->wasCached = true;
                 return $item->get();
             }
+        }
 
-            $result = $this->fetcher->fetch($url);
+        $result = $this->httpClient
+            ->sendRequest($this->httpRequestFactory->createRequest("GET", $url))
+            ->getBody()
+            ->getContents();
+
+        if ($this->cache !== null) {
             $item->set($result);
             $item->expiresAfter($this->ttl);
             $this->cache->save($item);
-        } else {
-            $result = $this->fetcher->fetch($url);
         }
         $this->wasCached = false;
 

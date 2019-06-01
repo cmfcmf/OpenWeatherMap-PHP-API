@@ -14,7 +14,7 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
-use \Cmfcmf\OpenWeatherMap\Util\Weather;
+use Cmfcmf\OpenWeatherMap\Util\Weather;
 
 class WeatherTest extends \PHPUnit_Framework_TestCase
 {

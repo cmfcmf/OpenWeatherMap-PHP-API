@@ -15,6 +15,8 @@
  * @see http://openweathermap.org/appid
  */
 use Cmfcmf\OpenWeatherMap;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -31,8 +33,12 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap($myApiKey);
+// You can use every PSR-17 compatible HTTP request factory
+// and every PSR-18 compatible HTTP client.
+$httpRequestFactory = new RequestFactory();
+$httpClient = GuzzleAdapter::createWithConfig([]);
+
+$owm = new OpenWeatherMap($myApiKey, $httpClient, $httpRequestFactory);
 
 // Example 1: Get current uv index in Berlin.
 $uvIndex = $owm->getCurrentUVIndex(52.520008, 13.404954);

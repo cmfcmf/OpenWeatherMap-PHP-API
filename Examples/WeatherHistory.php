@@ -15,6 +15,8 @@
  * @see http://openweathermap.org/appid
  */
 use Cmfcmf\OpenWeatherMap;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -24,8 +26,12 @@ $lang = 'en';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Get OpenWeatherMap object. Don't use caching (take a look into Example_Cache.php to see how it works).
-$owm = new OpenWeatherMap($myApiKey);
+// You can use every PSR-17 compatible HTTP request factory
+// and every PSR-18 compatible HTTP client.
+$httpRequestFactory = new RequestFactory();
+$httpClient = GuzzleAdapter::createWithConfig([]);
+
+$owm = new OpenWeatherMap($myApiKey, $httpClient, $httpRequestFactory);
 
 // Example 1: Get hourly weather history between 2014-01-01 and today.
 $history = $owm->getWeatherHistory('Berlin', new \DateTime('2014-01-01'), new \DateTime('now'), 'hour', $units, $lang);

@@ -1,6 +1,6 @@
 OpenWeatherMap PHP API
 ======================
-A php API to retrieve and parse global weather data from
+A PHP 5.6+ API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
@@ -20,6 +20,18 @@ The recommended way to install and use it is through [Composer](http://getcompos
 
     composer require "cmfcmf/openweathermap-php-api"
 
+You will also need to choose and install two additional dependencies separately:
+
+1. A [PSR-17](https://www.php-fig.org/psr/psr-17/) compatible HTTP factory implementation.
+A list of HTTP factory implementations is available at
+[Packagist](https://packagist.org/providers/psr/http-factory-implementation).
+2. A [PSR-18](https://www.php-fig.org/psr/psr-18/) compatible HTTP client implementation.
+A list of HTTP client implementations is available at
+[Packagist](https://packagist.org/providers/psr/http-client-implementation).
+
+The following two libraries are possible candidates that work with PHP 5.6:
+- HTTP factory: `http-interop/http-factory-guzzle`
+- HTTP client: `php-http/guzzle6-adapter`
 
 Example call
 ============
@@ -27,6 +39,8 @@ Example call
 <?php
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 // Must point to composer's autoload file.
 require 'vendor/autoload.php';
@@ -37,8 +51,15 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
+// You can use every PSR-17 compatible HTTP request factory
+// and every PSR-18 compatible HTTP client. This example uses
+// `http-interop/http-factory-guzzle` and `php-http/guzzle6-adapter`
+// which you need to install separately.
+$httpRequestFactory = new RequestFactory();
+$httpClient = GuzzleAdapter::createWithConfig([]);
+
 // Create OpenWeatherMap object.
-$owm = new OpenWeatherMap('YOUR-API-KEY');
+$owm = new OpenWeatherMap('YOUR-API-KEY', $httpClient, $httpRequestFactory);
 
 try {
     $weather = $owm->getWeather('Berlin', $units, $lang);

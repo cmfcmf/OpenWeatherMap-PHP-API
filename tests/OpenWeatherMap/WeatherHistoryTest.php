@@ -15,7 +15,7 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
-use \Cmfcmf\OpenWeatherMap\WeatherHistory;
+use Cmfcmf\OpenWeatherMap\WeatherHistory;
 
 class WeatherHistoryTest extends \PHPUnit_Framework_TestCase
 {

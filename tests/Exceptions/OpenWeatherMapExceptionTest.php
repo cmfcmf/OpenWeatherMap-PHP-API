@@ -14,8 +14,9 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
-use \Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
+use Http\Factory\Guzzle\RequestFactory;
 
 class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,23 +33,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->apiKey = 'unicorn-rainbow';
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher());
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCacheException()
-    {
-        new OpenWeatherMap($this->apiKey, null, true, 600);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSecondNotNumericException()
-    {
-        new OpenWeatherMap($this->apiKey, null, false, 'I am not numeric');
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory());
     }
 
     /**

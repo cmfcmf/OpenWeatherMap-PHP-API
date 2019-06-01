@@ -16,8 +16,11 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception;
-use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
+use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Cache\Adapter\PHPArray\ArrayCachePool;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Psr\SimpleCache\CacheInterface;
 
 class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 {
@@ -37,7 +40,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     protected $openWeather;
 
     /**
-     * @var \Psr\SimpleCache\CacheInterface
+     * @var CacheInterface
      */
     protected $cache;
 
@@ -45,8 +48,8 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
     {
         $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
         $this->apiKey = $ini['api_key'];
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher());
-        $this->openWeather = new OpenWeatherMap($this->apiKey);
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory());
+        $this->openWeather = new OpenWeatherMap($this->apiKey, GuzzleAdapter::createWithConfig([]), new RequestFactory());
         $this->cache =  new ArrayCachePool();
     }
 
@@ -161,8 +164,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
     public function testCached()
     {
-        $cache = $this->cache;
-        $weather = new OpenWeatherMap($this->apiKey, new TestFetcher(), $cache, 600);
+        $weather = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory(), $this->cache, 600);
         $currWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');
         $this->assertFalse($weather->wasCached());
         $cachedWeatherData = $weather->getRawWeatherData('Berlin', 'imperial', 'en', $this->apiKey, 'xml');

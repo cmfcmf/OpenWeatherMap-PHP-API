@@ -11,11 +11,11 @@
  * Please see the NOTICE file distributed with this source code for further
  * information regarding copyright and licensing.
  */
- 
+
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
-use \Cmfcmf\OpenWeatherMap\WeatherForecast;
+use Cmfcmf\OpenWeatherMap\WeatherForecast;
 
 class WeatherForecastTest extends \PHPUnit_Framework_TestCase
 {

@@ -16,6 +16,8 @@
  */
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 require_once __DIR__ . '/bootstrap.php';
 
@@ -32,8 +34,12 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Get OpenWeatherMap object
-$owm = new OpenWeatherMap($myApiKey);
+// You can use every PSR-17 compatible HTTP request factory
+// and every PSR-18 compatible HTTP client.
+$httpRequestFactory = new RequestFactory();
+$httpClient = GuzzleAdapter::createWithConfig([]);
+
+$owm = new OpenWeatherMap($myApiKey, $httpClient, $httpRequestFactory);
 
 // Example 1: Get current temperature in Berlin.
 $weather = $owm->getWeather('Berlin', $units, $lang);
