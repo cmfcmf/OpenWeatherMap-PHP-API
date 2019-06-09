@@ -92,8 +92,8 @@ echo $lf;
 echo 'Last update: '.$weather->lastUpdate->format('r');
 echo $lf;
 
-// Example 2: Get current pressure and humidity in Hongkong.
-$weather = $owm->getWeather('Hongkong', $units, $lang);
+// Example 2: Get current pressure and humidity in London.
+$weather = $owm->getWeather('London', $units, $lang);
 echo "$lf$lf EXAMPLE 2$lf";
 
 /*

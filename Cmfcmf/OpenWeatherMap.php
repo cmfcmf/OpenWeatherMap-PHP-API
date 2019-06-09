@@ -23,7 +23,6 @@ use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
-use Cmfcmf\OpenWeatherMap\WeatherHistory;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -62,11 +61,6 @@ class OpenWeatherMap
      * @var string The basic api url to fetch daily forecast data from.
      */
     private $weatherDailyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast/daily?';
-
-    /**
-     * @var string The basic api url to fetch history weather data from.
-     */
-    private $weatherHistoryUrl = 'https://history.openweathermap.org/data/2.5/history/city?';
 
     /**
      * @var string The basic api url to fetch uv index data from.
@@ -271,39 +265,6 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns the weather history for the place you specified.
-     *
-     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
-     * @param \DateTime        $start
-     * @param int              $endOrCount
-     * @param string           $type       Can either be 'tick', 'hour' or 'day'.
-     * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
-     * @throws \InvalidArgumentException If an argument error occurs.
-     *
-     * @return WeatherHistory
-     *
-     * @api
-     */
-    public function getWeatherHistory($query, \DateTime $start, $endOrCount = 1, $type = 'hour', $units = 'imperial', $lang = 'en', $appid = '')
-    {
-        if (!in_array($type, array('tick', 'hour', 'day'))) {
-            throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
-        }
-
-        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, $appid), true);
-
-        if ($xml['cod'] != 200) {
-            throw new OWMException($xml['message'], $xml['cod']);
-        }
-
-        return new WeatherHistory($xml, $query);
-    }
-
-    /**
      * Returns the current uv index at the location you specified.
      *
      * @param float $lat The location's latitude.
@@ -463,47 +424,6 @@ class OpenWeatherMap
             throw new \InvalidArgumentException('$cnt must be 16 or lower!');
         }
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherDailyForecastUrl) . "&cnt=$cnt";
-
-        return $this->cacheOrFetchResult($url);
-    }
-
-    /**
-     * Directly returns the json string returned by OpenWeatherMap for the weather history.
-     *
-     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
-     * @param \DateTime        $start      The \DateTime object of the date to get the first weather information from.
-     * @param \DateTime|int    $endOrCount Can be either a \DateTime object representing the end of the period to
-     *                                     receive weather history data for or an integer counting the number of
-     *                                     reports requested.
-     * @param string           $type       The period of the weather history requested. Can be either be either "tick",
-     *                                     "hour" or "day".
-     * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string Returns false on failure and the fetched data in the format you specified on success.
-     *
-     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
-     *
-     * @api
-     */
-    public function getRawWeatherHistory($query, \DateTime $start, $endOrCount = 1, $type = 'hour', $units = 'imperial', $lang = 'en', $appid = '')
-    {
-        if (!in_array($type, array('tick', 'hour', 'day'))) {
-            throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
-        }
-
-        $url = $this->buildUrl($query, $units, $lang, $appid, 'json', $this->weatherHistoryUrl);
-        $url .= "&type=$type&start={$start->format('U')}";
-        if ($endOrCount instanceof \DateTime) {
-            $url .= "&end={$endOrCount->format('U')}";
-        } elseif (is_numeric($endOrCount) && $endOrCount > 0) {
-            $url .= "&cnt=$endOrCount";
-        } else {
-            throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');
-        }
 
         return $this->cacheOrFetchResult($url);
     }

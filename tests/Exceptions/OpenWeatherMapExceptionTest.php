@@ -59,51 +59,11 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
-    public function testGetWeatherHistoryException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), 1, 'hour', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
-    public function testGetWeatherHistoryWithEndException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), new \DateTime('now'), 'hour', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetWeatherHistoryInvalidArgumentException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testGetRawDailyForecastDataInvalidArgumentException()
     {
         $this->owm->getRawDailyForecastData('Berlin', 'imperial', 'en', '', 'xml', 20);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetRawWeatherHistoryException()
-    {
-        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetRawWeatherHistoryWithEndDateException()
-    {
-        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
 
     /**

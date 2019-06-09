@@ -168,11 +168,6 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $dailyForecast);
     }
 
-    public function testGetWeatherHistory()
-    {
-        $this->markTestSkipped('This getWeatherHistory method ignored because the api key need to have a paid permission.');
-    }
-
     public function testWasCached()
     {
         $weather = $this->owm;
