@@ -104,7 +104,7 @@ class OpenWeatherMap
      * @param ClientInterface             $httpClient         A PSR-18 compatible HTTP client implementation.
      * @param RequestFactoryInterface     $httpRequestFactory A PSR-17 compatbile HTTP request factory implementation.
      * @param null|CacheItemPoolInterface $cache              If set to null, caching is disabled. Otherwise this must be
-     *                                                        a PSR 16-compatible cache instance.
+     *                                                        a PSR-6 compatible cache instance.
      * @param int                         $ttl                How long weather data shall be cached. Defaults to 10 minutes.
      *                                                        Only used if $cache is not null.
      *
