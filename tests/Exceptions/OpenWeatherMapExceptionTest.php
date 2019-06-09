@@ -1,21 +1,26 @@
 <?php
-/**
- * Copyright Zikula Foundation 2014 - Zikula Application Framework
+
+/*
+ * OpenWeatherMap-PHP-API — A PHP API to parse weather data from https://OpenWeatherMap.org.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * @license MIT
  *
- * @license GNU/LGPv3 (or at your option any later version).
- * @package OpenWeatherMap-PHP-Api
- *
- * Please see the NOTICE file distributed with this source code for further
+ * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
+ *
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap data before using this library:
+ *
+ * @see https://OpenWeatherMap.org/price
+ * @see https://OpenWeatherMap.org/terms
+ * @see https://OpenWeatherMap.org/appid
  */
 
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
-use \Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Tests\TestFetcher;
+use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
+use Http\Factory\Guzzle\RequestFactory;
 
 class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,23 +37,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->apiKey = 'unicorn-rainbow';
-        $this->owm = new OpenWeatherMap($this->apiKey, new TestFetcher(), false, 600);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCacheException()
-    {
-        new OpenWeatherMap($this->apiKey, null, true, 600);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testSecondNotNumericException()
-    {
-        new OpenWeatherMap($this->apiKey, null, false, 'I am not numeric');
+        $this->owm = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory());
     }
 
     /**
@@ -70,51 +59,11 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
-    public function testGetWeatherHistoryException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), 1, 'hour', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
-    public function testGetWeatherHistoryWithEndException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('2015-11-01 00:00:00'), new \DateTime('now'), 'hour', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetWeatherHistoryInvalidArgumentException()
-    {
-        $this->owm->getWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testGetRawDailyForecastDataInvalidArgumentException()
     {
         $this->owm->getRawDailyForecastData('Berlin', 'imperial', 'en', '', 'xml', 20);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetRawWeatherHistoryException()
-    {
-        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 1, 'wrong-type', 'imperial', 'en', '');
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testGetRawWeatherHistoryWithEndDateException()
-    {
-        $this->owm->getRawWeatherHistory('Berlin', new \DateTime('now'), 'wrong-endOrCount', 'hour', 'imperial', 'en', '');
     }
 
     /**
@@ -142,7 +91,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $answer = 'I am not XML formatted data';
         $method = new \ReflectionMethod($this->owm, 'parseXML');
         $method->setAccessible(true);
-        
+
         $method->invoke($this->owm, $answer);
     }
 
@@ -167,7 +116,7 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $answer = 'I am not a json format data';
         $method = new \ReflectionMethod($this->owm, 'parseJson');
         $method->setAccessible(true);
-        
+
         $method->invoke($this->owm, $answer);
     }
 

@@ -1,5 +1,21 @@
 <?php
 
+/*
+ * OpenWeatherMap-PHP-API — A PHP API to parse weather data from https://OpenWeatherMap.org.
+ *
+ * @license MIT
+ *
+ * Please see the LICENSE file distributed with this source code for further
+ * information regarding copyright and licensing.
+ *
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap data before using this library:
+ *
+ * @see https://OpenWeatherMap.org/price
+ * @see https://OpenWeatherMap.org/terms
+ * @see https://OpenWeatherMap.org/appid
+ */
+
 namespace Cmfcmf\OpenWeatherMap\Tests;
 
 class FakeData
@@ -88,90 +104,6 @@ class FakeData
         </forecast>
         </weatherdata>';
     }
-
-    const WEATHER_HISTORY_JSON = '{
-            "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
-            "cnt":10,
-            "list":[{
-                "dt":1406080800,
-                "temp":{
-                    "day":297.77,
-                    "min":293.52,
-                    "max":297.77,
-                    "night":293.52,
-                    "eve":297.77,
-                    "morn":297.77
-                },
-                "pressure":925.04,
-                "humidity":76,
-                "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                "clouds":{"all":90},
-                "wind":{"speed":5.71,"deg":229.501}
-            },{
-                "dt":1406080800,
-                "temp":{
-                    "day":297.77,
-                    "min":293.52,
-                    "max":297.77,
-                    "night":293.52,
-                    "eve":297.77,
-                    "morn":297.77
-                },
-                "pressure":925.04,
-                "humidity":76,
-                "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                "clouds":{"all":90},
-                "wind":{"speed":5.71,"deg":229.501}
-            }]
-        }';
-
-    const WEATHER_HISTORY_WITH_COUNTRY_JSON = '{
-            "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
-            "cnt":1,
-            "list":[{
-                    "dt":1406080800,
-                    "temp":{
-                        "day":297.77,
-                        "min":293.52,
-                        "max":297.77,
-                        "night":293.52,
-                        "eve":297.77,
-                        "morn":297.77
-                    },
-                    "pressure":925.04,
-                    "humidity":76,
-                    "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                    "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                    "clouds":{"all":90},
-                    "wind":{"speed":5.71,"deg":229.501}
-            }]
-        }';
-
-
-    const WEATHER_HISTORY_WITH_RAIN_JSON = '{
-            "cod":"200","calctime":"123456789","message":0.0032,"city_id":{"id":1851632,"name":"Shuzenji","coord":{"lon":138.933334,"lat":34.966671},"country":"JP"},
-            "cnt":1,
-            "list":[{
-                    "dt":1406080800,
-                    "temp":{
-                        "day":297.77,
-                        "min":293.52,
-                        "max":297.77,
-                        "night":293.52,
-                        "eve":297.77,
-                        "morn":297.77
-                    },
-                    "pressure":925.04,
-                    "humidity":76,
-                    "weather":[{"id":803,"main":"Clouds","description":"broken clouds","icon":"04d"}],
-                    "main":{"temp":306.15,"pressure":1013,"humidity":44,"temp_min":306,"temp_max":306},
-                    "clouds":{"all":90},
-                    "wind":{"speed":5.71,"deg":229.501},
-                    "rain":{"3h":3}
-            }]
-        }';
 
     const CURRENT_WEATHER_XML = <<<XML
 <current>

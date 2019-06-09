@@ -1,6 +1,6 @@
 OpenWeatherMap PHP API
 ======================
-A php API to retrieve and parse global weather data from 
+A PHP 7.0+ API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
 This library aims to normalise the provided data and remove some inconsistencies.
 This library is neither maintained by OpenWeatherMap nor their official PHP API.
@@ -20,6 +20,14 @@ The recommended way to install and use it is through [Composer](http://getcompos
 
     composer require "cmfcmf/openweathermap-php-api"
 
+You will also need to choose and install two additional dependencies separately:
+
+1. A [PSR-17](https://www.php-fig.org/psr/psr-17/) compatible HTTP factory implementation.
+A list of HTTP factory implementations is available at
+[Packagist](https://packagist.org/providers/psr/http-factory-implementation).
+2. A [PSR-18](https://www.php-fig.org/psr/psr-18/) compatible HTTP client implementation.
+A list of HTTP client implementations is available at
+[Packagist](https://packagist.org/providers/psr/http-client-implementation).
 
 Example call
 ============
@@ -27,6 +35,8 @@ Example call
 <?php
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Http\Factory\Guzzle\RequestFactory;
+use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 
 // Must point to composer's autoload file.
 require 'vendor/autoload.php';
@@ -37,9 +47,15 @@ $lang = 'de';
 // Units (can be 'metric' or 'imperial' [default]):
 $units = 'metric';
 
-// Create OpenWeatherMap object. 
-// Don't use caching (take a look into Examples/Cache.php to see how it works).
-$owm = new OpenWeatherMap('YOUR-API-KEY');
+// You can use every PSR-17 compatible HTTP request factory
+// and every PSR-18 compatible HTTP client. This example uses
+// `http-interop/http-factory-guzzle` and `php-http/guzzle6-adapter`
+// which you need to install separately.
+$httpRequestFactory = new RequestFactory();
+$httpClient = GuzzleAdapter::createWithConfig([]);
+
+// Create OpenWeatherMap object.
+$owm = new OpenWeatherMap('YOUR-API-KEY', $httpClient, $httpRequestFactory);
 
 try {
     $weather = $owm->getWeather('Berlin', $units, $lang);
@@ -52,24 +68,23 @@ try {
 echo $weather->temperature;
 ```
 
-For more example code and instructions on how to use this library, please take 
-a look into  the `Examples` folder. Make sure to get an API Key from 
+For more example code and instructions on how to use this library, please take
+a look into  the `Examples` folder. Make sure to get an API Key from
 http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
-- `CurrentWeather.php` Shows how to receive the current weather.
-- `WeatherForecast.php` Shows how to receive weather forecasts.
-- `WeatherHistory.php` Shows how to receive weather history.
-- `UVIndex.php` Shows how to receive uv index data.
-- `Cache.php` Shows how to implement and use a cache.
+
+- `CurrentWeather.php` shows how to receive the current weather.
+- `WeatherForecast.php` shows how to receive weather forecasts.
+- `UVIndex.php` shows how to receive uv index data.
 
 Contributing
 ============
-I'm happy about every **pull request** or **issue** you find and open to help 
+I'm happy about every **pull request** or **issue** you find and open to help
 make this API **more awesome**.
 
 ## Vagrant
 
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
-Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all 
+Simply run `vagrant up` and `vagrant ssh` to start a PHP VM with all
 dependencies included.
 
 ## Docker
@@ -95,7 +110,7 @@ License
 MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 distributed with this source code for further information regarding copyright and licensing.
 
-**Please check out the following official links to read about the terms, pricing 
+**Please check out the following official links to read about the terms, pricing
 and license of OpenWeatherMap before using the service:**
 - [OpenWeatherMap.org/terms](http://OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://OpenWeatherMap.org/appid)

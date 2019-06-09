@@ -1,6 +1,7 @@
 <?php
-/**
- * OpenWeatherMap-PHP-API — A php api to parse weather data from http://www.OpenWeatherMap.org .
+
+/*
+ * OpenWeatherMap-PHP-API — A PHP API to parse weather data from https://OpenWeatherMap.org.
  *
  * @license MIT
  *
@@ -8,25 +9,23 @@
  * information regarding copyright and licensing.
  *
  * Please visit the following links to read about the usage policies and the license of
- * OpenWeatherMap before using this class:
+ * OpenWeatherMap data before using this library:
  *
- * @see http://www.OpenWeatherMap.org
- * @see http://www.OpenWeatherMap.org/terms
- * @see http://openweathermap.org/appid
+ * @see https://OpenWeatherMap.org/price
+ * @see https://OpenWeatherMap.org/terms
+ * @see https://OpenWeatherMap.org/appid
  */
 
 namespace Cmfcmf;
 
-use Cmfcmf\OpenWeatherMap\AbstractCache;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
-use Cmfcmf\OpenWeatherMap\Fetcher\CurlFetcher;
-use Cmfcmf\OpenWeatherMap\Fetcher\FetcherInterface;
-use Cmfcmf\OpenWeatherMap\Fetcher\FileGetContentsFetcher;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
-use Cmfcmf\OpenWeatherMap\WeatherHistory;
+use Psr\Cache\CacheItemPoolInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestFactoryInterface;
 
 /**
  * Main class for the OpenWeatherMap-PHP-API. Only use this class.
@@ -64,24 +63,19 @@ class OpenWeatherMap
     private $weatherDailyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast/daily?';
 
     /**
-     * @var string The basic api url to fetch history weather data from.
-     */
-    private $weatherHistoryUrl = 'https://history.openweathermap.org/data/2.5/history/city?';
-
-    /**
      * @var string The basic api url to fetch uv index data from.
      */
     private $uvIndexUrl = 'https://api.openweathermap.org/data/2.5/uvi';
 
     /**
-     * @var AbstractCache|bool $cache The cache to use.
+     * @var CacheItemPoolInterface|null $cache The cache to use.
      */
-    private $cache = false;
+    private $cache = null;
 
     /**
      * @var int
      */
-    private $seconds;
+    private $ttl;
 
     /**
      * @var bool
@@ -89,9 +83,14 @@ class OpenWeatherMap
     private $wasCached = false;
 
     /**
-     * @var FetcherInterface The url fetcher.
+     * @var ClientInterface
      */
-    private $fetcher;
+    private $httpClient;
+
+    /**
+     * @var RequestFactoryInterface
+     */
+    private $httpRequestFactory;
 
     /**
      * @var string
@@ -101,45 +100,31 @@ class OpenWeatherMap
     /**
      * Constructs the OpenWeatherMap object.
      *
-     * @param string                $apiKey  The OpenWeatherMap API key. Required and only optional for BC.
-     * @param null|FetcherInterface $fetcher The interface to fetch the data from OpenWeatherMap. Defaults to
-     *                                       CurlFetcher() if cURL is available. Otherwise defaults to
-     *                                       FileGetContentsFetcher() using 'file_get_contents()'.
-     * @param bool|string           $cache   If set to false, caching is disabled. Otherwise this must be a class
-     *                                       extending AbstractCache. Defaults to false.
-     * @param int $seconds                   How long weather data shall be cached. Default 10 minutes.
-     *
-     * @throws \Exception If $cache is neither false nor a valid callable extending Cmfcmf\OpenWeatherMap\Util\Cache.
+     * @param string                      $apiKey             The OpenWeatherMap API key. Required.
+     * @param ClientInterface             $httpClient         A PSR-18 compatible HTTP client implementation.
+     * @param RequestFactoryInterface     $httpRequestFactory A PSR-17 compatbile HTTP request factory implementation.
+     * @param null|CacheItemPoolInterface $cache              If set to null, caching is disabled. Otherwise this must be
+     *                                                        a PSR-6 compatible cache instance.
+     * @param int                         $ttl                How long weather data shall be cached. Defaults to 10 minutes.
+     *                                                        Only used if $cache is not null.
      *
      * @api
      */
-    public function __construct($apiKey = '', $fetcher = null, $cache = false, $seconds = 600)
+    public function __construct($apiKey, $httpClient, $httpRequestFactory, $cache = null, $ttl = 600)
     {
         if (!is_string($apiKey) || empty($apiKey)) {
-            // BC
-            $seconds = $cache !== false ? $cache : 600;
-            $cache = $fetcher !== null ? $fetcher : false;
-            $fetcher = $apiKey !== '' ? $apiKey : null;
-        } else {
-            $this->apiKey = $apiKey;
+            throw new \InvalidArgumentException("You must provide an API key.");
         }
 
-        if ($cache !== false && !($cache instanceof AbstractCache)) {
-            throw new \InvalidArgumentException('The cache class must implement the FetcherInterface!');
-        }
-        if (!is_numeric($seconds)) {
-            throw new \InvalidArgumentException('$seconds must be numeric.');
-        }
-        if (!isset($fetcher)) {
-            $fetcher = (function_exists('curl_version')) ? new CurlFetcher() : new FileGetContentsFetcher();
-        }
-        if ($seconds == 0) {
-            $cache = false;
+        if (!is_numeric($ttl)) {
+            throw new \InvalidArgumentException('$ttl must be numeric.');
         }
 
+        $this->apiKey = $apiKey;
+        $this->httpClient = $httpClient;
+        $this->httpRequestFactory = $httpRequestFactory;
         $this->cache = $cache;
-        $this->seconds = $seconds;
-        $this->fetcher = $fetcher;
+        $this->ttl = $ttl;
     }
 
     /**
@@ -277,39 +262,6 @@ class OpenWeatherMap
         $answer = $this->getRawDailyForecastData($query, $units, $lang, $appid, 'xml', $days);
         $xml = $this->parseXML($answer);
         return new WeatherForecast($xml, $units, $days);
-    }
-
-    /**
-     * Returns the weather history for the place you specified.
-     *
-     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
-     * @param \DateTime        $start
-     * @param int              $endOrCount
-     * @param string           $type       Can either be 'tick', 'hour' or 'day'.
-     * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws OpenWeatherMap\Exception  If OpenWeatherMap returns an error.
-     * @throws \InvalidArgumentException If an argument error occurs.
-     *
-     * @return WeatherHistory
-     *
-     * @api
-     */
-    public function getWeatherHistory($query, \DateTime $start, $endOrCount = 1, $type = 'hour', $units = 'imperial', $lang = 'en', $appid = '')
-    {
-        if (!in_array($type, array('tick', 'hour', 'day'))) {
-            throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
-        }
-
-        $xml = json_decode($this->getRawWeatherHistory($query, $start, $endOrCount, $type, $units, $lang, $appid), true);
-
-        if ($xml['cod'] != 200) {
-            throw new OWMException($xml['message'], $xml['cod']);
-        }
-
-        return new WeatherHistory($xml, $query);
     }
 
     /**
@@ -477,47 +429,6 @@ class OpenWeatherMap
     }
 
     /**
-     * Directly returns the json string returned by OpenWeatherMap for the weather history.
-     *
-     * @param array|int|string $query      The place to get weather information for. For possible values see ::getWeather.
-     * @param \DateTime        $start      The \DateTime object of the date to get the first weather information from.
-     * @param \DateTime|int    $endOrCount Can be either a \DateTime object representing the end of the period to
-     *                                     receive weather history data for or an integer counting the number of
-     *                                     reports requested.
-     * @param string           $type       The period of the weather history requested. Can be either be either "tick",
-     *                                     "hour" or "day".
-     * @param string           $units      Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
-     * @param string           $lang       The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
-     * @param string           $appid      Your app id, default ''. See http://openweathermap.org/appid for more details.
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string Returns false on failure and the fetched data in the format you specified on success.
-     *
-     * Warning If an error occurred, OpenWeatherMap ALWAYS returns data in json format.
-     *
-     * @api
-     */
-    public function getRawWeatherHistory($query, \DateTime $start, $endOrCount = 1, $type = 'hour', $units = 'imperial', $lang = 'en', $appid = '')
-    {
-        if (!in_array($type, array('tick', 'hour', 'day'))) {
-            throw new \InvalidArgumentException('$type must be either "tick", "hour" or "day"');
-        }
-
-        $url = $this->buildUrl($query, $units, $lang, $appid, 'json', $this->weatherHistoryUrl);
-        $url .= "&type=$type&start={$start->format('U')}";
-        if ($endOrCount instanceof \DateTime) {
-            $url .= "&end={$endOrCount->format('U')}";
-        } elseif (is_numeric($endOrCount) && $endOrCount > 0) {
-            $url .= "&cnt=$endOrCount";
-        } else {
-            throw new \InvalidArgumentException('$endOrCount must be either a \DateTime or a positive integer.');
-        }
-
-        return $this->cacheOrFetchResult($url);
-    }
-
-    /**
      * Directly returns the json string returned by OpenWeatherMap for the UV index data.
      *
      * @param string    $mode  The type of requested data (['historic', 'forecast', 'current']).
@@ -571,14 +482,6 @@ class OpenWeatherMap
     }
 
     /**
-     * @deprecated Use {@link self::getRawWeatherData()} instead.
-     */
-    public function getRawData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
-    {
-        return $this->getRawWeatherData($query, $units, $lang, $appid, $mode);
-    }
-
-    /**
      * Fetches the result or delivers a cached version of the result.
      *
      * @param string $url
@@ -587,20 +490,28 @@ class OpenWeatherMap
      */
     private function cacheOrFetchResult($url)
     {
-        if ($this->cache !== false) {
-            /** @var AbstractCache $cache */
-            $cache = $this->cache;
-            $cache->setSeconds($this->seconds);
-
-            if ($cache->isCached($url)) {
+        if ($this->cache !== null) {
+            $key = str_replace(
+                ["{", "}", "(", ")", "/", "\\", "@", ":"],
+                ["_", "_", "_", "_", "_", "_",  "_", "_"],
+                $url);
+            $item = $this->cache->getItem($key);
+            if ($item->isHit()) {
                 $this->wasCached = true;
-                return $cache->getCached($url);
+                return $item->get();
             }
+        }
 
-            $result = $this->fetcher->fetch($url);
-            $cache->setCached($url, $result);
-        } else {
-            $result = $this->fetcher->fetch($url);
+        $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
+        $result = $response->getBody()->getContents();
+        if ($response->getStatusCode() !== 200) {
+            throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content '. $result);
+        }
+
+        if ($this->cache !== null) {
+            $item->set($result);
+            $item->expiresAfter($this->ttl);
+            $this->cache->save($item);
         }
         $this->wasCached = false;
 
@@ -723,7 +634,7 @@ class OpenWeatherMap
     /**
      * @param string $answer The content returned by OpenWeatherMap.
      *
-     * @return \stdClass
+     * @return \stdClass|array
      * @throws OWMException If the content isn't valid JSON.
      */
     private function parseJson($answer)

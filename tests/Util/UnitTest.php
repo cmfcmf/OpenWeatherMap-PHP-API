@@ -1,20 +1,24 @@
 <?php
-/**
- * Copyright Zikula Foundation 2014 - Zikula Application Framework
+
+/*
+ * OpenWeatherMap-PHP-API — A PHP API to parse weather data from https://OpenWeatherMap.org.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * @license MIT
  *
- * @license GNU/LGPv3 (or at your option any later version).
- * @package OpenWeatherMap-PHP-Api
- *
- * Please see the NOTICE file distributed with this source code for further
+ * Please see the LICENSE file distributed with this source code for further
  * information regarding copyright and licensing.
+ *
+ * Please visit the following links to read about the usage policies and the license of
+ * OpenWeatherMap data before using this library:
+ *
+ * @see https://OpenWeatherMap.org/price
+ * @see https://OpenWeatherMap.org/terms
+ * @see https://OpenWeatherMap.org/appid
  */
 
 namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
-use \Cmfcmf\OpenWeatherMap\Util\Unit;
+use Cmfcmf\OpenWeatherMap\Util\Unit;
 
 class UnitTest extends \PHPUnit_Framework_TestCase
 {
@@ -100,21 +104,21 @@ class UnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->givenThereIsAUnitWithUnit("celsius");
 
-        $this->assertSame("&deg;C", $this->unit->getUnit());
+        $this->assertSame("°C", $this->unit->getUnit());
     }
 
     public function testMetricFix()
     {
         $this->givenThereIsAUnitWithUnit("metric");
 
-        $this->assertSame("&deg;C", $this->unit->getUnit());
+        $this->assertSame("°C", $this->unit->getUnit());
     }
 
     public function testFahrenheitFix()
     {
         $this->givenThereIsAUnitWithUnit("fahrenheit");
 
-        $this->assertSame("F", $this->unit->getUnit());
+        $this->assertSame("°F", $this->unit->getUnit());
     }
 
     private function givenThereIsAUnitWithUnit($unit)
