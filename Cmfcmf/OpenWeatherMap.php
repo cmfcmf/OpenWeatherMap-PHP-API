@@ -18,10 +18,11 @@
 
 namespace Cmfcmf;
 
+use Cmfcmf\OpenWeatherMap\AirPollution;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
-use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Client\ClientInterface;
@@ -66,6 +67,11 @@ class OpenWeatherMap
      * @var string The basic api url to fetch uv index data from.
      */
     private $uvIndexUrl = 'https://api.openweathermap.org/data/2.5/uvi';
+
+    /**
+     * @var string The basic api url to fetch air pollution data from.
+     */
+    private $airPollutionUrl = 'https://api.openweathermap.org/pollution/v1/co';
 
     /**
      * @var CacheItemPoolInterface|null $cache The cache to use.
@@ -337,6 +343,31 @@ class OpenWeatherMap
     }
 
     /**
+     * Returns atmosferic pollution by Carbon Monoxie
+     *
+     * @param float $lat The location's latitude.
+     * @param float $lon The location's longitude.
+     * @param ?DateTime|string $dateTime Time of the measurement. Set null for "current"
+     *
+     * @return AirPollution
+     *
+     * @api
+     * @throws \Exception
+     */
+    public function getAirPollution($lat, $lon, $dateTime = null)
+    {
+        if ($dateTime === null) {
+            $dateTime = 'current';
+        }
+
+        $answer = $this->getRawAirPollutionData($lat, $lon, $dateTime);
+        
+        $json = $this->parseJson($answer);
+
+        return new AirPollution($json);
+    }
+
+    /**
      * Directly returns the xml/json/html string returned by OpenWeatherMap for the current weather.
      *
      * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
@@ -472,6 +503,20 @@ class OpenWeatherMap
     }
 
     /**
+     * @param $lat
+     * @param $lon
+     * @param $dateTime
+     * @return bool|string Returns the fetched data.
+     * @throws OWMException
+     */
+    public function getRawAirPollutionData($lat, $lon, $dateTime)
+    {
+        $url = $this->buildAirPollutionUrl($lat, $lon, $dateTime, $this->airPollutionUrl);
+        
+        return $this->cacheOrFetchResult($url);
+    }
+
+    /**
      * Returns whether or not the last result was fetched from the cache.
      *
      * @return bool true if last result was fetched from cache, false otherwise.
@@ -505,6 +550,9 @@ class OpenWeatherMap
         $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
         $result = $response->getBody()->getContents();
         if ($response->getStatusCode() !== 200) {
+            if ($result === '{"message":"not found"}' && $response->getStatusCode() === 404) {
+                throw new OWMException('OpenWeatherMap returned that air pollution data for this location cannot be found - try less precision location.');
+            }
             throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content '. $result);
         }
 
@@ -604,6 +652,21 @@ class OpenWeatherMap
             default:
                 throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getWeather() to read about valid formats.');
         }
+    }
+
+    /**
+     * Build the url to fetch air pollution data from.
+     *
+     * @param        $lat
+     * @param        $lon
+     * @param        $dateTime
+     * @param string $url The url to prepend.
+     *
+     * @return string The fetched url
+     */
+    private function buildAirPollutionUrl($lat, $lon, $dateTime, $url)
+    {
+        return $url."/$lat,$lon/$dateTime.json?appid=" . $this->apiKey;
     }
 
     /**
