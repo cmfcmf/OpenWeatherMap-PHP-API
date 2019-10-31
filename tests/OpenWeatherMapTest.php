@@ -167,16 +167,13 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('\Cmfcmf\OpenWeatherMap\WeatherForecast', $dailyForecast);
     }
-    
-    public function testGetAirPollution() 
-    {
-        $airPollutionCurrent = $this->owm->getAirPollution(40, -74, null);
-        
-        $this->assertInstanceOf(OpenWeatherMap\AirPollution::class, $airPollutionCurrent);
 
-        $airPollutionPast = $this->owm->getAirPollution(40, -74, new \DateTime('now - 2 months'));
-        
-        $this->assertInstanceOf(OpenWeatherMap\AirPollution::class, $airPollutionPast);
+    public function testGetAirPollution()
+    {
+        $airPollutionCurrent = $this->owm->getAirPollution("CO", "40", "-74", "current");
+        $this->assertInstanceOf(OpenWeatherMap\AirPollution\COAirPollution::class, $airPollutionCurrent);
+        $airPollutionPast = $this->owm->getAirPollution("CO", "40", "-74", "2016Z");
+        $this->assertInstanceOf(OpenWeatherMap\AirPollution\COAirPollution::class, $airPollutionPast);
     }
 
     public function testWasCached()

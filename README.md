@@ -75,6 +75,7 @@ http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
 - `CurrentWeather.php` shows how to receive the current weather.
 - `WeatherForecast.php` shows how to receive weather forecasts.
 - `UVIndex.php` shows how to receive uv index data.
+- `AirPollution.php` show how to receive air pollution data.
 
 Contributing
 ============

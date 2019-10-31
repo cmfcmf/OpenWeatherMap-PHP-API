@@ -22,6 +22,7 @@ use Cmfcmf\OpenWeatherMap\AirPollution;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap\NotFoundException as OWMNotFoundException;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Psr\Cache\CacheItemPoolInterface;
@@ -71,7 +72,7 @@ class OpenWeatherMap
     /**
      * @var string The basic api url to fetch air pollution data from.
      */
-    private $airPollutionUrl = 'https://api.openweathermap.org/pollution/v1/co';
+    private $airPollutionUrl = 'https://api.openweathermap.org/pollution/v1/';
 
     /**
      * @var CacheItemPoolInterface|null $cache The cache to use.
@@ -343,28 +344,42 @@ class OpenWeatherMap
     }
 
     /**
-     * Returns atmosferic pollution by Carbon Monoxie
+     * Returns air pollution data
      *
-     * @param float $lat The location's latitude.
-     * @param float $lon The location's longitude.
-     * @param ?DateTime|string $dateTime Time of the measurement. Set null for "current"
+     * @param string $type One of CO, O3, SO2, and NO2.
+     * @param string $lat The location's latitude.
+     * @param string $lon The location's longitude.
+     * @param string $date The date to gather data from. If you omit this parameter or supply "current", returns current data.
      *
-     * @return AirPollution
+     * @return AirPollution\COAirPollution|AirPollution\NO2AirPollution|AirPollution\O3AirPollution|AirPollution\SO2AirPollution|null The air pollution data or null if no data was found.
+     *
+     * We use strings as $lat and $lon, since the exact number of digits in $lat and $lon determines the search range.
+     * For example, there is a difference between using "1.5" and "1.5000".
+     * We also use a string for $date, since it may either be "current" or an (abbreviated) ISO 8601 timestamp like 2016Z.
+     *
+     * @throws OWMException|\Exception
      *
      * @api
-     * @throws \Exception
      */
-    public function getAirPollution($lat, $lon, $dateTime = null)
+    public function getAirPollution($type, $lat, $lon, $date = "current")
     {
-        if ($dateTime === null) {
-            $dateTime = 'current';
+        $answer = $this->getRawAirPollutionData($type, $lat, $lon, $date);
+        if ($answer === null) {
+            return null;
         }
-
-        $answer = $this->getRawAirPollutionData($lat, $lon, $dateTime);
-        
         $json = $this->parseJson($answer);
-
-        return new AirPollution($json);
+        switch ($type) {
+            case "O3":
+                return new AirPollution\O3AirPollution($json);
+            case "NO2":
+                return new AirPollution\NO2AirPollution($json);
+            case "SO2":
+                return new AirPollution\SO2AirPollution($json);
+            case "CO":
+                return new AirPollution\COAirPollution($json);
+            default:
+                throw new \LogicException();
+        }
     }
 
     /**
@@ -503,17 +518,37 @@ class OpenWeatherMap
     }
 
     /**
-     * @param $lat
-     * @param $lon
-     * @param $dateTime
-     * @return bool|string Returns the fetched data.
-     * @throws OWMException
+     * Fetch raw air pollution data
+     *
+     * @param  string $type One of CO, O3, SO2, and NO2.
+     * @param  string $lat  The location's latitude.
+     * @param  string $lon  The location's longitude.
+     * @param  string $date The date to gather data from. If you omit this parameter or supply "current", returns current data.
+     *
+     * @return string|null The air pollution data or null if no data was found.
+     *
+     * We use strings as $lat and $lon, since the exact number of digits in $lat and $lon determines the search range.
+     * For example, there is a difference between using "1.5" and "1.5000".
+     * We also use a string for $date, since it may either be "current" or an (abbreviated) ISO 8601 timestamp like 2016Z.
+     *
+     * @api
      */
-    public function getRawAirPollutionData($lat, $lon, $dateTime)
+    public function getRawAirPollutionData($type, $lat, $lon, $date = "current")
     {
-        $url = $this->buildAirPollutionUrl($lat, $lon, $dateTime, $this->airPollutionUrl);
-        
-        return $this->cacheOrFetchResult($url);
+        if (!in_array($type, ["CO", "O3", "SO2", "NO2"])) {
+            throw new \InvalidArgumentException('Invalid $type received.');
+        }
+        if (!is_string($lat) || !is_string($lon) || !is_string($date)) {
+            throw new \InvalidArgumentException('$lat, $lon and $date all must be strings.');
+        }
+
+        $url = $this->airPollutionUrl . strtolower($type) . "/$lat,$lon/$date.json?appid=" . $this->apiKey;
+
+        try {
+            return $this->cacheOrFetchResult($url);
+        } catch (OWMNotFoundException $e) {
+            return null;
+        }
     }
 
     /**
@@ -550,10 +585,10 @@ class OpenWeatherMap
         $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
         $result = $response->getBody()->getContents();
         if ($response->getStatusCode() !== 200) {
-            if ($result === '{"message":"not found"}' && $response->getStatusCode() === 404) {
-                throw new OWMException('OpenWeatherMap returned that air pollution data for this location cannot be found - try less precision location.');
+            if ($result === "{\"message\":\"not found\"}\n" && $response->getStatusCode() === 404) {
+                throw new OWMNotFoundException();
             }
-            throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content '. $result);
+            throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content `'. $result . '`');
         }
 
         if ($this->cache !== null) {
@@ -652,21 +687,6 @@ class OpenWeatherMap
             default:
                 throw new \InvalidArgumentException('Error: $query has the wrong format. See the documentation of OpenWeatherMap::getWeather() to read about valid formats.');
         }
-    }
-
-    /**
-     * Build the url to fetch air pollution data from.
-     *
-     * @param        $lat
-     * @param        $lon
-     * @param        $dateTime
-     * @param string $url The url to prepend.
-     *
-     * @return string The fetched url
-     */
-    private function buildAirPollutionUrl($lat, $lon, $dateTime, $url)
-    {
-        return $url."/$lat,$lon/$dateTime.json?appid=" . $this->apiKey;
     }
 
     /**

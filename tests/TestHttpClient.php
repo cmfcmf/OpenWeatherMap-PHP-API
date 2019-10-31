@@ -51,6 +51,8 @@ class TestHttpClient implements ClientInterface
             $content = $this->forecast($format);
         } elseif (strpos($url, 'group') !== false) {
             $content = $this->group($format);
+        } elseif (strpos($url, "pollution") !== false) {
+            $content = FakeData::AIR_POLLUTION_CO;
         } else {
             $content = $this->currentWeather($format);
         }

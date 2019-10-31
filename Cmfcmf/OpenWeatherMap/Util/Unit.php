@@ -45,19 +45,26 @@ class Unit
     private $description;
 
     /**
+     * @var float|null The value's measurement precision. Can be null if unknown.
+     */
+    private $precision;
+
+    /**
      * Create a new unit object.
      *
-     * @param float  $value       The value.
-     * @param string $unit        The unit of the value.
+     * @param float $value The value.
+     * @param string $unit The unit of the value.
      * @param string $description The description of the value.
+     * @param float|null $precision The precision of the value, or null if unknown.
      *
      * @internal
      */
-    public function __construct($value = 0.0, $unit = "", $description = "")
+    public function __construct($value = 0.0, $unit = "", $description = "", $precision = null)
     {
         $this->value = (float)$value;
         $this->unit = (string)$unit;
         $this->description = (string)$description;
+        $this->precision = $precision === null ? null : (float)$precision;
     }
 
     /**
@@ -110,6 +117,16 @@ class Unit
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Get the value's precision.
+     *
+     * @return float|null The value's precision. Can be null if unknown.
+     */
+    public function getPrecision()
+    {
+        return $this->precision;
     }
 
     /**

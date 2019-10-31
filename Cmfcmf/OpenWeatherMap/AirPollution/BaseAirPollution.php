@@ -16,19 +16,16 @@
  * @see https://OpenWeatherMap.org/appid
  */
 
-namespace Cmfcmf\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap\AirPollution;
 
 use Cmfcmf\OpenWeatherMap\Util\Location;
 
-/**
- * AirPollution class used to hold the air pollution and time of measurement
- */
-class AirPollution
+abstract class BaseAirPollution
 {
     /**
      * @var \DateTime
      */
-    public $dateTime;
+    public $time;
 
     /**
      * @var Location
@@ -36,13 +33,6 @@ class AirPollution
     public $location;
 
     /**
-     * @var AirPollutionData[]
-     */
-    public $data;
-
-    /**
-     * Create a new air pollution object.
-     *
      * @param object $json
      *
      * @throws \Exception
@@ -50,24 +40,7 @@ class AirPollution
      */
     public function __construct($json)
     {
-        $this->dateTime = new \DateTime($json->time, new \DateTimeZone('UTC'));
+        $this->time = new \DateTime($json->time, new \DateTimeZone('UTC'));
         $this->location = new Location($json->location->latitude, $json->location->longitude);
-        $airPollutionData = [];
-        foreach ($json->data as $measurement) {
-            $airPollutionData[] = new AirPollutionData($measurement);
-        }
-        $this->data = $airPollutionData;
-    }
-
-    /**
-     * @return AirPollutionData|null
-     */
-    public function getLastAirPollutionData()
-    {
-        if (count($this->data) === 0) {
-            return null;
-        }
-
-        return reset($this->data);
     }
 }

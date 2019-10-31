@@ -75,5 +75,4 @@ class AirPollutionData
     {
         return $this->value;
     }
-    
 }
