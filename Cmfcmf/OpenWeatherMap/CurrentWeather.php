@@ -124,7 +124,7 @@ class CurrentWeather
             $this->pressure = new Unit($data->main->pressure, 'hPa');
             $this->wind = new Wind(
                 new Unit($data->wind->speed, $windSpeedUnit),
-                property_exists($data->wind, 'deg') ? new Unit($data->wind->deg) : null
+                property_exists($data->wind, 'deg') && $data->wind->deg !== null ? new Unit($data->wind->deg) : null
             );
             $this->clouds = new Unit($data->clouds->all, '%');
 

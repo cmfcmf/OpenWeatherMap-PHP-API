@@ -32,6 +32,13 @@ class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
         $this->currentWeatherGroup = new CurrentWeatherGroup($this->fakeJson, 'metric');
     }
 
+    public function testWindDirection()
+    {
+        $this->assertSame($this->currentWeatherGroup->current()->wind->direction->getValue(), 229.501);
+        $this->currentWeatherGroup->next();
+        $this->assertNull($this->currentWeatherGroup->current()->wind->direction);
+    }
+
     public function testRewind()
     {
         $expectIndex = 1851632;
@@ -50,7 +57,7 @@ class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
     }
     public function testNext()
     {
-        $expectIndex = 1851632;
+        $expectIndex = 1851633;
         $this->currentWeatherGroup->next();
         $position = $this->currentWeatherGroup->key();
 

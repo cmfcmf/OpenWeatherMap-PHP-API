@@ -41,7 +41,7 @@ class FakeData
                 "wind":{"speed":5.71,"deg":229.501},
                 "dt_txt":"2014-07-23 09:00:00"
             },{
-                "id":1851632,
+                "id":1851633,
                 "dt":1406106000,
                 "coord":{"lon":138.933334,"lat":34.966671},
                 "sys":{"type":3,"id":168940,"message":0.0297,"country":"US","sunrise":1427723751,"sunset":1427768967},
@@ -57,7 +57,7 @@ class FakeData
                 },
                 "weather":[{"id":804,"main":"Clouds","description":"overcast clouds","icon":"04d"}],
                 "clouds":{"all":88},
-                "wind":{"speed":5.71,"deg":229.501},
+                "wind":{"speed":5.71,"deg":null},
                 "dt_txt":"2014-07-23 09:00:00"
             }]
         }';
@@ -125,6 +125,28 @@ class FakeData
     <precipitation mode="no"></precipitation>
     <weather number="500" value="light rain" icon="10d"></weather>
     <lastupdate value="2017-01-02T12:20:00"></lastupdate>
+</current>
+XML;
+
+const CURRENT_WEATHER_XML_NO_WIND_DIRECTION = <<<XML
+<current>
+<city id="2950159" name="Berlin">
+    <coord lon="13.41" lat="52.52"></coord>
+    <country>DE</country>
+    <sun rise="2017-01-02T07:16:51" set="2017-01-02T15:04:50"></sun>
+</city>
+<temperature value="36.48" min="35.6" max="37.4" unit="fahrenheit"></temperature>
+<humidity value="86" unit="%"></humidity>
+<pressure value="1014" unit="hPa"></pressure>
+<wind>
+    <speed value="9.17" name="Fresh Breeze"></speed>
+    <gusts></gusts>
+</wind>
+<clouds value="75" name="broken clouds"></clouds>
+<visibility value="8000"></visibility>
+<precipitation mode="no"></precipitation>
+<weather number="500" value="light rain" icon="10d"></weather>
+<lastupdate value="2017-01-02T12:20:00"></lastupdate>
 </current>
 XML;
 }
