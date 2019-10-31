@@ -49,7 +49,7 @@ $units = 'metric';
 
 // You can use every PSR-17 compatible HTTP request factory
 // and every PSR-18 compatible HTTP client. This example uses
-// `http-interop/http-factory-guzzle` and `php-http/guzzle6-adapter`
+// `http-interop/http-factory-guzzle` ^1.0 and `php-http/guzzle6-adapter` ^2.0 || ^1.0
 // which you need to install separately.
 $httpRequestFactory = new RequestFactory();
 $httpClient = GuzzleAdapter::createWithConfig([]);
