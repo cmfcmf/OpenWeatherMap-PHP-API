@@ -128,7 +128,7 @@ class FakeData
 </current>
 XML;
 
-const CURRENT_WEATHER_XML_NO_WIND_DIRECTION = <<<XML
+    const CURRENT_WEATHER_XML_NO_WIND_DIRECTION = <<<XML
 <current>
 <city id="2950159" name="Berlin">
     <coord lon="13.41" lat="52.52"></coord>
