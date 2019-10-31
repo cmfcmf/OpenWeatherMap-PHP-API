@@ -29,7 +29,7 @@ class Wind
     public $speed;
 
     /**
-     * @var Unit The wind direction.
+     * @var Unit|null The wind direction.
      */
     public $direction;
 
