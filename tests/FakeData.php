@@ -23,6 +23,7 @@ class FakeData
     const WEATHER_GROUP_JSON = '{
             "list":[{
                 "id":1851632,
+                "timezone": 32400,
                 "dt":1406106000,
                 "coord":{"lon":138.933334,"lat":34.966671},
                 "sys":{"type":3,"id":168940,"message":0.0297,"country":"US","sunrise":1427723751,"sunset":1427768967},
@@ -43,6 +44,7 @@ class FakeData
             },{
                 "id":1851633,
                 "dt":1406106000,
+                "timezone": 32400,
                 "coord":{"lon":138.933334,"lat":34.966671},
                 "sys":{"type":3,"id":168940,"message":0.0297,"country":"US","sunrise":1427723751,"sunset":1427768967},
                 "name":"Shuzenji",
@@ -110,6 +112,7 @@ class FakeData
     <city id="2950159" name="Berlin">
         <coord lon="13.41" lat="52.52"></coord>
         <country>DE</country>
+        <timezone>3600</timezone>
         <sun rise="2017-01-02T07:16:51" set="2017-01-02T15:04:50"></sun>
     </city>
     <temperature value="36.48" min="35.6" max="37.4" unit="fahrenheit"></temperature>
@@ -137,6 +140,7 @@ JSON;
 <city id="2950159" name="Berlin">
     <coord lon="13.41" lat="52.52"></coord>
     <country>DE</country>
+    <timezone>3600</timezone>
     <sun rise="2017-01-02T07:16:51" set="2017-01-02T15:04:50"></sun>
 </city>
 <temperature value="36.48" min="35.6" max="37.4" unit="fahrenheit"></temperature>

@@ -44,6 +44,10 @@ class City extends Location
     public $population;
 
     /**
+     * @var int The shift in seconds from UTC
+     */
+    public $timezone;
+    /**
      * Create a new city object.
      *
      * @param int    $id         The city id.
@@ -52,15 +56,17 @@ class City extends Location
      * @param float  $lon        The longitude of the city.
      * @param string $country    The abbreviation of the country the city is located in
      * @param int    $population The city's population.
+     * @param int    $timezone   The shift in seconds from UTC.
      *
      * @internal
      */
-    public function __construct($id, $name = null, $lat = null, $lon = null, $country = null, $population = null)
+    public function __construct($id, $name = null, $lat = null, $lon = null, $country = null, $population = null, $timezone = null)
     {
         $this->id = (int)$id;
         $this->name = isset($name) ? (string)$name : null;
         $this->country = isset($country) ? (string)$country : null;
         $this->population = isset($population) ? (int)$population : null;
+        $this->timezone = isset($timezone) ? (int)$timezone : null;
 
         parent::__construct($lat, $lon);
     }
