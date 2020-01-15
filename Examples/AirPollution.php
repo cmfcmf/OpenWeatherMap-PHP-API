@@ -42,7 +42,7 @@ $httpClient = GuzzleAdapter::createWithConfig([]);
 
 $owm = new OpenWeatherMap($myApiKey, $httpClient, $httpRequestFactory);
 
-// Example 1: Get current uv index in Berlin.
+// Example 1: Get current air pollution in Berlin.
 $o3 = $owm->getAirPollution("O3", "52", "13");
 $no2 = $owm->getAirPollution("NO2", "52", "13");
 $so2 = $owm->getAirPollution("SO2", "52", "13");
