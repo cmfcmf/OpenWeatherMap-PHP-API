@@ -9,7 +9,7 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@cmfcmf/docusaurus-search-local": "^0.0.1",
+    "@cmfcmf/docusaurus-search-local": "^0.0.2",
     "@docusaurus/core": "^2.0.0-alpha.40",
     "@docusaurus/preset-classic": "^2.0.0-alpha.40",
     "classnames": "^2.2.6",
