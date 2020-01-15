@@ -61,7 +61,7 @@ foreach ($forecast as $weather) {
 }
 
 // Example 2: Get forecast for the next 3 days for Berlin.
-$forecast = $owm->getWeatherForecast('Berlin', $units, $lang, '', 3);
+$forecast = $owm->getWeatherForecast('Berlin', $units, $lang, '', 16);
 echo "EXAMPLE 2<hr />\n\n\n";
 
 foreach ($forecast as $weather) {
