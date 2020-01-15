@@ -2,8 +2,8 @@ OpenWeatherMap PHP API
 ======================
 A PHP 7.0+ API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
-This library aims to normalise the provided data and remove some inconsistencies.
-This library is neither maintained by OpenWeatherMap nor their official PHP API.
+This project aims to normalise the provided data and remove inconsistencies.
+It is not maintained by OpenWeatherMap and not an official API wrapper.
 
 [![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.svg?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
 [![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
@@ -13,74 +13,14 @@ This library is neither maintained by OpenWeatherMap nor their official PHP API.
 <br>
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104/big.png)](https://insight.sensiolabs.com/projects/0addfb24-e2b4-4feb-848e-86b2078ca104)
 
-Installation
-============
-This library can be found on [Packagist](https://packagist.org/packages/cmfcmf/openweathermap-php-api).
-The recommended way to install and use it is through [Composer](http://getcomposer.org).
+Documentation
+=============
 
-    composer require "cmfcmf/openweathermap-php-api"
-
-You will also need to choose and install two additional dependencies separately:
-
-1. A [PSR-17](https://www.php-fig.org/psr/psr-17/) compatible HTTP factory implementation.
-A list of HTTP factory implementations is available at
-[Packagist](https://packagist.org/providers/psr/http-factory-implementation).
-2. A [PSR-18](https://www.php-fig.org/psr/psr-18/) compatible HTTP client implementation.
-A list of HTTP client implementations is available at
-[Packagist](https://packagist.org/providers/psr/http-client-implementation).
-
-Example call
-============
-```php
-<?php
-use Cmfcmf\OpenWeatherMap;
-use Cmfcmf\OpenWeatherMap\Exception as OWMException;
-use Http\Factory\Guzzle\RequestFactory;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
-
-// Must point to composer's autoload file.
-require 'vendor/autoload.php';
-
-// Language of data (try your own language here!):
-$lang = 'de';
-
-// Units (can be 'metric' or 'imperial' [default]):
-$units = 'metric';
-
-// You can use every PSR-17 compatible HTTP request factory
-// and every PSR-18 compatible HTTP client. This example uses
-// `http-interop/http-factory-guzzle` ^1.0 and `php-http/guzzle6-adapter` ^2.0 || ^1.0
-// which you need to install separately.
-$httpRequestFactory = new RequestFactory();
-$httpClient = GuzzleAdapter::createWithConfig([]);
-
-// Create OpenWeatherMap object.
-$owm = new OpenWeatherMap('YOUR-API-KEY', $httpClient, $httpRequestFactory);
-
-try {
-    $weather = $owm->getWeather('Berlin', $units, $lang);
-} catch(OWMException $e) {
-    echo 'OpenWeatherMap exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
-} catch(\Exception $e) {
-    echo 'General exception: ' . $e->getMessage() . ' (Code ' . $e->getCode() . ').';
-}
-
-echo $weather->temperature;
-```
-
-For more example code and instructions on how to use this library, please take
-a look into  the `Examples` folder. Make sure to get an API Key from
-http://home.openweathermap.org/ and put it into `Examples/ApiKey.ini`.
-
-- `CurrentWeather.php` shows how to receive the current weather.
-- `WeatherForecast.php` shows how to receive weather forecasts.
-- `UVIndex.php` shows how to receive uv index data.
-- `AirPollution.php` show how to receive air pollution data.
+You can find the latest documentation, including installation and usage instructions at https://cmfcmf.github.io/OpenWeatherMap-PHP-API.
 
 Contributing
 ============
-I'm happy about every **pull request** or **issue** you find and open to help
-make this API **more awesome**.
+I'm happy about every **pull request** you open and **issue** you find to help make this API **more awesome**. Please note that it might sometimes take me a while to get back to you. Feel free to ping me if I don't respond.
 
 ## Vagrant
 
@@ -105,13 +45,26 @@ And then execute an example:
 
     > php Examples/CurrentWeather.php
 
+## Documentation
+
+The documentation is built using [Docusuaurs v2](https://v2.docusaurus.io/).
+To run a local developnment server for the docs, execute
+
+```bash
+cd docs
+yarn install
+yarn start
+```
 
 License
 =======
-MIT — Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
+
+This project is licensed under the MIT license.
+Please see the [LICENSE file](https://github.com/Cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 distributed with this source code for further information regarding copyright and licensing.
 
-**Please check out the following official links to read about the terms, pricing
-and license of OpenWeatherMap before using the service:**
+Be aware that the OpenWeatherMap data is **not licensed under the MIT**.
+**Check out the following official links to read about the terms, pricing and license of OpenWeatherMap before using their service:**
+
 - [OpenWeatherMap.org/terms](http://OpenWeatherMap.org/terms)
 - [OpenWeatherMap.org/appid](http://OpenWeatherMap.org/appid)
