@@ -17,6 +17,7 @@ jobs:
         cd docs
         yarn install
         yarn build
+        touch build/.nojekyll
     - name: Upload to GitHub Pages
       if: github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v2.5.0
