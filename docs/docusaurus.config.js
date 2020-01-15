@@ -100,4 +100,8 @@ module.exports = {
       },
     ],
   ],
+  plugins: [
+    // require('path').resolve(__dirname, '../../docusaurus-search-local/src'),
+    '@cmfcmf/docusaurus-search-local'
+  ]
 };

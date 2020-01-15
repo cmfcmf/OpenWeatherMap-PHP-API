@@ -11,7 +11,7 @@ const features = [
     title: <>Supports most free APIs</>,
     description: (
       <>
-        This project comes with support for five of the most popular free APIs:
+        <p>This project comes with support for five of the most popular free APIs:</p>
         <ul>
           <li>Current Weather Data</li>
           <li>16-day/daily Forecast Data</li>
@@ -25,20 +25,20 @@ const features = [
   {
     title: <>Easy to Use</>,
     description: (
-      <>
+      <p>
         The OpenWeatherMap APIs are poorly documented and oftentimes not easy to use. This project provides the necessary abstractions to make working with the API feel like a breeze.
-      </>
+      </p>
     ),
   },
   {
     title: <>Powered by modern PHP</>,
     description: (
-      <>
+      <p>
         Since version 3.x, this project works with PHP 7.x.
         It uses <a href="https://www.php-fig.org/psr/psr-17/">PSR-17</a> and <a href="https://www.php-fig.org/psr/psr-18/">PSR-18</a> for
         HTTP requests, as well
         as <a href="https://www.php-fig.org/psr/psr-6/">PSR-6</a> for caching.
-      </>
+      </p>
     ),
   },
 ];
@@ -53,7 +53,7 @@ function Feature({imageUrl, title, description}) {
         </div>
       )}
       <h3>{title}</h3>
-      <p>{description}</p>
+      {description}
     </div>
   );
 }
