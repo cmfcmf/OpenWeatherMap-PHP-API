@@ -837,10 +837,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cmfcmf/docusaurus-search-local@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@cmfcmf/docusaurus-search-local/-/docusaurus-search-local-0.0.2.tgz#ddc6503cf53d0c2b523b744259f7d09fc8763c65"
-  integrity sha512-HeTkKdt7KO1R7uXDJfeG1srzPePhbEZLXd0JodBw+L8XH0Ubcth4rHExjqMZH9KWdbNfzoii4qqchNzhkQuFew==
+"@cmfcmf/docusaurus-search-local@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@cmfcmf/docusaurus-search-local/-/docusaurus-search-local-0.0.3.tgz#eb81d56faad5c75e554bd37ca300f6a4e83ea423"
+  integrity sha512-OElwHa/evfNaWkZ+8QggNeSH7O5m39HdTcWTxe6pyQgjr9pmXhczdWUa2yFw4RWiX2o7oxSwfkwuAhG/gfe0/g==
   dependencies:
     autocomplete.js "^0.37.0"
     classnames "^2.2.6"

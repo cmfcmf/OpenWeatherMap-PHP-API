@@ -30,7 +30,7 @@ $co = $owm->getAirPollution($type, $lat, $lng, $date = "current");
 
 The return value depends on the `$type` and is discussed in the next sections.
 
-### Carbon Monoxide (CO)
+## Carbon Monoxide (CO)
 
 ```php
 $co = $owm->getAirPollution("CO", "52", "13");
@@ -45,7 +45,7 @@ if ($co === null) {
 }
 ```
 
-### Ozone (O3)
+## Ozone (O3)
 
 ```php
 $o3 = $owm->getAirPollution("O3", "52", "13");
@@ -56,7 +56,7 @@ if ($o3 === null) {
 }
 ```
 
-### Nitrogen Dioxide (NO2)
+## Nitrogen Dioxide (NO2)
 
 ```php
 $no2 = $owm->getAirPollution("NO2", "52", "13");
@@ -69,7 +69,7 @@ if ($no2 === null) {
 }
 ```
 
-### Sulfor Dioxide (SO2)
+## Sulfor Dioxide (SO2)
 
 ```php
 $so2 = $owm->getAirPollution("SO2", "52", "13");
