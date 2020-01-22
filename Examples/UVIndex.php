@@ -29,12 +29,6 @@ if (php_sapi_name() === 'cli') {
     $cli = true;
 }
 
-// Language of data (try your own language here!):
-$lang = 'de';
-
-// Units (can be 'metric' or 'imperial' [default]):
-$units = 'metric';
-
 // You can use every PSR-17 compatible HTTP request factory
 // and every PSR-18 compatible HTTP client.
 $httpRequestFactory = new RequestFactory();

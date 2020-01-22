@@ -1,0 +1,30 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+    - name: Build Docs
+      run: |
+        cd docs
+        yarn install
+        yarn build
+        touch build/.nojekyll
+    - name: Upload to GitHub Pages
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v2.5.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./docs/build
+      with:
+        emptyCommits: false
+        keepFiles: false
