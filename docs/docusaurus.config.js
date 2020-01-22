@@ -1,19 +1,21 @@
 const user = "cmfcmf";
-const repo = "OpenWeatherMap-PHP-API";
+const project = "OpenWeatherMap-PHP-API";
 const githubUserUrl = `https://github.com/${user}`;
-const githubUrl = `${githubUserUrl}/${repo}`;
+const githubUrl = `${githubUserUrl}/${project}`;
+
+const title = project.replace(/-/g, " ");
 
 module.exports = {
-  title: 'OpenWeatherMap PHP API',
+  title: title,
   tagline: 'A PHP API to parse weather data and weather history from OpenWeatherMap.org.',
   url: 'https://christianflach.de',
-  baseUrl: '/OpenWeatherMap-PHP-API/',
+  baseUrl: `/${project}/`,
   favicon: 'img/favicon.ico',
-  organizationName: 'cmfcmf', // Usually your GitHub org/user name.
-  projectName: 'OpenWeatherMap-PHP-API', // Usually your repo name.
+  organizationName: user, // Usually your GitHub org/user name.
+  projectName: project, // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'OpenWeatherMap PHP API',
+      title: title,
       logo: {
         alt: 'Sun Logo',
         src: 'img/logo.svg',
@@ -73,7 +75,7 @@ module.exports = {
             },
             {
               label: 'Privacy / Datenschutz',
-              href: 'https://cmfcmf.github.io/about'
+              href: `https://${user}.github.io/about`
             }
           ],
         },
