@@ -74,7 +74,7 @@ class WeatherForecast implements \Iterator
      */
     public function __construct($xml, $units, $days)
     {
-        $this->city = new City($xml->location->location['geobaseid'], $xml->location->name, $xml->location->location['latitude'], $xml->location->location['longitude'], $xml->location->country);
+        $this->city = new City($xml->location->location['geobaseid'], $xml->location->name, $xml->location->location['latitude'], $xml->location->location['longitude'], $xml->location->country, null, $xml->location->timezone);
         $utctz = new \DateTimeZone('UTC');
         $this->sun = new Sun(new \DateTime($xml->sun['rise'], $utctz), new \DateTime($xml->sun['set'], $utctz));
         $this->lastUpdate = new \DateTime($xml->meta->lastupdate, $utctz);

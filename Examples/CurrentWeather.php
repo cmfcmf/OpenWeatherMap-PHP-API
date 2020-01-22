@@ -145,7 +145,7 @@ echo 'Temperature: '.$weather->temperature;
 echo $lf;
 
 // Example 6: Get information about a city.
-$weather = $owm->getWeather('Paris', $units, $lang);
+$weather = $owm->getWeather('Kathmandu', $units, $lang);
 echo "$lf$lf EXAMPLE 6$lf";
 
 echo 'Id: '.$weather->city->id;
@@ -161,6 +161,9 @@ echo 'Lat: '.$weather->city->lat;
 echo $lf;
 
 echo 'Country: '.$weather->city->country;
+echo $lf;
+
+echo 'Timezone offset to UTC: '.$weather->city->timezone->getOffset(new DateTime("now", new DateTimeZone("UTC")))." seconds";
 echo $lf;
 
 // Example 7: Get wind information.
