@@ -10,16 +10,15 @@ module.exports = {
     'getting-started',
     'api-key',
     'usage',
-    ...[
-      'apis/current-weather',
-      'apis/weather-forecast',
-      'apis/air-pollution',
-      'apis/uv-index',
-    ]
-    // {
-    //   type: 'category',
-    //   label: 'APIs',
-    //   items: []
-    // }
+    {
+      type: 'category',
+      label: 'APIs',
+      items: [
+        'apis/current-weather',
+        'apis/weather-forecast',
+        'apis/air-pollution',
+        'apis/uv-index',
+      ]
+    }
   ],
 };

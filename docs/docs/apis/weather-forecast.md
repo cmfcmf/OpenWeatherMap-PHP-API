@@ -1,6 +1,6 @@
 ---
 title: Weather Forecast API
-sidebar_label: 'API: Weather Forecast'
+sidebar_label: 'Weather Forecast'
 ---
 
 This API allows you to retrieve 16-day/daily and 5-day/3-hourly weather forecasts.

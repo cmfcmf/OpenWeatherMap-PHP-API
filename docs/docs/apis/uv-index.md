@@ -1,6 +1,6 @@
 ---
 title: Ultraviolet Index API
-sidebar_label: 'API: Ultraviolet Index'
+sidebar_label: 'Ultraviolet Index'
 ---
 
 This API allows you to retrieve the current, forecast and historic ultraviolet index (UV index).

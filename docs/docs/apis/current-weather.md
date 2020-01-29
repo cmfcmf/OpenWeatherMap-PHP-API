@@ -1,6 +1,6 @@
 ---
 title: Current Weather API
-sidebar_label: 'API: Current Weather'
+sidebar_label: 'Current Weather'
 ---
 
 This API allows you to retrieve the current weather data.

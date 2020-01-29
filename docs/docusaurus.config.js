@@ -83,7 +83,8 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Christian Flach.
       This project is not affiliated with OpenWeatherMap.`,
     },
-    disableDarkMode: true // dark mode requires localstorage, which requires a cookie banner. We don't want the cookie banner.
+    disableDarkMode: true, // dark mode requires localstorage, which requires a cookie banner. We don't want the cookie banner.
+    sidebarCollapsible: false,
   },
   presets: [
     [

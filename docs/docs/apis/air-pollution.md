@@ -1,6 +1,6 @@
 ---
 title: Air Pollution API
-sidebar_label: 'API: Air Pollution'
+sidebar_label: 'Air Pollution'
 ---
 
 This API allows you to retrieve the current, forecast and historic ultraviolet index (UV index).
