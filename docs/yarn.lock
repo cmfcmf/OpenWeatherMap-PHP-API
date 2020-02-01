@@ -837,10 +837,9 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cmfcmf/docusaurus-search-local@^0.0.3":
+"@cmfcmf/docusaurus-search-local@https://github.com/cmfcmf/docusaurus-search-local":
   version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@cmfcmf/docusaurus-search-local/-/docusaurus-search-local-0.0.3.tgz#eb81d56faad5c75e554bd37ca300f6a4e83ea423"
-  integrity sha512-OElwHa/evfNaWkZ+8QggNeSH7O5m39HdTcWTxe6pyQgjr9pmXhczdWUa2yFw4RWiX2o7oxSwfkwuAhG/gfe0/g==
+  resolved "https://github.com/cmfcmf/docusaurus-search-local#94b21f60236a379e080701d991323b1a645b1a57"
   dependencies:
     autocomplete.js "^0.37.0"
     classnames "^2.2.6"
@@ -1687,9 +1686,9 @@ autocomplete.js@0.36.0:
     immediate "^3.2.3"
 
 autocomplete.js@^0.37.0:
-  version "0.37.0"
-  resolved "https://registry.yarnpkg.com/autocomplete.js/-/autocomplete.js-0.37.0.tgz#bcfbfd7bcabe90e90fad4c2b1aaa931379a10c38"
-  integrity sha512-MxYfNb89sl7IRhNdEJv6z8dSfA7lVeU7Dk6m/+/ih0/tPLsbxIM7uPVsnWEUh4j7dFqJktlM7hCeU7jmx6VC8A==
+  version "0.37.1"
+  resolved "https://registry.yarnpkg.com/autocomplete.js/-/autocomplete.js-0.37.1.tgz#a29a048d827e7d2bf8f7df8b831766e5cc97df01"
+  integrity sha512-PgSe9fHYhZEsm/9jggbjtVsGXJkPLvd+9mC7gZJ662vVL5CRWEtm/mIrrzCx0MrNxHVwxD5d00UOn6NsmL2LUQ==
   dependencies:
     immediate "^3.2.3"
 
