@@ -1,0 +1,3 @@
+tasks:
+  - init: composer install
+    command: php vendor/bin/phpunit
