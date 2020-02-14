@@ -1,3 +1,10 @@
 tasks:
   - init: composer install
     command: php vendor/bin/phpunit
+  - before: cd docs
+    init: yarn install
+    command: yarn start
+
+ports:
+  - port: 3000
+    onOpen: open-preview
