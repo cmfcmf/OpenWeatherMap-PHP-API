@@ -5,6 +5,7 @@ A PHP 7.0+ API to retrieve and parse global weather data from
 This project aims to normalise the provided data and remove inconsistencies.
 It is not maintained by OpenWeatherMap and not an official API wrapper.
 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API) 
 [![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.svg?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
 [![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/releases)
@@ -22,6 +23,12 @@ Contributing
 ============
 I'm happy about every **pull request** you open and **issue** you find to help make this API **more awesome**. Please note that it might sometimes take me a while to get back to you. Feel free to ping me if I don't respond.
 
+## GitPod
+
+You can use GitPod to launch a fully functional development environment right in your browser. Simply click on the following badge:
+
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API)
+
 ## Vagrant
 
 You can use [Vagrant](https://vagrantup.com) to kick-start your development.
@@ -37,13 +44,13 @@ You can also use Docker to start developing this library. First install dependen
         --user $(id -u):$(id -g) \
         composer install
 
-And then execute an example:
+And then execute the tests:
 
     docker run --rm --interactive --tty \
         --volume $PWD:/app -w /app \
         php bash
 
-    > php Examples/CurrentWeather.php
+    > php vendor/bin/phpunit
 
 ## Documentation
 
