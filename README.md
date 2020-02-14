@@ -23,9 +23,9 @@ Contributing
 ============
 I'm happy about every **pull request** you open and **issue** you find to help make this API **more awesome**. Please note that it might sometimes take me a while to get back to you. Feel free to ping me if I don't respond.
 
-## GitPod
+## Gitpod
 
-You can use GitPod to launch a fully functional development environment right in your browser. Simply click on the following badge:
+You can use Gitpod to launch a fully functional development environment right in your browser. Simply click on the following badge:
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API)
 

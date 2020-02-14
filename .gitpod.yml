@@ -4,6 +4,7 @@ tasks:
   - before: cd docs
     init: yarn install
     command: yarn start
+    openMode: split-right
 
 ports:
   - port: 3000
