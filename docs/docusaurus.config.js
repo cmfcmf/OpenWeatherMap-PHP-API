@@ -14,6 +14,9 @@ module.exports = {
   organizationName: user, // Usually your GitHub org/user name.
   projectName: project, // Usually your repo name.
   themeConfig: {
+    prism: {
+      additionalLanguages: ["php"]
+    },
     navbar: {
       title: title,
       logo: {
