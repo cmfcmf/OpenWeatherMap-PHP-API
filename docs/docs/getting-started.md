@@ -50,6 +50,6 @@ Otherwise, go through the lists of implementations on Packagist and choose ones 
 If you don't know which to choose, try these:
 
 ```bash
-compose require "http-interop/http-factory-guzzle:^1.0" \
+composer require "http-interop/http-factory-guzzle:^1.0" \
                 "php-http/guzzle6-adapter:^2.0 || ^1.0"
 ```
