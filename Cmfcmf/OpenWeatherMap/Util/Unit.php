@@ -158,8 +158,7 @@ class Unit implements JsonSerializable
             'value' => $this->getValue(),
             'unit' => $this->getUnit(),
             'description' => $this->getDescription(),
-            'precision' => $this->getPrecision(),
+            'precision' => $this->getPrecision()
         ];
     }
-
 }
