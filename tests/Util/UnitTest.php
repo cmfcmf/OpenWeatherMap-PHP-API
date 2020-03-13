@@ -167,4 +167,10 @@ class UnitTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($this->unit->getFormatted(), $this->unit);
     }
+
+    public function testToJSON()
+    {
+        $unit = new Unit(42.5, "°C", "hot", "2.5");
+        $this->assertEquals(json_encode($unit), '{"value":42.5,"unit":"\u00b0C","description":"hot","precision":2.5}');
+    }
 }
