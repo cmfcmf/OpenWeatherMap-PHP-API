@@ -149,9 +149,10 @@ class Unit implements JsonSerializable
 
     /**
      * Get Unit properties when encoding to JSON
+     *
      * @return array
      */
-    public function jsonSerialize ()
+    public function jsonSerialize()
     {
         return [
             'value' => $this->getValue(),
