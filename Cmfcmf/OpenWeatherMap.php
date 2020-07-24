@@ -583,7 +583,7 @@ class OpenWeatherMap
         $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
         $result = $response->getBody()->getContents();
         if ($response->getStatusCode() !== 200) {
-            if ($result === "{\"message\":\"not found\"}\n" && $response->getStatusCode() === 404) {
+            if (false !== strpos($result, 'not found') && $response->getStatusCode() === 404) {
                 throw new OWMNotFoundException();
             }
             throw new OWMException('OpenWeatherMap returned a response with status code ' . $response->getStatusCode() . ' and the following content `'. $result . '`');
