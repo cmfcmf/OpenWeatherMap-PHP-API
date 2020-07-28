@@ -572,7 +572,8 @@ class OpenWeatherMap
             $key = str_replace(
                 ["{", "}", "(", ")", "/", "\\", "@", ":"],
                 ["_", "_", "_", "_", "_", "_",  "_", "_"],
-                $url);
+                $url
+            );
             $item = $this->cache->getItem($key);
             if ($item->isHit()) {
                 $this->wasCached = true;
