@@ -23,7 +23,7 @@ module.exports = {
         alt: 'Sun Logo',
         src: 'img/logo.svg',
       },
-      links: [
+      items: [
         {to: 'docs/getting-started', label: 'Docs', position: 'left'},
         {
           href: githubUrl,
@@ -86,7 +86,10 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Christian Flach.
       This project is not affiliated with OpenWeatherMap.`,
     },
-    disableDarkMode: true, // dark mode requires localstorage, which requires a cookie banner. We don't want the cookie banner.
+    colorMode: {
+       // dark mode requires localstorage, which might require a cookie banner. We don't want the cookie banner.
+      disableSwitch: true
+    },
     sidebarCollapsible: false,
   },
   presets: [
