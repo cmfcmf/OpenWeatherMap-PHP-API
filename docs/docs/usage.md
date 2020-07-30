@@ -95,16 +95,22 @@ if ($owm->wasCached()) {
 
 ## Exception handling
 
-Make sure to handle exceptions appropriately. Whenever the OpenWeatherMap API
-returns an exception, it is converted into an instance of
-`Cmfcmf\OpenWeatherMap\Exception`. If anything else goes wrong, an exception
-inheriting from `\Exception` is thrown.
+Make sure to handle exceptions appropriately.
+Whenever the OpenWeatherMap API returns an exception, it is converted into an instance of
+`Cmfcmf\OpenWeatherMap\Exception`.
+As a special case, the API will throw a `Cmfcmf\OpenWeatherMap\NotFoundException` if the city/location/coordinates you are querying cannot be found. This exception inherits from `Cmfcmf\OpenWeatherMap\Exception`.
+
+If anything else goes wrong, an exception inheriting from `\Exception` is thrown.
 
 ```php {5,7}
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
+use Cmfcmf\OpenWeatherMap\NotFoundException as OWMNotFoundException;
 
 try {
     $weather = $owm->getWeather('Berlin');
+} catch (OWMNotFoundException $e) {
+    // TODO: Handle "city was not found" exception
+    // You can opt to skip the handler for `OWMNotFoundException`, because it extends `OWMException`.
 } catch (OWMException $e) {
     // TODO: Handle API exception
 } catch (\Exception $e) {
