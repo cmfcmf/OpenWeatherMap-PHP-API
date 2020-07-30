@@ -22,11 +22,12 @@ jobs:
         touch build/.nojekyll
     - name: Upload to GitHub Pages
       if: github.ref == 'refs/heads/master'
-      uses: peaceiris/actions-gh-pages@v2.5.0
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        PUBLISH_BRANCH: gh-pages
-        PUBLISH_DIR: ./docs/build
+      uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
-        emptyCommits: false
-        keepFiles: false
+        GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: docs/build
+        CLEAN: true
+        SINGLE_COMMIT: true
+        GIT_CONFIG_NAME: GitHub Actions
+        GIT_CONFIG_EMAIL: gh-actions@example.com
