@@ -67,7 +67,7 @@ class City extends Location
         $this->name = isset($name) ? (string)$name : null;
         $this->country = isset($country) ? (string)$country : null;
         $this->population = isset($population) ? (int)$population : null;
-        $this->timezone = isset($timezoneOffset) ? new \DateTimeZone(self::timezoneOffsetInSecondsToHours($timezoneOffset)) : null;
+        $this->timezone = isset($timezoneOffset) ? new \DateTimeZone(self::timezoneOffsetInSecondsToHours((int)$timezoneOffset)) : null;
 
         parent::__construct($lat, $lon);
     }
