@@ -1,0 +1,21 @@
+{
+	"name": "PHP",
+	"image": "mcr.microsoft.com/vscode/devcontainers/php:7",
+	"settings": {},
+	"extensions": [
+		"felixfbecker.php-debug",
+		"felixfbecker.php-intellisense",
+		"bierner.github-markdown-preview"
+	],
+	"forwardPorts": [
+		3000
+	],
+	"postCreateCommand": [
+		"composer install",
+		"cd docs && yarn install"
+	],
+	"postStartCommand": [
+		"php vendor/bin/phpunit",
+		"cd docs && yarn start"
+	]
+}
