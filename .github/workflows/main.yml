@@ -26,7 +26,7 @@ jobs:
       with:
         GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: docs/build
+        FOLDER: docs/build/OpenWeatherMap-PHP-API
         CLEAN: true
         SINGLE_COMMIT: true
         GIT_CONFIG_NAME: GitHub Actions
