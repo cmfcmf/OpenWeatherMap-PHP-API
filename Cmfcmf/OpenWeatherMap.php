@@ -310,7 +310,7 @@ class OpenWeatherMap
     {
         $answer = $this->getRawUVIndexData('forecast', $lat, $lon, $cnt);
         $data = $this->parseJson($answer);
-        if(is_object($data)){
+        if (is_object($data)) {
             $lat = $data->coord->lat;
             $lon = $data->coord->lon;
             $data = $data->list;
@@ -339,7 +339,7 @@ class OpenWeatherMap
     {
         $answer = $this->getRawUVIndexData('historic', $lat, $lon, null, $start, $end);
         $data = $this->parseJson($answer);
-        if(is_object($data)){
+        if (is_object($data)) {
             $lat = $data->coord->lat;
             $lon = $data->coord->lon;
             $data = $data->list;

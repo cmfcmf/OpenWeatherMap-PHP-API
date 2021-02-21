@@ -52,13 +52,13 @@ class UVIndex
     public function __construct($data, $lat = null, $lon = null)
     {
         $utctz = new \DateTimeZone('UTC');
-        if(isset($data->dt)){
-            $this->time = \DateTime::createFromFormat( 'U', $data->dt );
+        if (isset($data->dt)) {
+            $this->time = \DateTime::createFromFormat('U', $data->dt);
         } else {
             $this->time = new \DateTime($data->date_iso, $utctz);
         }
         $this->location = new Location($data->lat ?? $lat, $data->lon ?? $lon);
-        if(isset($data->uvi)){
+        if (isset($data->uvi)) {
             $this->uvIndex = (float)$data->uvi;
         } else {
             $this->uvIndex = (float)$data->value;
