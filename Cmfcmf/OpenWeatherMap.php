@@ -310,9 +310,13 @@ class OpenWeatherMap
     {
         $answer = $this->getRawUVIndexData('forecast', $lat, $lon, $cnt);
         $data = $this->parseJson($answer);
-
-        return array_map(function ($entry) {
-            return new UVIndex($entry);
+        if (is_object($data)) {
+            $lat = $data->coord->lat;
+            $lon = $data->coord->lon;
+            $data = $data->list;
+        }
+        return array_map(function ($entry) use ($lat, $lon) {
+            return new UVIndex($entry, $lat, $lon);
         }, $data);
     }
 
@@ -335,9 +339,13 @@ class OpenWeatherMap
     {
         $answer = $this->getRawUVIndexData('historic', $lat, $lon, null, $start, $end);
         $data = $this->parseJson($answer);
-
-        return array_map(function ($entry) {
-            return new UVIndex($entry);
+        if (is_object($data)) {
+            $lat = $data->coord->lat;
+            $lon = $data->coord->lon;
+            $data = $data->list;
+        }
+        return array_map(function ($entry) use ($lat, $lon) {
+            return new UVIndex($entry, $lat, $lon);
         }, $data);
     }
 
