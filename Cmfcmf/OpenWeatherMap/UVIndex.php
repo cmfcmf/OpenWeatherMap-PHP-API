@@ -51,10 +51,10 @@ class UVIndex
      */
     public function __construct($data, $lat = null, $lon = null)
     {
-        $utctz = new \DateTimeZone('UTC');
         if (isset($data->dt)) {
             $this->time = \DateTime::createFromFormat('U', $data->dt);
         } else {
+            $utctz = new \DateTimeZone('UTC');
             $this->time = new \DateTime($data->date_iso, $utctz);
         }
         $this->location = new Location($data->lat ?? $lat, $data->lon ?? $lon);
