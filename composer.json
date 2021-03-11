@@ -35,5 +35,10 @@
         "psr-4": {
             "Cmfcmf\\": "Cmfcmf"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cmfcmf\\OpenWeatherMap\\Tests\\": "tests"
+        }
     }
 }
