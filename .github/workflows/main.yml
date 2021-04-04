@@ -32,7 +32,7 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Install dependencies
-      run: composer install --prefer-dist --prefer-stable
+      run: composer install --prefer-dist
 
     - name: Test
       run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
