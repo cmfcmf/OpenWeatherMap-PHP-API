@@ -8,6 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php-versions: [7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1]
     steps:
@@ -32,7 +33,9 @@ jobs:
         restore-keys: ${{ runner.os }}-composer-
 
     - name: Install dependencies
-      run: composer install --prefer-dist
+      # Use composer update instead of composer install to install a working set of
+      # dependencies on all PHP versions.
+      run: composer update --prefer-dist
 
     - name: Test
       run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
