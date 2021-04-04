@@ -7,7 +7,7 @@ This project aims to normalise the provided data and remove inconsistencies.
 It is not maintained by OpenWeatherMap and not an official API wrapper.
 
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API) 
-[![Build Status](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api.svg?branch=master)](https://travis-ci.org/cmfcmf/OpenWeatherMap-PHP-Api)
+[![Build Status](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml/badge.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml)
 [![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/releases)
 [![codecov](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api/branch/master/graph/badge.svg)](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api)
