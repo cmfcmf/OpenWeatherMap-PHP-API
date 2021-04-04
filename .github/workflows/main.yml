@@ -1,19 +1,57 @@
 name: CI
 
-on: [push]
+on:
+  workflow_dispatch:
+  push:
 
 jobs:
-  build:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-versions }}
+        tools: composer
+        coverage: xdebug
+        
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - name: Cache dependencies
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --prefer-stable
+
+    - name: Test
+      run: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
+
+    - name: Upload coverage data
+      uses: codecov/codecov-action@v1
+        
+  build-docs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@master
+      uses: actions/checkout@v2
       with:
-        fetch-depth: 0 # fetch complete history so that the "last updated by" texts can be set correctly
-    - name: Use Node.js 10.x
+         # fetch complete history so that the "last updated by" texts can be set correctly
+        fetch-depth: 0
+    - name: Use Node.js 14.x
       uses: actions/setup-node@v1
       with:
-        node-version: 10.x
+        node-version: 14.x
     - name: Build Docs
       run: |
         cd docs
@@ -21,7 +59,7 @@ jobs:
         yarn build
         touch build/.nojekyll
     - name: Upload to GitHub Pages
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
