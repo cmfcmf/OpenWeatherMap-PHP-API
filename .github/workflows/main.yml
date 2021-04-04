@@ -11,14 +11,16 @@ jobs:
       fail-fast: false
       matrix:
         # https://www.php.net/supported-versions.php
-        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1']
+        php-versions: ['7.3', '7.4', '8.0', '8.1']
         # https://phpunit.de/supported-versions.html
-        phpunit-versions: ['9.x']
+        phpunit-versions: ['9.5.4']
         include:
         - php-versions: '7.0'
-          phpunit-versions: '6.x'
+          phpunit-versions: '6.5.14'
         - php-versions: '7.1'
-          phpunit-versions: '6.x'
+          phpunit-versions: '7.5.20'
+        - php-versions: '7.2'
+          phpunit-versions: '8.5.15'
     steps:
     - name: Checkout
       uses: actions/checkout@v2
