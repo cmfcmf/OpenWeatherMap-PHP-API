@@ -16,7 +16,7 @@
  * @see https://OpenWeatherMap.org/appid
  */
 
-namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
+namespace Cmfcmf\OpenWeatherMap\Tests\Exceptions;
 
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
