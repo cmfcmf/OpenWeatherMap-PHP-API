@@ -3,6 +3,7 @@ name: CI
 on:
   workflow_dispatch:
   push:
+  pull_request:
 
 jobs:
   test:
@@ -77,7 +78,7 @@ jobs:
         yarn build
         touch build/.nojekyll
     - name: Upload to GitHub Pages
-      if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+      if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
         GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
