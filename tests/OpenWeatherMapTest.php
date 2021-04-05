@@ -26,7 +26,7 @@ use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Psr\SimpleCache\CacheInterface;
 
-class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
+class OpenWeatherMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

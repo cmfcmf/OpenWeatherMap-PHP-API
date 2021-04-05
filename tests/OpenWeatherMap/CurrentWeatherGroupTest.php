@@ -21,7 +21,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 
-class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
+class CurrentWeatherGroupTest extends \PHPUnit\Framework\TestCase
 {
     protected $fakeJson;
     protected $currentWeatherGroup;

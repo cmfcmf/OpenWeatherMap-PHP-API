@@ -21,7 +21,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 
-class WeatherForecastTest extends \PHPUnit_Framework_TestCase
+class WeatherForecastTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

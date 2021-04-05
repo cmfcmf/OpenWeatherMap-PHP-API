@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 
-class UnitTest extends \PHPUnit_Framework_TestCase
+class UnitTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Unit
@@ -149,7 +149,7 @@ class UnitTest extends \PHPUnit_Framework_TestCase
     {
         $this->givenThereIsAUnitWithValue(self::POSITIVE_INT_VALUE);
 
-        $this->assertEquals(self::POSITIVE_INT_VALUE, $this->unit->getFormatted());
+        $this->assertSame((string)self::POSITIVE_INT_VALUE, $this->unit->getFormatted());
         $this->assertEquals($this->unit->getValue(), $this->unit->getFormatted());
     }
 

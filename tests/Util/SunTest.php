@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 
-class SunTest extends \PHPUnit_Framework_TestCase
+class SunTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Sun

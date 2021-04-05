@@ -22,7 +22,7 @@ use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Http\Factory\Guzzle\RequestFactory;
 
-class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
+class OpenWeatherMapExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

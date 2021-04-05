@@ -21,7 +21,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 
-class TemperatureTest extends \PHPUnit_Framework_TestCase
+class TemperatureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
