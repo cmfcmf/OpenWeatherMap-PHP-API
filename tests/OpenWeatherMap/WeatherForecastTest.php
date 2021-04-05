@@ -19,9 +19,10 @@
 namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
+use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 
-class WeatherForecastTest extends \PHPUnit\Framework\TestCase
+class WeatherForecastTest extends MyTestCase
 {
     /**
      * @var string
@@ -33,7 +34,7 @@ class WeatherForecastTest extends \PHPUnit\Framework\TestCase
      */
     protected $forecast;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fakeXml = new \SimpleXMLElement(FakeData::forecastXML());
         $this->forecast = new WeatherForecast($this->fakeXml, 'Berlin', 2);

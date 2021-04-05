@@ -37,7 +37,7 @@ class WeatherTest extends \PHPUnit\Framework\TestCase
      */
     protected $iconName = '11d';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->weather = new Weather(200, $this->description, $this->iconName);
     }

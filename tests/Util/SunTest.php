@@ -47,11 +47,10 @@ class SunTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($set, $this->sun->set);
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testSunSetBeforeSunRiseException()
     {
+        $this->expectException(\LogicException::class);
+
         $rise = new \DateTime('2014-01-01 08:00:00');
         $set = new \DateTime('2014-01-01 7:00:00');
 

@@ -8,36 +8,42 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
         # https://www.php.net/supported-versions.php
-        php-versions: ['7.3', '7.4', '8.0', '8.1']
+        php-versions: ['7.3', '7.4', '8.0']
         # https://phpunit.de/supported-versions.html
         phpunit-versions: ['9.5.4']
+        experimental: [false]
         include:
-        - php-versions: '7.0'
-          phpunit-versions: '6.5.14'
         - php-versions: '7.1'
           phpunit-versions: '7.5.20'
+          experimental: false
         - php-versions: '7.2'
           phpunit-versions: '8.5.15'
+          experimental: false
+
+        - php-versions: '8.1'
+          phpunit-versions: '9.5.4'
+          experimental: true
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-      
+
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
         tools: composer, phpunit:${{ matrix.phpunit-versions }}
         coverage: xdebug
-    
+
     - name: Setup problem matchers for PHP
       run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
     - name: Setup problem matchers for PHPUnit
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
-    
+
     - name: Get composer cache directory
       id: composer-cache
       run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -58,7 +64,7 @@ jobs:
 
     - name: Upload coverage data
       uses: codecov/codecov-action@v1
-        
+
   build-docs:
     runs-on: ubuntu-latest
     steps:
