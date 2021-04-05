@@ -10,7 +10,7 @@ It is not maintained by OpenWeatherMap and not an official API wrapper.
 [![Build Status](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml/badge.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml)
 [![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/releases)
-[![codecov](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api/branch/master/graph/badge.svg)](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api)
+[![codecov](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api/branch/main/graph/badge.svg)](https://codecov.io/gh/cmfcmf/OpenWeatherMap-PHP-Api)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/badges/quality-score.png?s=f31ca08aa8896416cf162403d34362f0a5da0966)](https://scrutinizer-ci.com/g/cmfcmf/OpenWeatherMap-PHP-Api/)
 
 Documentation
