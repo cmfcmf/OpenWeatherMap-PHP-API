@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
 use Cmfcmf\OpenWeatherMap\Util\Sun;
 
-class SunTest extends \PHPUnit_Framework_TestCase
+class SunTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Sun
@@ -47,11 +47,10 @@ class SunTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($set, $this->sun->set);
     }
 
-    /**
-     * @expectedException \LogicException
-     */
     public function testSunSetBeforeSunRiseException()
     {
+        $this->expectException(\LogicException::class);
+
         $rise = new \DateTime('2014-01-01 08:00:00');
         $set = new \DateTime('2014-01-01 7:00:00');
 

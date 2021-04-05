@@ -20,13 +20,14 @@ namespace Cmfcmf\OpenWeatherMap\Tests;
 
 use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Exception;
+use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Cache\Adapter\PHPArray\ArrayCachePool;
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 use Psr\SimpleCache\CacheInterface;
 
-class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
+class OpenWeatherMapTest extends MyTestCase
 {
     /**
      * @var string
@@ -53,7 +54,7 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
      */
     protected $httpClient;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $ini = parse_ini_file(__DIR__.'/../Examples/ApiKey.ini');
         $this->apiKey = $ini['api_key'];
@@ -88,11 +89,9 @@ class OpenWeatherMapTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->apiKey, $apiKey);
     }
 
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
     public function testInvalidData()
     {
+        $this->expectException(\Cmfcmf\OpenWeatherMap\Exception::class);
         $this->httpClient->returnErrorForNextRequest(500);
         $this->owm->getWeather('Berlin', 'imperial', 'en', '');
     }

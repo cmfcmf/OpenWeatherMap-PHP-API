@@ -1,12 +1,12 @@
 OpenWeatherMap PHP API
 ======================
 
-A PHP 7.0+ API to retrieve and parse global weather data from
+A PHP 7.1+ (including PHP 8) API to retrieve and parse global weather data from
 [OpenWeatherMap.org](http://www.OpenWeatherMap.org).
 This project aims to normalise the provided data and remove inconsistencies.
 It is not maintained by OpenWeatherMap and not an official API wrapper.
 
-[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API) 
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cmfcmf/OpenWeatherMap-PHP-API)
 [![Build Status](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml/badge.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-API/actions/workflows/main.yml)
 [![license](https://img.shields.io/github/license/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/blob/master/LICENSE)
 [![release](https://img.shields.io/github/release/cmfcmf/OpenWeatherMap-PHP-Api.svg)](https://github.com/cmfcmf/OpenWeatherMap-PHP-Api/releases)
@@ -41,7 +41,7 @@ You can also use Docker to start developing this library. First install dependen
     docker run --rm --interactive --tty \
         --volume $PWD:/app \
         --user $(id -u):$(id -g) \
-        composer install
+        composer update
 
 And then execute the tests:
 

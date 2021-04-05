@@ -18,10 +18,11 @@
 
 namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
+use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 use Cmfcmf\OpenWeatherMap\Util\Unit;
 use Cmfcmf\OpenWeatherMap\Util\Temperature;
 
-class TemperatureTest extends \PHPUnit_Framework_TestCase
+class TemperatureTest extends MyTestCase
 {
     /**
      * @var string
@@ -43,7 +44,7 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
      */
     protected $description = 'This is a description';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $units = 'Berlin';
         $fakeTempNow = 298.77;
@@ -80,7 +81,7 @@ class TemperatureTest extends \PHPUnit_Framework_TestCase
         $value = $this->temperature->getValue();
 
         $this->assertSame($expectValue, $value);
-        $this->assertInternalType('double', $value);
+        $this->assertInternalType('float', $value);
     }
 
     public function testGetDescription()

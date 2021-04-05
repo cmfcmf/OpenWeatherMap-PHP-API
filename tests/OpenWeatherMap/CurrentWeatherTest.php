@@ -21,7 +21,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
 
-class CurrentWeatherTest extends \PHPUnit_Framework_TestCase
+class CurrentWeatherTest extends \PHPUnit\Framework\TestCase
 {
     public function testWindDirection()
     {

@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
 use Cmfcmf\OpenWeatherMap\Util\Weather;
 
-class WeatherTest extends \PHPUnit_Framework_TestCase
+class WeatherTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Weather
@@ -37,7 +37,7 @@ class WeatherTest extends \PHPUnit_Framework_TestCase
      */
     protected $iconName = '11d';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->weather = new Weather(200, $this->description, $this->iconName);
     }

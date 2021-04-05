@@ -20,13 +20,14 @@ namespace Cmfcmf\OpenWeatherMap\Tests\OpenWeatherMap;
 
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Tests\FakeData;
+use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 
-class CurrentWeatherGroupTest extends \PHPUnit_Framework_TestCase
+class CurrentWeatherGroupTest extends MyTestCase
 {
     protected $fakeJson;
     protected $currentWeatherGroup;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->fakeJson = json_decode(FakeData::WEATHER_GROUP_JSON);
         $this->currentWeatherGroup = new CurrentWeatherGroup($this->fakeJson, 'metric');

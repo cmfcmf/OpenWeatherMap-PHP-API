@@ -22,7 +22,7 @@ use Cmfcmf\OpenWeatherMap;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Http\Factory\Guzzle\RequestFactory;
 
-class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
+class OpenWeatherMapExceptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -34,60 +34,56 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
      */
     protected $owm;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->apiKey = 'unicorn-rainbow';
         $this->owm = new OpenWeatherMap($this->apiKey, new TestHttpClient(), new RequestFactory());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetWeatherForecastException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $days = 20;
         $this->owm->getWeatherForecast('Berlin', 'imperial', 'en', '', $days);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetDailyWeatherForecastException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $days = 20;
         $this->owm->getDailyWeatherForecast('Berlin', 'imperial', 'en', '', $days);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testGetRawDailyForecastDataInvalidArgumentException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->owm->getRawDailyForecastData('Berlin', 'imperial', 'en', '', 'xml', 20);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @dataProvider      uvIndexExceptionDataProvider
+     * @dataProvider uvIndexExceptionDataProvider
      */
     public function testGetRawUVIndexWithQueryErrorException($mode, $lat, $lon, $cnt, $start, $end)
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->owm->getRawUVIndexData($mode, $lat, $lon, $cnt, $start, $end);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testBuildQueryUrlParameterException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->owm->getWeather(true, 'imperial', 'en', '');
     }
 
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
     public function testParseXMLException()
     {
+        $this->expectException(\Cmfcmf\OpenWeatherMap\Exception::class);
+
         $answer = 'I am not XML formatted data';
         $method = new \ReflectionMethod($this->owm, 'parseXML');
         $method->setAccessible(true);
@@ -95,11 +91,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->invoke($this->owm, $answer);
     }
 
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
     public function testParseXMLWithIsJsonException()
     {
+        $this->expectException(\Cmfcmf\OpenWeatherMap\Exception::class);
+
         $answer = array('message' => 'simple json data');
         $answer = json_encode($answer);
         $method = new \ReflectionMethod($this->owm, 'parseXML');
@@ -108,11 +103,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->invoke($this->owm, $answer);
     }
 
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
     public function testParseJsonException()
     {
+        $this->expectException(\Cmfcmf\OpenWeatherMap\Exception::class);
+
         $answer = 'I am not a json format data';
         $method = new \ReflectionMethod($this->owm, 'parseJson');
         $method->setAccessible(true);
@@ -120,11 +114,10 @@ class OpenWeatherMapExceptionTest extends \PHPUnit_Framework_TestCase
         $method->invoke($this->owm, $answer);
     }
 
-    /**
-     * @expectedException \Cmfcmf\OpenWeatherMap\Exception
-     */
     public function uvIndexExceptionDataProvider()
     {
+        $this->expectException(\Cmfcmf\OpenWeatherMap\Exception::class);
+
         return array(
             array('current', 5.4, 1, 5, null, null),
             array('forecast', 5.4, 1.2, '5', null, null),

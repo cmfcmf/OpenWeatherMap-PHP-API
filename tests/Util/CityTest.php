@@ -20,7 +20,7 @@ namespace Cmfcmf\OpenWeatherMap\Tests\Util;
 
 use Cmfcmf\OpenWeatherMap\Util\City;
 
-class CityTest extends \PHPUnit_Framework_TestCase
+class CityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider timezoneDataProvider
