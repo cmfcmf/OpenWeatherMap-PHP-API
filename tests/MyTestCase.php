@@ -37,7 +37,7 @@ abstract class MyTestCase extends \PHPUnit\Framework\TestCase
                 throw new Error();
             }
         } else {
-            \PHPUnit\Framework\TestCase::assertInternalType($expected, $actual, $message = '');
+            \PHPUnit\Framework\TestCase::assertInternalType($expected, $actual, $message);
         }
     }
 }
