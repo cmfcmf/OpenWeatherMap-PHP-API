@@ -90,7 +90,6 @@ module.exports = {
        // dark mode requires localstorage, which might require a cookie banner. We don't want the cookie banner.
       disableSwitch: true
     },
-    sidebarCollapsible: false,
   },
   presets: [
     [
@@ -98,6 +97,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          sidebarCollapsible: false,
           editUrl:
             `${githubUrl}/edit/master/docs`,
           showLastUpdateAuthor: true,
