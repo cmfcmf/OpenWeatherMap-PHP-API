@@ -21,7 +21,7 @@
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-simplexml": "*",
-        "psr/cache": "^1.0",
+        "psr/cache": "^1 || ^2 || ^3",
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.0"
     },
