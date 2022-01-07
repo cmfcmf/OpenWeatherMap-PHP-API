@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         # https://www.php.net/supported-versions.php
-        php-versions: ['7.3', '7.4', '8.0', '8.1']
+        php-versions: ['7.3', '7.4', '8.0']
         # https://phpunit.de/supported-versions.html
         phpunit-versions: ['9.5.4']
         experimental: [false]
@@ -24,10 +24,14 @@ jobs:
         - php-versions: '7.2'
           phpunit-versions: '8.5.15'
           experimental: false
+        - php-versions: '8.1'
+          phpunit-versions: '9.5.11'
+          experimental: false
 
-        - php-versions: '8.2'
-          phpunit-versions: '9.5.4'
-          experimental: true
+        # PHPUnit's dependencies do not support PHP 8.2 yet.
+        # - php-versions: '8.2'
+        #   phpunit-versions: '9.5.11'
+        #   experimental: true
     steps:
     - name: Checkout
       uses: actions/checkout@v2
