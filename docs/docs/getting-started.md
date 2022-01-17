@@ -20,7 +20,7 @@ Please note that only the following APIs are supported:
 
 ## PHP Requirements
 
-- **PHP 7.x** (if you are still on PHP 5.x, you'll have to use version 2.x of this library)
+- **PHP 7.1 and later (including PHP 8)** (if you are still on PHP 5.x, you'll have to use version 2.x of this library)
 - PHP json extension
 - PHP libxml extension
 - PHP simplexml extension
