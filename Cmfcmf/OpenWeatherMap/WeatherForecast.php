@@ -99,6 +99,7 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
@@ -107,6 +108,7 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->forecasts[$this->position];
@@ -115,6 +117,7 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -123,6 +126,7 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->position;
@@ -131,6 +135,7 @@ class WeatherForecast implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->forecasts[$this->position]);
