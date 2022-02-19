@@ -25,7 +25,7 @@ jobs:
           phpunit-versions: '8.5.15'
           experimental: false
         - php-versions: '8.1'
-          phpunit-versions: '9.5.11'
+          phpunit-versions: '9.5.14'
           experimental: false
 
         # PHPUnit's dependencies do not support PHP 8.2 yet.
@@ -42,6 +42,8 @@ jobs:
         php-version: ${{ matrix.php-versions }}
         tools: composer, phpunit:${{ matrix.phpunit-versions }}
         coverage: xdebug
+        # Report deprecation errors.
+        ini-values: error_reporting=E_ALL
 
     - name: Setup problem matchers for PHP
       run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
