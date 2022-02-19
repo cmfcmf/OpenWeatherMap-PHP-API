@@ -80,7 +80,7 @@ class Forecast extends CurrentWeather
         $this->clouds = new Unit($xml->clouds['all'], $xml->clouds['unit'], $xml->clouds['value']);
         $this->precipitation = new Unit($xml->precipitation['value'], null, $xml->precipitation['type']);
         $this->weather = new Weather($xml->symbol['number'], $xml->symbol['name'], $xml->symbol['var']);
-        $this->lastUpdate = new \DateTime($xml->lastupdate['value'], $utctz);
+        $this->lastUpdate = new \DateTime($xml->lastupdate['value'] ?? 'now', $utctz);
 
         if (isset($xml['from'])) {
             $this->time = new Time($xml['from'], $xml['to']);

@@ -55,6 +55,7 @@ class CurrentWeatherGroup implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;
@@ -63,6 +64,7 @@ class CurrentWeatherGroup implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->currentWeathers[$this->position];
@@ -71,6 +73,7 @@ class CurrentWeatherGroup implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->current()->city->id;
@@ -79,6 +82,7 @@ class CurrentWeatherGroup implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         ++$this->position;
@@ -87,6 +91,7 @@ class CurrentWeatherGroup implements \Iterator
     /**
      * @internal
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return isset($this->currentWeathers[$this->position]);
