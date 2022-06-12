@@ -53,7 +53,7 @@ And then execute the tests:
 
 ## Documentation
 
-The documentation is built using [Docusuaurs v2](https://v2.docusaurus.io/).
+The documentation is built using [Docusaurus v2](https://docusaurus.io).
 To run a local developnment server for the docs, execute
 
 ```bash
