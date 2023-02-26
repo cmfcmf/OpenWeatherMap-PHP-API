@@ -86,10 +86,10 @@ jobs:
       with:
          # fetch complete history so that the "last updated by" texts can be set correctly
         fetch-depth: 0
-    - name: Use Node.js 14.x
+    - name: Use Node.js 18.x
       uses: actions/setup-node@v1
       with:
-        node-version: 14.x
+        node-version: 18.x
     - name: Build Docs
       run: |
         cd docs
@@ -102,7 +102,7 @@ jobs:
       with:
         GITHUB_TOKEN : ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: docs/build/OpenWeatherMap-PHP-API
+        FOLDER: docs/build
         CLEAN: true
         SINGLE_COMMIT: true
         GIT_CONFIG_NAME: GitHub Actions
