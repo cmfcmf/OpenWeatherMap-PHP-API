@@ -23,8 +23,16 @@ use Cmfcmf\OpenWeatherMap\Exception;
 use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Cache\Adapter\PHPArray\ArrayCachePool;
+use Cmfcmf\OpenWeatherMap\Util\Location;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Mjelamanov\GuzzlePsr18\Client;
 use Psr\SimpleCache\CacheInterface;
 
 class OpenWeatherMapTest extends MyTestCase
@@ -142,6 +150,50 @@ class OpenWeatherMapTest extends MyTestCase
             $this->assertSame('An error occurred: not found', $e->getMessage());
         }
         $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
+    }
+
+    public function testRetrieveCoordinatesByLocationName()
+    {
+        $result = <<<EOF
+[{"name":"Bundaberg","local_names":{"ar":"بوندابيرج"},"zh":"班达伯格","en":"Bundaberg","ja":"バンダバーグ","ru":"Бундаберг","uk":"Бундаберг","lat":-24.8653253,"lon":152.3516785,"country":"AU","state":"Queensland"}]
+EOF;
+
+        $expected = [
+            new Location(
+                -24.8653253,
+                152.3516785,
+                "Bundaberg",
+                [
+                    "ar" => "بوندابيرج",
+                    "en" => "Bundaberg",
+                    "ja" => "バンダバーグ",
+                    "ru" => "Бундаберг",
+                    "uk" => "Бундаберг",
+                    "zh" => "班达伯格",
+                ],
+                "AU",
+                "Queensland"
+            ),
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, [], $result),
+        ]);
+
+        $handlerStack = HandlerStack::create($mock);
+        $httpClient = new Client(
+            new GuzzleClient(['handler' => $handlerStack])
+        );
+
+        $this->owm = new OpenWeatherMap(
+            $this->apiKey,
+            $httpClient,
+            new RequestFactory()
+        );
+        $owm = $this->openWeather;
+        $data = $owm->getCoordinatesByLocationName('Bundaberg');
+
+        $this->assertEquals($expected, $data);
     }
 
     public function testGetHistoryUVIndex()

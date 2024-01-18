@@ -23,6 +23,7 @@ use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\NotFoundException as OWMNotFoundException;
+use Cmfcmf\OpenWeatherMap\Util\Location;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Psr\Cache\CacheItemPoolInterface;
@@ -73,6 +74,12 @@ class OpenWeatherMap
      * @var string The basic api url to fetch air pollution data from.
      */
     private $airPollutionUrl = 'https://api.openweathermap.org/pollution/v1/';
+
+    /**
+     * @var string The base API URL for fetching coordinates by location name.
+     * @see https://openweathermap.org/api/geocoding-api#direct_name
+     */
+    private $coordinatesByLocationNameUrl = 'http://api.openweathermap.org/geo/1.0/direct';
 
     /**
      * @var CacheItemPoolInterface|null $cache The cache to use.
@@ -666,6 +673,56 @@ class OpenWeatherMap
         }
 
         return sprintf($this->uvIndexUrl . '%s?%s', $requestMode, http_build_query($params));
+    }
+
+    public function getCoordinatesByLocationName($city)
+    {
+        $url = $this->buildCoordinatesByLocationNameUrl($city);
+        $response = $this->cacheOrFetchResult($url);
+        $data = $this->parseJson($response);
+        $locations = [];
+        foreach ($data as $datum) {
+            $locations[] = new Location(
+                $datum->lat,
+                $datum->lon,
+                $datum->name,
+                (array)$datum->local_names,
+                $datum->country,
+                $datum->state
+            );
+        }
+
+        return $locations;
+    }
+
+    private function buildCoordinatesByLocationNameUrl(
+        string $city,
+        string $stateCode = null,
+        string $countryCode = null,
+        int $limit = null
+    ): string
+    {
+        $params = array(
+            'appid' => $this->apiKey,
+            'q' => $city,
+        );
+
+        if ($stateCode !== null) {
+            $params['q'] = sprintf('%s,%s', $params['q'], $stateCode);
+        }
+        if ($countryCode !== null) {
+            $params['q'] = sprintf('%s,%s', $params['q'], $countryCode);
+        }
+
+        if ($limit !== null) {
+            $params['limit'] = $limit;
+        }
+
+        return sprintf(
+            '%s?%s',
+            $this->coordinatesByLocationNameUrl,
+            http_build_query($params)
+        );
     }
 
     /**

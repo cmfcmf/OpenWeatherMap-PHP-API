@@ -33,6 +33,14 @@ class Location
      */
     public $lon;
 
+    public $name;
+
+    public $localNames = [];
+
+    public $country;
+
+    public $state;
+
     /**
      * Create a new location object.
      *
@@ -41,9 +49,19 @@ class Location
      *
      * @internal
      */
-    public function __construct($lat = null, $lon = null)
-    {
+    public function __construct(
+        $lat = null,
+        $lon = null,
+        string $name = null,
+        array $localNames = [],
+        string $country = '',
+        string $state = ''
+    ) {
         $this->lat = isset($lat) ? (float)$lat : null;
         $this->lon = isset($lon) ? (float)$lon : null;
+        $this->name = $name ?? '';
+        $this->localNames = $localNames ?? [];
+        $this->country = $country ?? '';
+        $this->state = $state;
     }
 }
