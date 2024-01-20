@@ -39,6 +39,16 @@ class City extends Location
     public $country;
 
     /**
+     * @var string|null The state in which the city is located.
+     */
+    public $state;
+
+    /**
+     * @var array<string,string> An array of internationalised versions of the city's name.
+     */
+    public $localNames = [];
+
+    /**
      * @var int The city's population
      */
     public $population;
@@ -58,16 +68,29 @@ class City extends Location
      * @param string $country        The abbreviation of the country the city is located in
      * @param int    $population     The city's population.
      * @param int    $timezoneOffset The shift in seconds from UTC.
+     * @param string $state          The state in which the city is located.
+     * @param array  $localNames     An array of internationalised versions of the city's name.
      *
      * @internal
      */
-    public function __construct($id, $name = null, $lat = null, $lon = null, $country = null, $population = null, $timezoneOffset = null)
-    {
+    public function __construct(
+        $id,
+        $name = null,
+        $lat = null,
+        $lon = null,
+        $country = null,
+        $population = null,
+        $timezoneOffset = null,
+        $state = null,
+        $localNames = []
+    ) {
         $this->id = (int)$id;
         $this->name = isset($name) ? (string)$name : null;
         $this->country = isset($country) ? (string)$country : null;
         $this->population = isset($population) ? (int)$population : null;
         $this->timezone = isset($timezoneOffset) ? new \DateTimeZone(self::timezoneOffsetInSecondsToHours((int)$timezoneOffset)) : null;
+        $this->state = $state ?? null;
+        $this->localNames = $localNames ?? [];
 
         parent::__construct($lat, $lon);
     }

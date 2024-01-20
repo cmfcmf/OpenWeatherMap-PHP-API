@@ -23,6 +23,7 @@ use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\NotFoundException as OWMNotFoundException;
+use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Location;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;

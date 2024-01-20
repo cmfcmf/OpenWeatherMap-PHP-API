@@ -159,10 +159,15 @@ class OpenWeatherMapTest extends MyTestCase
 EOF;
 
         $expected = [
-            new Location(
+            new City (
+                -1,
+                'Bundaberg',
                 -24.8653253,
                 152.3516785,
-                "Bundaberg",
+                "AU",
+                null,
+                null,
+                "Queensland",
                 [
                     "ar" => "بوندابيرج",
                     "en" => "Bundaberg",
@@ -170,9 +175,7 @@ EOF;
                     "ru" => "Бундаберг",
                     "uk" => "Бундаберг",
                     "zh" => "班达伯格",
-                ],
-                "AU",
-                "Queensland"
+                ]
             ),
         ];
 
