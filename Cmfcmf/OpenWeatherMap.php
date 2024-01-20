@@ -597,7 +597,9 @@ class OpenWeatherMap
             }
         }
 
-        $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
+        $response = $this->httpClient->sendRequest(
+            $this->httpRequestFactory->createRequest("GET", $url)
+        );
         $result = $response->getBody()->getContents();
         if ($response->getStatusCode() !== 200) {
             if (false !== strpos($result, 'not found') && $response->getStatusCode() === 404) {
@@ -676,24 +678,31 @@ class OpenWeatherMap
         return sprintf($this->uvIndexUrl . '%s?%s', $requestMode, http_build_query($params));
     }
 
-    public function getCoordinatesByLocationName($city)
-    {
-        $url = $this->buildCoordinatesByLocationNameUrl($city);
+    public function getCoordinatesByLocationName(
+        $city,
+        $stateCode = null,
+        $countryCode = null,
+        $limit = null
+    ) {
+        $url = $this->buildCoordinatesByLocationNameUrl($city, $stateCode, $countryCode, $limit);
         $response = $this->cacheOrFetchResult($url);
         $data = $this->parseJson($response);
-        $locations = [];
+        $cities = [];
         foreach ($data as $datum) {
-            $locations[] = new Location(
+            $cities[] = new City(
+                -1,
+                $datum->name,
                 $datum->lat,
                 $datum->lon,
-                $datum->name,
-                (array)$datum->local_names,
                 $datum->country,
-                $datum->state
+                null,
+                null,
+                $datum->state,
+                (array)$datum->local_names
             );
         }
 
-        return $locations;
+        return $cities;
     }
 
     private function buildCoordinatesByLocationNameUrl(
@@ -710,9 +719,13 @@ class OpenWeatherMap
 
         if ($stateCode !== null) {
             $params['q'] = sprintf('%s,%s', $params['q'], $stateCode);
-        }
-        if ($countryCode !== null) {
-            $params['q'] = sprintf('%s,%s', $params['q'], $countryCode);
+            if ($countryCode !== null) {
+                $params['q'] = sprintf('%s,%s', $params['q'], $countryCode);
+            }
+        } else {
+            if ($countryCode !== null) {
+                $params['q'] = sprintf('%s,,%s', $params['q'], $countryCode);
+            }
         }
 
         if ($limit !== null) {

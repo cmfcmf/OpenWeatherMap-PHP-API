@@ -19,10 +19,12 @@
 namespace Cmfcmf\OpenWeatherMap\Tests;
 
 use Cmfcmf\OpenWeatherMap;
+use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\Exception;
 use Cmfcmf\OpenWeatherMap\Tests\MyTestCase;
 use Cmfcmf\OpenWeatherMap\Tests\TestHttpClient;
 use Cache\Adapter\PHPArray\ArrayCachePool;
+use Cmfcmf\OpenWeatherMap\Util\City;
 use Cmfcmf\OpenWeatherMap\Util\Location;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\RequestException;
@@ -32,7 +34,9 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Http\Factory\Guzzle\RequestFactory;
 use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Factory\Guzzle\StreamFactory;
 use Mjelamanov\GuzzlePsr18\Client;
+use Psr\Http\Message\ResponseInterface;
 use Psr\SimpleCache\CacheInterface;
 
 class OpenWeatherMapTest extends MyTestCase
@@ -152,6 +156,104 @@ class OpenWeatherMapTest extends MyTestCase
         $this->assertContainsOnlyInstancesOf('\Cmfcmf\OpenWeatherMap\UVIndex', $result);
     }
 
+    public function coordinatesByLocationNameUrlDataProvider(): array
+    {
+        return [
+            [
+                'Bundaberg',
+                sprintf(
+                    'http://api.openweathermap.org/geo/1.0/direct?appid=%s&q=%s',
+                    '2f8796eefe67558dc205b09dd336d022',
+                    'Bundaberg'
+                )
+            ],
+            [
+                'Bundaberg',
+                sprintf(
+                    'http://api.openweathermap.org/geo/1.0/direct?appid=%s&q=%s%%2C%s',
+                    '2f8796eefe67558dc205b09dd336d022',
+                    'Bundaberg',
+                    'Queensland'
+                ),
+                'Queensland'
+            ],
+            [
+                'Bundaberg',
+                sprintf(
+                    'http://api.openweathermap.org/geo/1.0/direct?appid=%s&q=%s%%2C%s%%2C%s',
+                    '2f8796eefe67558dc205b09dd336d022',
+                    'Bundaberg',
+                    'Queensland',
+                    'AU'
+                ),
+                'Queensland',
+                'AU',
+            ],
+            [
+                'Bundaberg',
+                sprintf(
+                    'http://api.openweathermap.org/geo/1.0/direct?appid=%s&q=%s%%2C%%2C%s&limit=%d',
+                    '2f8796eefe67558dc205b09dd336d022',
+                    'Bundaberg',
+                    'AU',
+                    20
+                ),
+                null,
+                'AU',
+                20,
+            ],
+            [
+                'Bundaberg',
+                sprintf(
+                    'http://api.openweathermap.org/geo/1.0/direct?appid=%s&q=%s&limit=%d',
+                    '2f8796eefe67558dc205b09dd336d022',
+                    'Bundaberg',
+                    20
+                ),
+                null,
+                null,
+                20,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider coordinatesByLocationNameUrlDataProvider
+     */
+    public function testCorrectlyBuildsCoordinatesByLocationNameUrl(
+        $city,
+        $generatedUrl,
+        $stateCode = null,
+        $countryCode = null,
+        $limit = null
+    ) {
+        $requestFactory = $this->createMock(RequestFactory::class);
+        $requestFactory
+            ->expects($this->once())
+            ->method('createRequest')
+            ->with('GET', $generatedUrl);
+
+        $response = $this->createMock(ResponseInterface::class);
+        $response
+            ->method('getBody')
+            ->willReturn((new StreamFactory())->createStream('{}'));
+        $response
+            ->method('getStatusCode')
+            ->willReturn(200);
+        $httpClient = $this->createMock(Client::class);
+        $httpClient
+            ->expects($this->once())
+            ->method('sendRequest')
+            ->willReturn($response);
+
+        $this->owm = new OpenWeatherMap(
+            $this->apiKey,
+            $httpClient,
+            $requestFactory
+        );
+        $data = $this->owm->getCoordinatesByLocationName($city, $stateCode, $countryCode, $limit);
+    }
+
     public function testRetrieveCoordinatesByLocationName()
     {
         $result = <<<EOF
@@ -191,7 +293,7 @@ EOF;
         $this->owm = new OpenWeatherMap(
             $this->apiKey,
             $httpClient,
-            new RequestFactory()
+            $this->createMock(RequestFactory::class)
         );
         $owm = $this->openWeather;
         $data = $owm->getCoordinatesByLocationName('Bundaberg');
