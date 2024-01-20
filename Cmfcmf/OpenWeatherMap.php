@@ -23,6 +23,8 @@ use Cmfcmf\OpenWeatherMap\CurrentWeather;
 use Cmfcmf\OpenWeatherMap\CurrentWeatherGroup;
 use Cmfcmf\OpenWeatherMap\Exception as OWMException;
 use Cmfcmf\OpenWeatherMap\NotFoundException as OWMNotFoundException;
+use Cmfcmf\OpenWeatherMap\Util\City;
+use Cmfcmf\OpenWeatherMap\Util\Location;
 use Cmfcmf\OpenWeatherMap\UVIndex;
 use Cmfcmf\OpenWeatherMap\WeatherForecast;
 use Psr\Cache\CacheItemPoolInterface;
@@ -73,6 +75,12 @@ class OpenWeatherMap
      * @var string The basic api url to fetch air pollution data from.
      */
     private $airPollutionUrl = 'https://api.openweathermap.org/pollution/v1/';
+
+    /**
+     * @var string The base API URL for fetching coordinates by location name.
+     * @see https://openweathermap.org/api/geocoding-api#direct_name
+     */
+    private $coordinatesByLocationNameUrl = 'http://api.openweathermap.org/geo/1.0/direct';
 
     /**
      * @var CacheItemPoolInterface|null $cache The cache to use.
@@ -589,7 +597,9 @@ class OpenWeatherMap
             }
         }
 
-        $response = $this->httpClient->sendRequest($this->httpRequestFactory->createRequest("GET", $url));
+        $response = $this->httpClient->sendRequest(
+            $this->httpRequestFactory->createRequest("GET", $url)
+        );
         $result = $response->getBody()->getContents();
         if ($response->getStatusCode() !== 200) {
             if (false !== strpos($result, 'not found') && $response->getStatusCode() === 404) {
@@ -666,6 +676,67 @@ class OpenWeatherMap
         }
 
         return sprintf($this->uvIndexUrl . '%s?%s', $requestMode, http_build_query($params));
+    }
+
+    public function getCoordinatesByLocationName(
+        $city,
+        $stateCode = null,
+        $countryCode = null,
+        $limit = null
+    ) {
+        $url = $this->buildCoordinatesByLocationNameUrl($city, $stateCode, $countryCode, $limit);
+        $response = $this->cacheOrFetchResult($url);
+        $data = $this->parseJson($response);
+        $cities = [];
+        foreach ($data as $datum) {
+            $cities[] = new City(
+                -1,
+                $datum->name,
+                $datum->lat,
+                $datum->lon,
+                $datum->country,
+                null,
+                null,
+                $datum->state,
+                (array)$datum->local_names
+            );
+        }
+
+        return $cities;
+    }
+
+    private function buildCoordinatesByLocationNameUrl(
+        string $city,
+        string $stateCode = null,
+        string $countryCode = null,
+        int $limit = null
+    ): string
+    {
+        $params = array(
+            'appid' => $this->apiKey,
+            'q' => $city,
+        );
+
+        if ($stateCode !== null) {
+            $params['q'] = sprintf('%s,%s', $params['q'], $stateCode);
+            if ($countryCode !== null) {
+                $params['q'] = sprintf('%s,%s', $params['q'], $countryCode);
+            }
+        } else {
+            if ($countryCode !== null) {
+                $params['q'] = sprintf('%s,,%s', $params['q'], $countryCode);
+            }
+        }
+
+        if ($limit !== null) {
+            $params['limit'] = $limit;
+        }
+
+        return sprintf(
+            '%s?%s',
+            $this->coordinatesByLocationNameUrl,
+            http_build_query($params)
+        );
     }
 
     /**
