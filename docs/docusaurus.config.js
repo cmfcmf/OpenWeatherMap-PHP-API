@@ -110,7 +110,7 @@ module.exports = {
     ],
   ],
   plugins: [
-    // require('path').resolve(__dirname, '../../docusaurus-search-local'),
+    // require('path').resolve(__dirname, '../../docusaurus-search-local/packages/docusaurus-search-local'),
     require.resolve('@cmfcmf/docusaurus-search-local')
   ]
 };
