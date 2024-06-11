@@ -15,32 +15,33 @@ jobs:
         # https://www.php.net/supported-versions.php
         php-versions: ['7.3', '7.4', '8.0']
         # https://phpunit.de/supported-versions.html
-        phpunit-versions: ['9.5.4']
+        phpunit-version: ['9.5.4']
         experimental: [false]
         include:
         - php-versions: '7.1'
-          phpunit-versions: '7.5.20'
+          phpunit-version: '7.5.20'
           experimental: false
         - php-versions: '7.2'
-          phpunit-versions: '8.5.15'
+          phpunit-version: '8.5.15'
           experimental: false
         - php-versions: '8.1'
-          phpunit-versions: '9.5.14'
+          phpunit-version: '9.5.27'
           experimental: false
-
-        # PHPUnit's dependencies do not support PHP 8.2 yet.
-        # - php-versions: '8.2'
-        #   phpunit-versions: '9.5.11'
-        #   experimental: true
+        - php-versions: '8.2'
+          phpunit-version: '9.5.27'
+          experimental: false
+        - php-versions: '8.3'
+          phpunit-version: '9.5.27'
+          experimental: false
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
-        tools: composer, phpunit:${{ matrix.phpunit-versions }}
+        tools: composer, phpunit:${{ matrix.phpunit-version }}
         coverage: xdebug
         # Report deprecation errors.
         ini-values: error_reporting=E_ALL
@@ -52,9 +53,9 @@ jobs:
 
     - name: Get composer cache directory
       id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
     - name: Cache dependencies
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -69,27 +70,25 @@ jobs:
       run: phpunit --coverage-text --coverage-clover=coverage.xml
 
     - name: Upload coverage data to codecov
-      if: matrix.php-versions == '7.4'
-      uses: codecov/codecov-action@v1
-
-    - name: Upload coverage data to scrutinizer
-      if: matrix.php-versions == '7.4'
-      run: |
-        wget https://scrutinizer-ci.com/ocular.phar
-        php ocular.phar code-coverage:upload --format=php-clover coverage.xml
+      if: matrix.php-versions == '8.2'
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
 
   build-docs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
          # fetch complete history so that the "last updated by" texts can be set correctly
         fetch-depth: 0
-    - name: Use Node.js 18.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
       with:
-        node-version: 18.x
+        node-version: 20.x
     - name: Build Docs
       run: |
         cd docs
