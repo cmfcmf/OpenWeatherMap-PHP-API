@@ -22,7 +22,6 @@ use Cmfcmf\OpenWeatherMap\Util\Unit;
 
 class NO2AirPollution extends BaseAirPollution
 {
-
     /**
      * @var Unit
      */
