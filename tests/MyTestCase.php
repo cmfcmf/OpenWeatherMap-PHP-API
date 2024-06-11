@@ -24,17 +24,17 @@ abstract class MyTestCase extends \PHPUnit\Framework\TestCase
     {
         if (version_compare(phpversion(), '7.2', '>=')) {
             switch ($expected) {
-            case 'string':
-                static::assertIsString($actual);
-                break;
-            case 'object':
-                static::assertIsObject($actual);
-                break;
-            case 'float':
-                static::assertIsFloat($actual);
-                break;
-            default:
-                throw new Error();
+                case 'string':
+                    static::assertIsString($actual);
+                    break;
+                case 'object':
+                    static::assertIsObject($actual);
+                    break;
+                case 'float':
+                    static::assertIsFloat($actual);
+                    break;
+                default:
+                    throw new Error();
             }
         } else {
             \PHPUnit\Framework\TestCase::assertInternalType($expected, $actual, $message);

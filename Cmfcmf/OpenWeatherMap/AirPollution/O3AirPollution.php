@@ -22,7 +22,6 @@ use Cmfcmf\OpenWeatherMap\Util\Unit;
 
 class O3AirPollution extends BaseAirPollution
 {
-
     /**
      * @var Unit
      */

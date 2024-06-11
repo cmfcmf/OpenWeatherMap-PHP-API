@@ -22,7 +22,6 @@ use Cmfcmf\OpenWeatherMap\Util\Unit;
 
 class PrecisionPressureValueAirPollution extends BaseAirPollution
 {
-
     /**
      * @var object[]
      */
