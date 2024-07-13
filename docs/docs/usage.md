@@ -47,7 +47,7 @@ echo $weather->temperature;
 
 ## `Unit` objects
 
-Most values like temperature, percipitation, etc., are returned as instances of the
+Most values like temperature, precipitation, etc., are returned as instances of the
 `Cmfcmf\OpenWeatherMap\Util\Unit` class. These objects provide you with
 the value (e.g., `26.9`),
 the unit (e.g., `°C`),
@@ -62,7 +62,7 @@ $temperature = $weather->temperature->now;
 $temperature->getValue(); // 26.9
 $temperature->getUnit(); // "°C"
 $temperature->getDescription(); // ""
-$temperature->getFormatteed(); // "26.9 °C"
+$temperature->getFormatted(); // "26.9 °C"
 $temperature->__toString(); // "26.9 °C"
 ```
 
