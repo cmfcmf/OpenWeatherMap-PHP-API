@@ -17,7 +17,7 @@
         "source": "https://github.com/cmfcmf/OpenWeatherMap-PHP-API.git"
     },
     "require": {
-        "php": ">=7.0.0",
+        "php": ">=7.1.0",
         "ext-json": "*",
         "ext-libxml": "*",
         "ext-simplexml": "*",
