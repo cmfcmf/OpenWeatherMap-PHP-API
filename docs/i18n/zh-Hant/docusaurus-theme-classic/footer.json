@@ -1,0 +1,50 @@
+{
+  "link.title.PHP API Docs": {
+    "message": "PHP API 文檔",
+    "description": "The title of the footer links column with title=PHP API Docs in the footer"
+  },
+  "link.title.Official Resources": {
+    "message": "官方資源",
+    "description": "The title of the footer links column with title=Official Resources in the footer"
+  },
+  "link.title.Christian Flach": {
+    "message": "Christian Flach",
+    "description": "The title of the footer links column with title=Christian Flach in the footer"
+  },
+  "link.item.label.Getting Started": {
+    "message": "入門指南",
+    "description": "The label of footer link with label=Getting Started linking to docs/getting-started"
+  },
+  "link.item.label.API Key": {
+    "message": "API 金鑰",
+    "description": "The label of footer link with label=API Key linking to docs/api-key"
+  },
+  "link.item.label.Usage": {
+    "message": "使用方式",
+    "description": "The label of footer link with label=Usage linking to docs/usage"
+  },
+  "link.item.label.Introduction Guide": {
+    "message": "介紹指南",
+    "description": "The label of footer link with label=Introduction Guide linking to https://openweathermap.org/guide"
+  },
+  "link.item.label.Pricing": {
+    "message": "價格",
+    "description": "The label of footer link with label=Pricing linking to https://openweathermap.org/price"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/cmfcmf"
+  },
+  "link.item.label.Twitter": {
+    "message": "X",
+    "description": "The label of footer link with label=Twitter linking to https://twitter.com/christianmflach"
+  },
+  "link.item.label.Privacy / Datenschutz": {
+    "message": "隱私政策",
+    "description": "The label of footer link with label=Privacy / Datenschutz linking to https://cmfcmf.github.io/about"
+  },
+  "copyright": {
+    "message": "版權所有 © 2024 Christian Flach.\n  此專案與 OpenWeatherMap 無關。",
+    "description": "The footer copyright"
+  }
+}

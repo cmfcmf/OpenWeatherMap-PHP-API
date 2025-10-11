@@ -1,0 +1,10 @@
+{
+  "version.label": {
+    "message": "當前版本",
+    "description": "The label for version current"
+  },
+  "sidebar.someSidebar.category.APIs": {
+    "message": "APIs",
+    "description": "The label for category APIs in sidebar someSidebar"
+  }
+}

@@ -13,6 +13,10 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: user, // Usually your GitHub org/user name.
   projectName: project, // Usually your repo name.
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh-Hant'],
+  },
   themeConfig: {
     prism: {
       additionalLanguages: ["php"]
@@ -24,7 +28,11 @@ module.exports = {
         src: 'img/logo.svg',
       },
       items: [
-        {to: 'docs/getting-started', label: 'Docs', position: 'left'},
+        {to: 'docs/getting-started', label: 'Docs', position: 'left'}, 
+        {
+          type: 'localeDropdown',
+          position: 'left',
+        },
         {
           href: githubUrl,
           label: 'GitHub',
