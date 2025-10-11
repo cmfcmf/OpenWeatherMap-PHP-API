@@ -36,12 +36,12 @@ class Wind
     /**
      * Create a new wind object.
      *
-     * @param Unit $speed     The wind speed.
-     * @param Unit $direction The wind direction.
+     * @param Unit      $speed     The wind speed.
+     * @param Unit|null $direction The wind direction.
      *
      * @internal
      */
-    public function __construct(Unit $speed, Unit $direction = null)
+    public function __construct(Unit $speed, ?Unit $direction = null)
     {
         $this->speed = $speed;
         $this->direction = $direction;
