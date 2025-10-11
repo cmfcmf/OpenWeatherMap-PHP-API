@@ -25,16 +25,16 @@ jobs:
           phpunit-version: '8.5.15'
           experimental: false
         - php-versions: '8.1'
-          phpunit-version: '9.5.27'
+          phpunit-version: '9.6.29'
           experimental: false
         - php-versions: '8.2'
-          phpunit-version: '9.5.27'
+          phpunit-version: '9.6.29'
           experimental: false
         - php-versions: '8.3'
-          phpunit-version: '9.5.27'
+          phpunit-version: '9.6.29'
           experimental: false
         - php-versions: '8.4'
-          phpunit-version: '9.5.27'
+          phpunit-version: '9.6.29'
           experimental: false
     steps:
     - name: Checkout
