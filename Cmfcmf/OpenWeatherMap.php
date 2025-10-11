@@ -635,12 +635,12 @@ class OpenWeatherMap
      * @param float              $lat           The location's latitude.
      * @param float              $lon           The location's longitude.
      * @param int                $cnt           Number of returned days.
-     * @param \DateTime          $start         Starting point of time period.
-     * @param \DateTime          $end           Final point of time period.
+     * @param \DateTime|null     $start         Starting point of time period.
+     * @param \DateTime|null     $end           Final point of time period.
      *
      * @return string
      */
-    private function buildUVIndexUrl($mode, $lat, $lon, $cnt = null, \DateTime $start = null, \DateTime $end = null)
+    private function buildUVIndexUrl($mode, $lat, $lon, $cnt = null, ?\DateTime $start = null, ?\DateTime $end = null)
     {
         $params = array(
             'appid' => $this->apiKey,

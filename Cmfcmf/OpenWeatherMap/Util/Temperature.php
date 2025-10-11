@@ -42,17 +42,17 @@ class Temperature
      * @var Unit The day temperature. Might not be null.
      */
     public $day;
-    
+
     /**
      * @var Unit The morning temperature. Might not be null.
      */
     public $morning;
-    
+
     /**
      * @var Unit The evening temperature. Might not be null.
      */
     public $evening;
-    
+
     /**
      * @var Unit The night temperature. Might not be null.
      */
@@ -111,17 +111,17 @@ class Temperature
     /**
      * Create a new temperature object.
      *
-     * @param Unit $now The current temperature.
-     * @param Unit $min The minimal temperature.
-     * @param Unit $max The maximal temperature.
-     * @param Unit $day The day temperature. Might not be null.
-     * @param Unit $morning The morning temperature. Might not be null.
-     * @param Unit $evening The evening temperature. Might not be null.
-     * @param Unit $night The night temperature. Might not be null.
+     * @param Unit      $now The current temperature.
+     * @param Unit      $min The minimal temperature.
+     * @param Unit      $max The maximal temperature.
+     * @param Unit|null $day The day temperature. Might not be null.
+     * @param Unit|null $morning The morning temperature. Might not be null.
+     * @param Unit|null $evening The evening temperature. Might not be null.
+     * @param Unit|null $night The night temperature. Might not be null.
      *
      * @internal
      */
-    public function __construct(Unit $now, Unit $min, Unit $max, Unit $day = null, Unit $morning = null, Unit $evening = null, Unit $night = null)
+    public function __construct(Unit $now, Unit $min, Unit $max, ?Unit $day = null, ?Unit $morning = null, ?Unit $evening = null, ?Unit $night = null)
     {
         $this->now = $now;
         $this->min = $min;
