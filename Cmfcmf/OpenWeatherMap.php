@@ -60,6 +60,11 @@ class OpenWeatherMap
     private $weatherHourlyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast?';
 
     /**
+     * @var string The basic api url to fetch weekly forecast data from.
+     */
+    private $weatherTrueHourlyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast/hourly?';
+
+    /**
      * @var string The basic api url to fetch daily forecast data from.
      */
     private $weatherDailyForecastUrl = 'https://api.openweathermap.org/data/2.5/forecast/daily?';
@@ -448,6 +453,29 @@ class OpenWeatherMap
     public function getRawHourlyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml')
     {
         $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherHourlyForecastUrl);
+
+        return $this->cacheOrFetchResult($url);
+    }
+
+    /**
+     * Directly returns the xml/json/html string returned by OpenWeatherMap for the hourly forecast.
+     *
+     * @param array|int|string $query The place to get weather information for. For possible values see ::getWeather.
+     * @param string           $units Can be either 'metric' or 'imperial' (default). This affects almost all units returned.
+     * @param string           $lang  The language to use for descriptions, default is 'en'. For possible values see http://openweathermap.org/current#multi.
+     * @param string           $appid Your app id, default ''. See http://openweathermap.org/appid for more details.
+     * @param string           $mode  The format of the data fetched. Possible values are 'json', 'html' and 'xml' (default).
+     * @param int              $cnt   How many hours of forecast shall be returned? Maximum (and default): 120 (5 days)
+ *
+     * @return string Returns false on failure and the fetched data in the format you specified on success.
+     *
+     * Warning: If an error occurs, OpenWeatherMap ALWAYS returns json data.
+     *
+     * @api
+     */
+    public function getRawTrueHourlyForecastData($query, $units = 'imperial', $lang = 'en', $appid = '', $mode = 'xml', $cnt = 120)
+    {
+        $url = $this->buildUrl($query, $units, $lang, $appid, $mode, $this->weatherTrueHourlyForecastUrl) . '&cnt=' . $cnt;
 
         return $this->cacheOrFetchResult($url);
     }
